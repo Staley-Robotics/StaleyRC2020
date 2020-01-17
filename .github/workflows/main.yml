@@ -39,10 +39,11 @@ jobs:
       with:
         java-version: 11
 
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      
     - name: Test with Gradle
-      run: |
-        chmod +x gradlew
-        ./gradlew test
+      run: ./gradlew test
 
 
   verify:
@@ -60,7 +61,8 @@ jobs:
       with:
         java-version: 11
 
-    - name: Checkstyle Check
-      run: |
-        chmod +x gradlew
-        ./gradlew checkstyleMain
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      
+    - name: Checkstyle 
+      run: ./gradlew checkstyleMain
