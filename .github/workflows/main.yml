@@ -9,7 +9,7 @@ jobs:
 
     steps:
     - name: Checkout current branch
-      uses: actions/checkout
+      uses: actions/checkout@v1
       with:
         ref: ${{ github.ref }}
         
