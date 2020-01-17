@@ -1,6 +1,6 @@
 name: CI
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -15,3 +15,24 @@ jobs:
     - uses: MrRamych/gradle-actions/openjdk-11@3.1
       with:
         args: build
+        
+        
+  test:
+    needs: [build]
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-java@v1
+    - uses: MrRamych/gradle-actions/openjdk-11@3.1
+      with:
+        args: test
+  checkstyle:
+    needs: [build, test]
+    runs-on: ubuntu-latest
+    
+    steps:
+       - uses: actions/checkout@v1
+       - uses: actions/setup-java@v1
+         with:
+           args: verify
