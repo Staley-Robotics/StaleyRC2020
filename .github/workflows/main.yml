@@ -21,20 +21,39 @@ jobs:
     - name: Build with Gradle
       run: gradle build
         
-        
   test:
-    needs: [build]
+    needs: build
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Build with Gradle
+    - name: Checkout current branch
+      uses: actions/checkout@v1
+      with:
+        ref: ${{ github.ref }}
+        
+    - name: Set up java 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+
+    - name: Test with Gradle
       run: gradle test
 
 
-  checkstyle:
+  verify:
     needs: [build, test]
     runs-on: ubuntu-latest
-    
+
     steps:
-       - name: Build with Gradle
-         run: gradle checkstyleMain
+    - name: Checkout current branch
+      uses: actions/checkout@v1
+      with:
+        ref: ${{ github.ref }}
+        
+    - name: Set up java 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+
+    - name: Checkstyle Check
+      run: gradle checkstyleMain
