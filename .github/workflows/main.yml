@@ -12,8 +12,7 @@ jobs:
     - uses: actions/setup-java@v1
       with:
         java-version: 11
-    - uses: MrRamych/gradle-actions/openjdk-11@3.1
-      with:
+
         args: build
         
         
