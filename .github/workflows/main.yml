@@ -19,7 +19,7 @@ jobs:
         java-version: 11
 
     - name: Build with Gradle
-      run: gradlew build
+      run: ./gradlew build
         
   test:
     needs: build
@@ -37,7 +37,7 @@ jobs:
         java-version: 11
 
     - name: Test with Gradle
-      run: gradlew test
+      run: ./gradlew test
 
 
   verify:
@@ -56,4 +56,4 @@ jobs:
         java-version: 11
 
     - name: Checkstyle Check
-      run: gradlew checkstyleMain
+      run: ./gradlew checkstyleMain
