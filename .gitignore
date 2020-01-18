@@ -13,3 +13,7 @@ gradle-app.setting
 
 /.idea/
 /.vscode/
+/bin/
+.classpath
+.project
+org.eclipse.buildship.core.prefs
