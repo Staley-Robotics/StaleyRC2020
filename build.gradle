@@ -6,7 +6,11 @@ plugins {
 
 checkstyle {
     toolVersion = "8.26"
-    config = rootProject.resources.text.fromFile('/config/checkstyle/google_checks.xml')
+    // config = rootProject.resources.text.fromFile('/config/checkstyle/google_checks.xml')
+    configFile file("${project.rootDir}/config/checkstyle/google_checks.xml")
+
+    maxErrors = 0
+    maxWarnings = 0
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
