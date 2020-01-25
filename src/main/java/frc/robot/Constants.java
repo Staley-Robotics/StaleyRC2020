@@ -32,4 +32,10 @@ public final class Constants {
 
     public static final int driveControllerPort = 0;
   }
+
+  public static final class IntakeConstants {
+
+    public static final int jointMotorPort = 0;
+    public static final int intakeMotorPort = 0;
+  }
 }

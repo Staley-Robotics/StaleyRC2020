@@ -14,7 +14,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.commands.runIntakeToggle;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Intake;
 
 
 /**
@@ -26,8 +28,11 @@ import frc.robot.subsystems.DriveTrain;
 public class RobotContainer {
 
   private static XboxController driveController;
+  private static XboxController altController;
   private static CommandBase auto;
   private final DriveTrain drive;
+  private final Intake intake;
+  private final runIntakeToggle intakeCommand;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -35,7 +40,10 @@ public class RobotContainer {
   public RobotContainer() {
     configureButtonBindings();
 
+    intake = Intake.getInstance();
     drive = DriveTrain.getInstance();
+
+    intakeCommand = new runIntakeToggle();
 
     auto = null;
 
@@ -47,6 +55,15 @@ public class RobotContainer {
                     driveController.getTriggerAxis(GenericHID.Hand.kLeft),
                     driveController.getX(GenericHID.Hand.kLeft)),
             drive));
+
+
+    intake.setDefaultCommand(
+        new RunCommand(
+            () -> intakeCommand.runIntake(altController.getYButtonPressed())
+        )
+    );
+    altController.getYButtonPressed();
+    altController.getXButtonPressed();
   }
 
   /**
