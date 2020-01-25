@@ -27,22 +27,27 @@ public class DriveTrain extends SubsystemBase {
   private static DriveTrain instance;
   public DifferentialDrive drive;
   private AHRS gyro;
-  // 2 Talon, 4 Victor assumption here.
-  private WPI_TalonSRX rightMaster = new WPI_TalonSRX(rMotorMasterPort);
-  private WPI_VictorSPX rightFollower1 = new WPI_VictorSPX(rMotorFollower1Port);
-  private WPI_VictorSPX rightFollower2 = new WPI_VictorSPX(rMotorFollower2Port);
-  private final SpeedControllerGroup leftMotors = new SpeedControllerGroup(rightMaster,
-      rightFollower1,
-      rightFollower2);
-  private WPI_TalonSRX leftMaster = new WPI_TalonSRX(lMotorMasterPort);
-  private WPI_VictorSPX leftFollower1 = new WPI_VictorSPX(lMotorFollower1Port);
-  private WPI_VictorSPX leftFollower2 = new WPI_VictorSPX(lMotorFollower2Port);
-  private final SpeedControllerGroup rightMotors = new SpeedControllerGroup(leftMaster,
-      leftFollower1,
-      leftFollower2);
 
+  private WPI_TalonSRX rightMaster;
+  private WPI_VictorSPX rightFollower1;
+  private WPI_VictorSPX rightFollower2;
+
+  private WPI_TalonSRX leftMaster;
+  private WPI_VictorSPX leftFollower1;
+  private WPI_VictorSPX leftFollower2;
 
   public DriveTrain() {
+    rightMaster = new WPI_TalonSRX(rMotorMasterPort);
+    rightFollower1 = new WPI_VictorSPX(rMotorFollower1Port);
+    rightFollower2 = new WPI_VictorSPX(rMotorFollower2Port);
+    final SpeedControllerGroup leftMotors = new SpeedControllerGroup(rightMaster, rightFollower1,
+        rightFollower2);
+
+    leftMaster = new WPI_TalonSRX(lMotorMasterPort);
+    leftFollower1 = new WPI_VictorSPX(lMotorFollower1Port);
+    leftFollower2 = new WPI_VictorSPX(lMotorFollower2Port);
+    final SpeedControllerGroup rightMotors = new SpeedControllerGroup(leftMaster, leftFollower1,
+        leftFollower2);
 
     gyro = new AHRS();
 
@@ -53,7 +58,6 @@ public class DriveTrain extends SubsystemBase {
 
     leftFollower1.follow(leftMaster);
     leftFollower2.follow(leftMaster);
-
   }
 
   /**
@@ -71,7 +75,7 @@ public class DriveTrain extends SubsystemBase {
   }
 
   /**
-   * World drive.
+   * Takes Forward, backward and rotate power to control movement of robot with 3 different inputs.
    */
   public void worldOfTanksDrive(double forward, double backward, double rotate) {
     double speedModifier = 1;
@@ -79,12 +83,15 @@ public class DriveTrain extends SubsystemBase {
 
     backward = backward * speedModifier;
     forward = forward * speedModifier;
+
+    // Deadzones for rotate.
     if (rotate > 0.1 || rotate < 0.1) {
       rotate = rotate * turnSpeedModifier;
     } else {
       rotate = 0;
     }
 
+    // Actual drive logic to move bot.
     if (backward > 0) {
       drive.arcadeDrive(-backward, rotate);
     } else if (forward > 0) {
@@ -94,40 +101,31 @@ public class DriveTrain extends SubsystemBase {
     }
   }
 
-  /**
-   * zero yawls.
-   */
   public void zeroYaw() {
     gyro.zeroYaw();
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-
-    SmartDashboard.putNumber("Gyro Yaw", Double.valueOf(getYaw()));
-
+    SmartDashboard.putNumber("Gyro Yaw", getYaw());
     SmartDashboard.putNumber("Gyro Pitch", getPitch());
-
   }
 
   /**
-   * Gets Yaw.
+   * Gets Yaw. Yaw is the angle which the robot turns.
    *
    * @return double
    */
-  public String getYaw() {
-    return Double.toString(gyro.getYaw());
+  public double getYaw() {
+    return gyro.getYaw();
   }
 
   /**
-   * Gets Pitch.
+   * Gets Pitch. Pitch is the angle which the robot is oriented among the z axis.
    *
    * @return double
    */
   public double getPitch() {
-    return Double.valueOf(Double.toString(Double.valueOf(Double.toString(gyro.getPitch()))));
+    return gyro.getPitch();
   }
-
-
 }
