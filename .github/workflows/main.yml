@@ -3,47 +3,47 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-    
+
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout current branch
-      uses: actions/checkout@v1
-      with:
-        ref: ${{ github.ref }}
-        
-    - name: Set up java 11
-      uses: actions/setup-java@v1
-      with:
-        java-version: 11
+      - name: Checkout current branch
+        uses: actions/checkout@v1
+        with:
+          ref: ${{ github.ref }}
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-      
-    - name: Build with Gradle
-      run: ./gradlew build -x check
-        
+      - name: Set up java 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew build -x check
+
   test:
     needs: build
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout current branch
-      uses: actions/checkout@v1
-      with:
-        ref: ${{ github.ref }}
-        
-    - name: Set up java 11
-      uses: actions/setup-java@v1
-      with:
-        java-version: 11
+      - name: Checkout current branch
+        uses: actions/checkout@v1
+        with:
+          ref: ${{ github.ref }}
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-      
-    - name: Test with Gradle
-      run: ./gradlew test
+      - name: Set up java 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Test with Gradle
+        run: ./gradlew test
 
 
   verify:
@@ -51,18 +51,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout current branch
-      uses: actions/checkout@v1
-      with:
-        ref: ${{ github.ref }}
-        
-    - name: Set up java 11
-      uses: actions/setup-java@v1
-      with:
-        java-version: 11
+      - name: Checkout current branch
+        uses: actions/checkout@v1
+        with:
+          ref: ${{ github.ref }}
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-      
-    - name: Checkstyle 
-      run: ./gradlew checkstyleMain
+      - name: Set up java 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Checkstyle
+        run: ./gradlew checkstyleMain
+
+      - name: Upload checkstyle report
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: Checkstyle report
+          path: build/reports/checkstyle/main.html
