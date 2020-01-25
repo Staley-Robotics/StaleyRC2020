@@ -48,10 +48,11 @@ public class RobotContainer {
     drive.setDefaultCommand(
         new RunCommand(
             () ->
-                drive.tankDrive(
-                    driveController.getY(GenericHID.Hand.kLeft),
-                    driveController.getY(GenericHID.Hand.kRight)),
-            drive));
+                drive.worldOfTanksDrive(
+                    driveController.getTriggerAxis(GenericHID.Hand.kRight),
+                    driveController.getTriggerAxis(GenericHID.Hand.kLeft),
+                    driveController.getX(GenericHID.Hand.kLeft)),
+                    drive));
 
   }
 

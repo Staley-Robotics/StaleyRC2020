@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -19,6 +20,8 @@ import static frc.robot.Constants.DriveConstants.*;
 public class DriveTrain extends SubsystemBase {
 
   private static DriveTrain instance;
+
+  private AHRS gyro;
 
   // Supposedly there are 6 motors for the DriveTrain this time around. 2 Talon, 4 Victor assumption here.
   private WPI_TalonSRX rMaster = new WPI_TalonSRX(rMotorMasterPort);
@@ -77,6 +80,8 @@ public class DriveTrain extends SubsystemBase {
     }
   }
 
+
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -87,6 +92,29 @@ public class DriveTrain extends SubsystemBase {
       instance = new DriveTrain();
     }
     return instance;
+  }
+
+  /**
+   * Gets Yaw
+   * @return double
+   */
+  public String getYaw(){
+    return Double.toString(gyro.getYaw());
+  }
+
+  /**
+   * Gets Pitch
+   * @return double
+   */
+  public double getPitch(){
+    return Double.valueOf(Double.toString(Double.valueOf(Double.toString(gyro.getPitch()))));
+  }
+
+  /**
+   * zero yawls
+   */
+  public void zeroYaw(){
+    gyro.zeroYaw();
   }
 
 }
