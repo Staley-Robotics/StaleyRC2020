@@ -1,6 +1,17 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2020.1.2"
+    id "edu.wpi.first.GradleRIO" version "2020.2.2"
+    id "checkstyle"
+    id "idea"
+}
+
+checkstyle {
+    toolVersion = "8.26"
+    // config = rootProject.resources.text.fromFile('/config/checkstyle/google_checks.xml')
+    configFile file("${project.rootDir}/config/checkstyle/google_checks.xml")
+
+    maxErrors = 0
+    maxWarnings = 0
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -18,8 +29,11 @@ deploy {
             // You can use getTeamOrDefault(team) instead of getTeamNumber if you
             // want to store a team number in this file.
             team = frc.getTeamNumber()
+//            team = frc.getTeamOrDefault(4959)
         }
     }
+
+
     artifacts {
         frcJavaArtifact('frcJava') {
             targets << "roborio"
@@ -66,3 +80,5 @@ jar {
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
 }
+
+

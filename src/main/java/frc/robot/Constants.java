@@ -13,7 +13,23 @@ package frc.robot;
  * declared globally (i.e. public static).  Do not put anything functional in this class.
  *
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
- * constants are needed, to reduce verbosity.
+ * constants are needed to reduce verbosity.
  */
 public final class Constants {
+
+  public static final class DriveConstants {
+
+    public static final int rMotorMasterPort = 1;
+    public static final int rMotorFollower1Port = 9;
+    public static final int rMotorFollower2Port = 10;
+
+    public static final int lMotorMasterPort = 4;
+    public static final int lMotorFollower1Port = 6;
+    public static final int lMotorFollower2Port = 7;
+  }
+
+  public static final class OperatorInputConstants {
+
+    public static final int driveControllerPort = 0;
+  }
 }
