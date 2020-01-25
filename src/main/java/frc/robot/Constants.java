@@ -19,13 +19,13 @@ public final class Constants {
 
   public static final class DriveConstants {
 
-    public static final int rMotorMasterPort = 0;
-    public static final int rMotorFollower1Port = 0;
-    public static final int rMotorFollower2Port = 0;
+    public static final int rMotorMasterPort = 1;
+    public static final int rMotorFollower1Port = 9;
+    public static final int rMotorFollower2Port = 10;
 
-    public static final int lMotorMasterPort = 0;
-    public static final int lMotorFollower1Port = 0;
-    public static final int lMotorFollower2Port = 0;
+    public static final int lMotorMasterPort = 4;
+    public static final int lMotorFollower1Port = 6;
+    public static final int lMotorFollower2Port = 7;
   }
 
   public static final class OperatorInputConstants {

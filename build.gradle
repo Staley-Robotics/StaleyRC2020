@@ -2,6 +2,7 @@ plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2020.2.2"
     id "checkstyle"
+    id "idea"
 }
 
 checkstyle {
@@ -28,8 +29,11 @@ deploy {
             // You can use getTeamOrDefault(team) instead of getTeamNumber if you
             // want to store a team number in this file.
             team = frc.getTeamNumber()
+//            team = frc.getTeamOrDefault(4959)
         }
     }
+
+
     artifacts {
         frcJavaArtifact('frcJava') {
             targets << "roborio"

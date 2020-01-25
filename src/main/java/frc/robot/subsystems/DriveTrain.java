@@ -17,18 +17,16 @@ import static frc.robot.Constants.DriveConstants.rMotorMasterPort;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveTrain extends SubsystemBase {
 
   private static DriveTrain instance;
-
-  private AHRS gyro;
-
   public DifferentialDrive drive;
+  private AHRS gyro;
   // 2 Talon, 4 Victor assumption here.
   private WPI_TalonSRX rightMaster = new WPI_TalonSRX(rMotorMasterPort);
   private WPI_VictorSPX rightFollower1 = new WPI_VictorSPX(rMotorFollower1Port);
@@ -97,33 +95,39 @@ public class DriveTrain extends SubsystemBase {
   }
 
   /**
-   * Gets Yaw
-   * @return double
+   * zero yawls.
    */
-  public String getYaw(){
-    return Double.toString(gyro.getYaw());
-  }
-
-  /**
-   * Gets Pitch
-   * @return double
-   */
-  public double getPitch(){
-    return Double.valueOf(Double.toString(Double.valueOf(Double.toString(gyro.getPitch()))));
-  }
-
-  /**
-   * zero yawls
-   */
-  public void zeroYaw(){
+  public void zeroYaw() {
     gyro.zeroYaw();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    SmartDashboard.putNumber("Gyro Yaw", Double.valueOf(getYaw()));
+
+    SmartDashboard.putNumber("Gyro Pitch", getPitch());
+
   }
 
+  /**
+   * Gets Yaw.
+   *
+   * @return double
+   */
+  public String getYaw() {
+    return Double.toString(gyro.getYaw());
+  }
+
+  /**
+   * Gets Pitch.
+   *
+   * @return double
+   */
+  public double getPitch() {
+    return Double.valueOf(Double.toString(Double.valueOf(Double.toString(gyro.getPitch()))));
+  }
 
 
 }
