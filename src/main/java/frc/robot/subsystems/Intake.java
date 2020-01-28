@@ -8,24 +8,35 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.VictorSP;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.SensorConstants;
 
 public class Intake extends SubsystemBase {
 
   private static Intake instance;
-  private static WPI_TalonSRX jointMotor;
-  private static WPI_TalonSRX intakeMotor;
+  private static VictorSP jointMotor;
+  private static VictorSP intakeMotor;
+  private DigitalInput limitSwitch;
+  private PivotState pivotState;
+  private int num;
 
-  private static double jointMotorPower;
-  private static double intakeMotorPower;
+  public enum PivotState {
+    up,
+    down
+  }
 
   public Intake() {
-    jointMotor = new WPI_TalonSRX(IntakeConstants.jointMotorPort);
-    intakeMotor = new WPI_TalonSRX(IntakeConstants.intakeMotorPort);
+    limitSwitch = new DigitalInput(SensorConstants.limitSwitchPort);
+    jointMotor = new VictorSP(IntakeConstants.jointMotorPort);
+    intakeMotor = new VictorSP(IntakeConstants.intakeMotorPort);
 
-    jointMotorPower = 1.0;
-    intakeMotorPower = 1.0;
+    pivotState = PivotState.up;
+    num = 1;
   }
 
   public static Intake getInstance() {
@@ -35,28 +46,40 @@ public class Intake extends SubsystemBase {
     return instance;
   }
 
-  public static void lowerJoint() {
-    jointMotor.set(jointMotorPower);
+  public void runJoint(double speed){
+    jointMotor.set(speed);
   }
 
-  public static void raiseJoint() {
-    jointMotor.set(-jointMotorPower);
+  public void runIntake(double speed) {
+    intakeMotor.set(speed);
   }
 
-  public static void stopJoint() {
-    jointMotor.set(0);
+  public boolean getLimitSwitch(){
+    return limitSwitch.get();
   }
 
-  public static void runIntake() {
-    intakeMotor.set(intakeMotorPower);
+  public PivotState getPivotState(){
+    return pivotState;
   }
 
-  public static void stopIntake() {
-    intakeMotor.set(0);
+  public void setPivotStateDown(){
+    pivotState = PivotState.down;
+    num = 0;
+  }
+
+  public void setPivotStateUp(){
+    pivotState = PivotState.up;
+    num = 1;
+  }
+
+  public int getNum(){
+    return num;
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Enum: ", getNum());
+
   }
 }

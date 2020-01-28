@@ -37,6 +37,7 @@ public class DriveTrain extends SubsystemBase {
   private WPI_VictorSPX leftFollower2;
 
   public DriveTrain() {
+
     rightMaster = new WPI_TalonSRX(rMotorMasterPort);
     rightFollower1 = new WPI_VictorSPX(rMotorFollower1Port);
     rightFollower2 = new WPI_VictorSPX(rMotorFollower2Port);
@@ -52,6 +53,7 @@ public class DriveTrain extends SubsystemBase {
     gyro = new AHRS();
 
     drive = new DifferentialDrive(leftMotors, rightMotors);
+    drive.setSafetyEnabled(false);
 
     rightFollower1.follow(rightMaster);
     rightFollower2.follow(rightMaster);

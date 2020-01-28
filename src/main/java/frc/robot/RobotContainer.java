@@ -7,14 +7,20 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.OperatorInputConstants.altControllerPort;
 import static frc.robot.Constants.OperatorInputConstants.driveControllerPort;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.robot.commands.runIntakeToggle;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.IntakeConstants;
+import frc.robot.commands.RunIntake;
+import frc.robot.commands.RunJoint;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
 
@@ -32,7 +38,6 @@ public class RobotContainer {
   private static CommandBase auto;
   private final DriveTrain drive;
   private final Intake intake;
-  private final runIntakeToggle intakeCommand;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -42,8 +47,6 @@ public class RobotContainer {
 
     intake = Intake.getInstance();
     drive = DriveTrain.getInstance();
-
-    intakeCommand = new runIntakeToggle();
 
     auto = null;
 
@@ -55,15 +58,6 @@ public class RobotContainer {
                     driveController.getTriggerAxis(GenericHID.Hand.kLeft),
                     driveController.getX(GenericHID.Hand.kLeft)),
             drive));
-
-
-    intake.setDefaultCommand(
-        new RunCommand(
-            () -> intakeCommand.runIntake(altController.getYButtonPressed())
-        )
-    );
-    altController.getYButtonPressed();
-    altController.getXButtonPressed();
   }
 
   /**
@@ -74,6 +68,13 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     driveController = new XboxController(driveControllerPort);
+    altController = new XboxController(altControllerPort);
+
+    JoystickButton toggleIntake = new JoystickButton(altController, Button.kX.value);
+    toggleIntake.toggleWhenPressed(new RunIntake(IntakeConstants.intakeMotorSpeed));
+
+    JoystickButton toggleJoint = new JoystickButton(altController, Button.kY.value);
+    toggleJoint.toggleWhenPressed(new RunJoint(IntakeConstants.jointMotorSpeed).withTimeout(1));
   }
 
   /**
