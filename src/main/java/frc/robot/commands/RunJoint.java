@@ -43,15 +43,11 @@ public class RunJoint extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    if(!intake.getLimitSwitch()){
-      intake.runJoint(-motorSpeed);
-    }
-    else if (intake.getPivotState() == PivotState.up) {
+    if (intake.getPivotState() == PivotState.up) {
       intake.setPivotStateDown();
     } else if (intake.getPivotState() == PivotState.down) {
       intake.setPivotStateUp();
     }
-    intake.runJoint(0);
   }
 
 }
