@@ -8,18 +8,18 @@ public class RunIntake extends CommandBase {
 
   Intake intake;
 
-  private double motorSpeed;
+  private double motorPower;
 
-  public RunIntake(double motorSpeed) {
+  public RunIntake(double motorPower) {
     intake = Intake.getInstance();
     addRequirements(intake);
 
-    this.motorSpeed = motorSpeed;
+    this.motorPower = motorPower;
   }
 
   @Override
   public void execute() {
-    intake.runIntake(this.motorSpeed);
+    intake.runIntake(this.motorPower);
   }
 
   @Override
@@ -28,8 +28,8 @@ public class RunIntake extends CommandBase {
   }
 
   @Override
-  public void end(boolean interrupted){
-      intake.runIntake(0);
+  public void end(boolean interrupted) {
+    intake.runIntake(0);
   }
 }
 

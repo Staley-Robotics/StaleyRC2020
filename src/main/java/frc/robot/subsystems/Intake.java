@@ -7,10 +7,8 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.VictorSP;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
@@ -36,7 +34,6 @@ public class Intake extends SubsystemBase {
     intakeMotor = new VictorSP(IntakeConstants.intakeMotorPort);
 
     pivotState = PivotState.up;
-    num = 1;
   }
 
   public static Intake getInstance() {
@@ -46,40 +43,32 @@ public class Intake extends SubsystemBase {
     return instance;
   }
 
-  public void runJoint(double speed){
-    jointMotor.set(speed);
+  public void runJoint(double power) {
+    jointMotor.set(power);
   }
 
-  public void runIntake(double speed) {
-    intakeMotor.set(speed);
+  public void runIntake(double power) {
+    intakeMotor.set(power);
   }
 
-  public boolean getLimitSwitch(){
+  public boolean getLimitSwitch() {
     return limitSwitch.get();
   }
 
-  public PivotState getPivotState(){
+  public PivotState getPivotState() {
     return pivotState;
   }
 
-  public void setPivotStateDown(){
+  public void setPivotStateDown() {
     pivotState = PivotState.down;
-    num = 0;
   }
 
-  public void setPivotStateUp(){
+  public void setPivotStateUp() {
     pivotState = PivotState.up;
-    num = 1;
-  }
-
-  public int getNum(){
-    return num;
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Enum: ", getNum());
-
+    SmartDashboard.putString("Joint State: ", pivotState.toString());
   }
 }

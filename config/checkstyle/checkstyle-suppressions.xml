@@ -13,4 +13,16 @@
   <suppress files="DriveTrain.java"
     lines="39"
     message="Missing a Javadoc comment."/>
+  <suppress files="Intake.java"
+    lines="31"
+    message="Missing a Javadoc comment."/>
+  <suppress files="Intake.java"
+    lines="39"
+    message="Missing a Javadoc comment."/>
+  <suppress files="ToggleJoint.java"
+    lines="12"
+    message="Missing a Javadoc comment."/>
+  <suppress files="RunIntake.java"
+    lines="13"
+    message="Missing a Javadoc comment."/>
 </suppressions>

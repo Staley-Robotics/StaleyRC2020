@@ -11,7 +11,6 @@ import static frc.robot.Constants.OperatorInputConstants.altControllerPort;
 import static frc.robot.Constants.OperatorInputConstants.driveControllerPort;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -20,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.commands.RunIntake;
-import frc.robot.commands.RunJoint;
+import frc.robot.commands.ToggleJoint;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
 
@@ -71,10 +70,10 @@ public class RobotContainer {
     altController = new XboxController(altControllerPort);
 
     JoystickButton toggleIntake = new JoystickButton(altController, Button.kX.value);
-    toggleIntake.toggleWhenPressed(new RunIntake(IntakeConstants.intakeMotorSpeed));
+    toggleIntake.toggleWhenPressed(new RunIntake(IntakeConstants.intakeMotorPower));
 
     JoystickButton toggleJoint = new JoystickButton(altController, Button.kY.value);
-    toggleJoint.toggleWhenPressed(new RunJoint(IntakeConstants.jointMotorSpeed).withTimeout(1));
+    toggleJoint.whenPressed(new ToggleJoint(IntakeConstants.jointMotorPower).withTimeout(1));
   }
 
   /**

@@ -39,11 +39,12 @@ public final class Constants {
     public static final int jointMotorPort = 0;
     public static final int intakeMotorPort = 1;
 
-    public static final double intakeMotorSpeed = 0.2;
-    public static final double jointMotorSpeed = 0.2;
+    public static final double intakeMotorPower = 0.2;
+    public static final double jointMotorPower = 0.2;
   }
 
   public static final class SensorConstants {
+
     public static final int limitSwitchPort = 0;
   }
 }
