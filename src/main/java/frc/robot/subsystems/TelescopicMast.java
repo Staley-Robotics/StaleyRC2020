@@ -7,14 +7,35 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.MastConstants.mastMotorPort;
+
+import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Climber extends SubsystemBase {
-  /**
-   * Creates a new Climber.
-   */
-  public Climber() {
+public class TelescopicMast extends SubsystemBase {
 
+  private static Intake instance;
+
+  private VictorSP mastMotor;
+
+  public enum MastState {
+    expanded,
+    retracted
+  }
+
+  public TelescopicMast() {
+    mastMotor = new VictorSP(mastMotorPort);
+  }
+
+  public static Intake getInstance() {
+    if (instance == null) {
+      instance = new Intake();
+    }
+    return instance;
+  }
+
+  public void runMast(double power) {
+    mastMotor.set(power);
   }
 
   @Override
