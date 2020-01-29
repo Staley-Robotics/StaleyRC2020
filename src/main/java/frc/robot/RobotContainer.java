@@ -38,8 +38,8 @@ public class RobotContainer {
   private XboxController altController;
   private CommandBase auto;
   private final DriveTrain drive;
-  private final Vision vision;
   private final Intake intake;
+  private final Vision vision;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
