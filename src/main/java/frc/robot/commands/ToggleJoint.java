@@ -30,7 +30,7 @@ public class ToggleJoint extends CommandBase {
   }
 
   /**
-   * If PivotState is down, return state of limit switch, which should be false.
+   * IsFinished constantly returns false so the code runs until timeout or end.
    */
   @Override
   public boolean isFinished() {
@@ -48,10 +48,10 @@ public class ToggleJoint extends CommandBase {
   public void end(boolean interrupted) {
     if (intake.getPivotState() == PivotState.up) {
       intake.runJoint(0);
-      intake.setPivotStateDown();
+      intake.setPivotState(intake.getPivotState());
     } else if (intake.getPivotState() == PivotState.down) {
       intake.runJoint(0);
-      intake.setPivotStateUp();
+      intake.setPivotState(intake.getPivotState());
     }
   }
 }

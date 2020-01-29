@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.IntakeConstants.defaultIntakePower;
+import static frc.robot.Constants.IntakeConstants.defualtJointPower;
 import static frc.robot.Constants.OperatorInputConstants.altControllerPort;
 import static frc.robot.Constants.OperatorInputConstants.driveControllerPort;
 
@@ -17,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.commands.RunIntake;
 import frc.robot.commands.ToggleJoint;
 import frc.robot.subsystems.DriveTrain;
@@ -32,9 +33,9 @@ import frc.robot.subsystems.Intake;
  */
 public class RobotContainer {
 
-  private static XboxController driveController;
-  private static XboxController altController;
-  private static CommandBase auto;
+  private XboxController driveController;
+  private XboxController altController;
+  private CommandBase auto;
   private final DriveTrain drive;
   private final Intake intake;
 
@@ -70,10 +71,10 @@ public class RobotContainer {
     altController = new XboxController(altControllerPort);
 
     JoystickButton toggleIntake = new JoystickButton(altController, Button.kX.value);
-    toggleIntake.toggleWhenPressed(new RunIntake(IntakeConstants.intakeMotorPower));
+    toggleIntake.toggleWhenPressed(new RunIntake(defaultIntakePower));
 
-    JoystickButton toggleJoint = new JoystickButton(altController, Button.kY.value);
-    toggleJoint.whenPressed(new ToggleJoint(IntakeConstants.jointMotorPower).withTimeout(1));
+    JoystickButton toggleJointPosition = new JoystickButton(altController, Button.kY.value);
+    toggleJointPosition.whenPressed(new ToggleJoint(defualtJointPower).withTimeout(1));
   }
 
   /**

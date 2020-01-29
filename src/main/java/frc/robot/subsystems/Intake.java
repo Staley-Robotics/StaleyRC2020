@@ -7,12 +7,14 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.IntakeConstants.intakeMotorPort;
+import static frc.robot.Constants.IntakeConstants.jointMotorPort;
+import static frc.robot.Constants.SensorConstants.limitSwitchPort;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.IntakeConstants;
-import frc.robot.Constants.SensorConstants;
 
 public class Intake extends SubsystemBase {
 
@@ -21,7 +23,6 @@ public class Intake extends SubsystemBase {
   private static VictorSP intakeMotor;
   private DigitalInput limitSwitch;
   private PivotState pivotState;
-  private int num;
 
   public enum PivotState {
     up,
@@ -29,9 +30,9 @@ public class Intake extends SubsystemBase {
   }
 
   public Intake() {
-    limitSwitch = new DigitalInput(SensorConstants.limitSwitchPort);
-    jointMotor = new VictorSP(IntakeConstants.jointMotorPort);
-    intakeMotor = new VictorSP(IntakeConstants.intakeMotorPort);
+    limitSwitch = new DigitalInput(limitSwitchPort);
+    jointMotor = new VictorSP(jointMotorPort);
+    intakeMotor = new VictorSP(intakeMotorPort);
 
     pivotState = PivotState.up;
   }
@@ -59,12 +60,16 @@ public class Intake extends SubsystemBase {
     return pivotState;
   }
 
-  public void setPivotStateDown() {
-    pivotState = PivotState.down;
-  }
-
-  public void setPivotStateUp() {
-    pivotState = PivotState.up;
+  /**
+   * Sets the state of the Pivot opposite to what it currently is.
+   * @param currentState the state of the Pivot.
+   */
+  public void setPivotState(PivotState currentState) {
+    if (currentState == PivotState.down) {
+      pivotState = PivotState.up;
+    } else {
+      pivotState = PivotState.down;
+    }
   }
 
   @Override

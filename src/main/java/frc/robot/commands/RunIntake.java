@@ -6,7 +6,7 @@ import frc.robot.subsystems.Intake;
 
 public class RunIntake extends CommandBase {
 
-  Intake intake;
+  private Intake intake;
 
   private double motorPower;
 
@@ -19,7 +19,7 @@ public class RunIntake extends CommandBase {
 
   @Override
   public void execute() {
-    intake.runIntake(this.motorPower);
+    intake.runIntake(motorPower);
   }
 
   @Override

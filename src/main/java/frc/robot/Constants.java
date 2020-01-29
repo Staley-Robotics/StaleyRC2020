@@ -39,8 +39,8 @@ public final class Constants {
     public static final int jointMotorPort = 0;
     public static final int intakeMotorPort = 1;
 
-    public static final double intakeMotorPower = 0.2;
-    public static final double jointMotorPower = 0.2;
+    public static final double defaultIntakePower = 0.2;
+    public static final double defualtJointPower = 0.2;
   }
 
   public static final class SensorConstants {
