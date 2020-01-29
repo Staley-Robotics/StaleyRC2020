@@ -43,7 +43,9 @@ public class DriveTrain extends SubsystemBase {
       leftFollower1,
       leftFollower2);
 
-
+  /**
+   * initializes gyro, drive, motor controllers.
+   */
   public DriveTrain() {
 
     gyro = new AHRS();
@@ -97,25 +99,27 @@ public class DriveTrain extends SubsystemBase {
   }
 
   /**
-   * Gets Yaw
+   * Gets Yaw.
+   *
    * @return double
    */
-  public String getYaw(){
+  public String getYaw() {
     return Double.toString(gyro.getYaw());
   }
 
   /**
-   * Gets Pitch
+   * Gets Pitch.
+   *
    * @return double
    */
-  public double getPitch(){
+  public double getPitch() {
     return Double.valueOf(Double.toString(Double.valueOf(Double.toString(gyro.getPitch()))));
   }
 
   /**
-   * zero yawls
+   * zero yawls.
    */
-  public void zeroYaw(){
+  public void zeroYaw() {
     gyro.zeroYaw();
   }
 
@@ -123,7 +127,6 @@ public class DriveTrain extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
-
 
 
 }

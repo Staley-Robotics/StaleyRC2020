@@ -10,6 +10,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class WallOfFlesh extends SubsystemBase {
+
   /**
    * Creates a new Wall_of_Flesh.
    */

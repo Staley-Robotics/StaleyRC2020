@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Vision;
 
 
 /**
@@ -28,6 +29,7 @@ public class RobotContainer {
   private static XboxController driveController;
   private static CommandBase m_auto;
   private final DriveTrain drive;
+  private final Vision vision;
 
   // The robot's subsystems and commands are defined here...
 
@@ -38,7 +40,7 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
-
+    vision = Vision.getInstance();
     drive = DriveTrain.getInstance();
 
     m_auto = null;
@@ -50,7 +52,7 @@ public class RobotContainer {
                     driveController.getTriggerAxis(GenericHID.Hand.kRight),
                     driveController.getTriggerAxis(GenericHID.Hand.kLeft),
                     driveController.getX(GenericHID.Hand.kLeft)),
-                    drive));
+            drive));
 
   }
 
