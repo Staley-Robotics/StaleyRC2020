@@ -22,9 +22,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.RunIntake;
 import frc.robot.commands.ToggleJoint;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Intake;
-
+import frc.robot.subsystems.Vision;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
