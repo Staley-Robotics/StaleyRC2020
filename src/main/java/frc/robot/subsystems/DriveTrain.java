@@ -52,6 +52,7 @@ public class DriveTrain extends SubsystemBase {
     gyro = new AHRS();
 
     drive = new DifferentialDrive(leftMotors, rightMotors);
+    drive.setSafetyEnabled(false);
 
     rightFollower1.follow(rightMaster);
     rightFollower2.follow(rightMaster);

@@ -31,5 +31,20 @@ public final class Constants {
   public static final class OperatorInputConstants {
 
     public static final int driveControllerPort = 0;
+    public static final int altControllerPort = 1;
+  }
+
+  public static final class IntakeConstants {
+
+    public static final int jointMotorPort = 0;
+    public static final int intakeMotorPort = 1;
+
+    public static final double defaultIntakePower = 0.2;
+    public static final double defualtJointPower = 0.2;
+  }
+
+  public static final class SensorConstants {
+
+    public static final int limitSwitchPort = 0;
   }
 }
