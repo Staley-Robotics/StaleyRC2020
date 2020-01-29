@@ -30,7 +30,7 @@ public class ToggleJoint extends CommandBase {
   }
 
   /**
-   * IsFinished constantly returns false so the code runs until timeout, end or if the limitswitch is hit.
+   * Code runs until timeout, end or if the limitswitch is hit.
    */
   @Override
   public boolean isFinished() {
