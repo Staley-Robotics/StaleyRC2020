@@ -11,6 +11,18 @@
   <!--  <suppress message="Missing a Javadoc comment"/>-->
 
   <suppress files="DriveTrain.java"
-    lines="43"
+    lines="39"
+    message="Missing a Javadoc comment."/>
+  <suppress files="Intake.java"
+    lines="32"
+    message="Missing a Javadoc comment."/>
+  <suppress files="Intake.java"
+    lines="40"
+    message="Missing a Javadoc comment."/>
+  <suppress files="ToggleJoint.java"
+    lines="12"
+    message="Missing a Javadoc comment."/>
+  <suppress files="RunIntake.java"
+    lines="13"
     message="Missing a Javadoc comment."/>
 </suppressions>

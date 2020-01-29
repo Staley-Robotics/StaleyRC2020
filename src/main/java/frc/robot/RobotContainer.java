@@ -7,15 +7,23 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.IntakeConstants.defaultIntakePower;
+import static frc.robot.Constants.IntakeConstants.defualtJointPower;
+import static frc.robot.Constants.OperatorInputConstants.altControllerPort;
 import static frc.robot.Constants.OperatorInputConstants.driveControllerPort;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.RunIntake;
+import frc.robot.commands.ToggleJoint;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Intake;
 
 
 /**
@@ -26,24 +34,23 @@ import frc.robot.subsystems.Vision;
  */
 public class RobotContainer {
 
-  private static XboxController driveController;
-  private static CommandBase m_auto;
+  private XboxController driveController;
+  private XboxController altController;
+  private CommandBase auto;
   private final DriveTrain drive;
   private final Vision vision;
-
-  // The robot's subsystems and commands are defined here...
+  private final Intake intake;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-
-    // Configure the button bindings
     configureButtonBindings();
     vision = Vision.getInstance();
+    intake = Intake.getInstance();
     drive = DriveTrain.getInstance();
 
-    m_auto = null;
+    auto = null;
 
     drive.setDefaultCommand(
         new RunCommand(
@@ -53,7 +60,6 @@ public class RobotContainer {
                     driveController.getTriggerAxis(GenericHID.Hand.kLeft),
                     driveController.getX(GenericHID.Hand.kLeft)),
             drive));
-
   }
 
   /**
@@ -64,6 +70,13 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     driveController = new XboxController(driveControllerPort);
+    altController = new XboxController(altControllerPort);
+
+    JoystickButton toggleIntake = new JoystickButton(altController, Button.kX.value);
+    toggleIntake.toggleWhenPressed(new RunIntake(defaultIntakePower));
+
+    JoystickButton toggleJointPosition = new JoystickButton(altController, Button.kY.value);
+    toggleJointPosition.whenPressed(new ToggleJoint(defualtJointPower).withTimeout(1));
   }
 
   /**
@@ -73,6 +86,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_auto;
+    return auto;
   }
 }

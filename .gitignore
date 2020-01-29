@@ -17,3 +17,6 @@ gradle-app.setting
 .classpath
 .project
 org.eclipse.buildship.core.prefs
+StaleyRC2020.iml
+StaleyRC2020.ipr
+StaleyRC2020.iws
