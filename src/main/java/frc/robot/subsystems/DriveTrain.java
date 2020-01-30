@@ -14,6 +14,7 @@ import static frc.robot.Constants.DriveConstants.rMotorFollower1Port;
 import static frc.robot.Constants.DriveConstants.rMotorFollower2Port;
 import static frc.robot.Constants.DriveConstants.rMotorMasterPort;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
@@ -59,6 +60,9 @@ public class DriveTrain extends SubsystemBase {
 
     leftFollower1.follow(leftMaster);
     leftFollower2.follow(leftMaster);
+
+    leftMaster.setInverted(false);
+    rightMaster.setInverted(false);
   }
 
   /**
@@ -87,7 +91,7 @@ public class DriveTrain extends SubsystemBase {
 
     // Deadzones for rotate.
     if (rotate > 0.1 || rotate < 0.1) {
-      rotate = rotate * turnSpeedModifier;
+      rotate = -rotate * turnSpeedModifier;
     } else {
       rotate = 0;
     }

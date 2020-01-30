@@ -27,6 +27,10 @@ public class TelescopicMast extends SubsystemBase {
     mastMotor = new VictorSP(mastMotorPort);
   }
 
+  /**
+   * You're mom.
+   * @return mom.
+   */
   public static Intake getInstance() {
     if (instance == null) {
       instance = new Intake();
