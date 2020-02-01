@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants.  This class should not be used for any other purpose.  All constants should be
@@ -26,6 +28,26 @@ public final class Constants {
     public static final int lMotorMasterPort = 4;
     public static final int lMotorFollower1Port = 6;
     public static final int lMotorFollower2Port = 7;
+
+    public static final double kS = 1.04;
+    public static final double kV = 2.11;
+    public static final double kA = 0.443;
+    public static final double kP = 0.00217;
+    public static final double kD = 0;
+    public static final double rSquared = 0.996;
+
+    // If Measured in meters right should be 0.58m
+    public static final double trackWidth = 0.58;
+    public static final DifferentialDriveKinematics kKinematics = new DifferentialDriveKinematics(
+        trackWidth);
+
+    // Will change.
+    public static final double kMaxSpeedInchesPerSecond = 8;
+    public static final double kMaxAccelerationInchesPerSecondSquared = 3;
+
+    // These are standard m/s. Values provided by wpilib docs
+    public static final double kRamseteB = 2;
+    public static final double kRamseteZ = 0.7;
   }
 
   public static final class OperatorInputConstants {
