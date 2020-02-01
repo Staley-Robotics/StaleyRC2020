@@ -55,8 +55,8 @@ public final class Constants {
         new DifferentialDriveVoltageConstraint(feedForward, kKinematics, maxVoltageAuto);
 
     // Will change.
-    public static final double kMaxSpeedMetersPerSecond = 0.3;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 0.08;
+    public static final double kMaxSpeedMetersPerSecond = 0.5;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 0.1;
 
     // These are standard m/s. Values provided by wpilib docs
     public static final double kRamseteB = 2;

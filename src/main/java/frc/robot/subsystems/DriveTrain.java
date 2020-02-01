@@ -68,7 +68,7 @@ public class DriveTrain extends SubsystemBase {
 
     gyro = new AHRS();
 
-    drive = new DifferentialDrive(leftMotors, rightMotors);
+    drive = new DifferentialDrive(leftMaster, rightMaster);
     drive.setSafetyEnabled(false);
 
     TalonSRXConfiguration talonConfig = new TalonSRXConfiguration();
@@ -90,6 +90,10 @@ public class DriveTrain extends SubsystemBase {
 
     rightMaster.setSensorPhase(false);
     leftMaster.setSensorPhase(true);
+
+    leftMaster.setInverted(true);
+    leftFollower1.setInverted(true);
+    leftFollower2.setInverted(true);
 
     rightFollower1.follow(rightMaster);
     rightFollower2.follow(rightMaster);
@@ -139,6 +143,9 @@ public class DriveTrain extends SubsystemBase {
     } else {
       drive.arcadeDrive(0, rotate);
     }
+
+//    System.out.println("Driving at: " + );
+
   }
 
   /**
@@ -154,11 +161,25 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public void tankDriveVelocity(double leftVelocity, double rightVelocity) {
-    var leftAccel = (leftVelocity - stepsPerDecisecToMetersPerSec(leftMaster.getSelectedSensorVelocity())) / .20;
-    var rightAccel = (rightVelocity - stepsPerDecisecToMetersPerSec(rightMaster.getSelectedSensorVelocity())) / .20;
+    var leftAccel = (leftVelocity - stepsPerDecisecToMetersPerSec(leftMaster.getSelectedSensorVelocity())) / .1;
+    var rightAccel = (rightVelocity - stepsPerDecisecToMetersPerSec(rightMaster.getSelectedSensorVelocity())) / .1;
+
+    System.out.println("Left Velocity: " + leftVelocity);
+    System.out.println("Right Velocity: " + rightVelocity);
+    System.out.println("Left Acceleration: " + leftAccel);
+    System.out.println("Right Acceleration: " + rightAccel);
+
+    SmartDashboard.putNumber("Left Velocity", leftVelocity);
+    SmartDashboard.putNumber("Right Velocity", rightVelocity);
+
+    SmartDashboard.putNumber("Left Acceleration", leftAccel);
+    SmartDashboard.putNumber("Right Acceleration", rightAccel);
 
     var leftFeedForwardVolts = feedForward.calculate(leftVelocity, leftAccel);
     var rightFeedForwardVolts = feedForward.calculate(rightVelocity, rightAccel);
+
+    SmartDashboard.putNumber("Left Volts", leftFeedForwardVolts);
+    SmartDashboard.putNumber("Right Volts", rightFeedForwardVolts);
 
     leftMaster.set(
         ControlMode.Velocity,
@@ -253,6 +274,10 @@ public class DriveTrain extends SubsystemBase {
     return metersToSteps(metersPerSec) * .1d;
   }
 
+  public void stopDrive(){
+    drive.arcadeDrive(0,0);
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Gyro Yaw", getYaw());
@@ -266,7 +291,6 @@ public class DriveTrain extends SubsystemBase {
 
     SmartDashboard.putNumber("Left Encoder Meters: ", stepsToMeters(getLeftEncoderPosition()));
     SmartDashboard.putNumber("Right Encoder Meters: ", stepsToMeters(getRightEncoderPosition()));
-
 
 //    SmartDashboard.putData(new InstantCommand(instance::zeroEncoder, instance));
   }

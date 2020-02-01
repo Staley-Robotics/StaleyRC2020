@@ -120,29 +120,30 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-//    var autoVoltageConstraint =
-//        new DifferentialDriveVoltageConstraint(
-//            new SimpleMotorFeedforward(kS,
-//                kV,
-//                kA),
-//            kKinematics, 8);
+    var autoVoltageConstraint =
+        new DifferentialDriveVoltageConstraint(
+            new SimpleMotorFeedforward(kS,
+                kV,
+                kA),
+            kKinematics, 8);
     // Create config for trajectory
-//    TrajectoryConfig config =
-//        new TrajectoryConfig(kMaxSpeedMetersPerSecond,
-//            kMaxAccelerationMetersPerSecondSquared)
-//            // Add kinematics to ensure max speed is actually obeyed
-//            .setKinematics(kKinematics)
-//            // Apply the voltage constraint
-//            .addConstraint(autoVoltageConstraint);
+    TrajectoryConfig config =
+        new TrajectoryConfig(kMaxSpeedMetersPerSecond,
+            kMaxAccelerationMetersPerSecondSquared)
+            // Add kinematics to ensure max speed is actually obeyed
+            .setKinematics(kKinematics)
+            // Apply the voltage constraint
+            .addConstraint(autoVoltageConstraint);
 
-//    Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
-//        new Pose2d(0, 0, new Rotation2d(0)),
-//        List.of(
-//            new Translation2d(0.5, 0)
-//        ),
-//        new Pose2d(1, 0, new Rotation2d(0)),
-//        config
-//    );
+    // Straight
+    Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
+        new Pose2d(0, 0, new Rotation2d(0)),
+        List.of(
+            new Translation2d(0.5, 0)
+        ),
+        new Pose2d(1, 0, new Rotation2d(0)),
+        config
+    );
 
 //    Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
 //        // Start at the origin facing the +X direction
@@ -165,16 +166,16 @@ public class RobotContainer {
 //      e.printStackTrace();
 //    }
 
-    String trajectoryJSON = "output/Straight.wpilib.json";
-
-    Trajectory trajectory = null;
-
-    try {
-      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
-      trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-    } catch (IOException ex) {
-      DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
-    }
+//    String trajectoryJSON = "output/Straight.wpilib.json";
+//
+//    Trajectory trajectory = null;
+//
+//    try {
+//      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+//      trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+//    } catch (IOException ex) {
+//      DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+//    }
 
     return new InstantCommand(drive::zeroEncoder, drive).andThen(new RamseteCommand(
         trajectory,
@@ -183,6 +184,7 @@ public class RobotContainer {
         kKinematics,
         drive::tankDriveVelocity,
         drive))
-        .andThen(() -> drive.worldOfTanksDrive(0, 0, 0), drive);
+        .andThen(drive::stopDrive, drive)
+        .beforeStarting(drive::zeroEncoder, drive);
   }
 }
