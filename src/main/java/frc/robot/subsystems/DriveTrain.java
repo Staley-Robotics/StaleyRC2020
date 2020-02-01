@@ -7,6 +7,8 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.DriveConstants.feedForward;
+import static frc.robot.Constants.DriveConstants.countPerRevolution;
 import static frc.robot.Constants.DriveConstants.kD;
 import static frc.robot.Constants.DriveConstants.kP;
 import static frc.robot.Constants.DriveConstants.lMotorFollower1Port;
@@ -15,13 +17,15 @@ import static frc.robot.Constants.DriveConstants.lMotorMasterPort;
 import static frc.robot.Constants.DriveConstants.rMotorFollower1Port;
 import static frc.robot.Constants.DriveConstants.rMotorFollower2Port;
 import static frc.robot.Constants.DriveConstants.rMotorMasterPort;
+import static frc.robot.Constants.DriveConstants.wheelCircumferenceMeters;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -29,6 +33,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveTrain extends SubsystemBase {
@@ -78,16 +83,21 @@ public class DriveTrain extends SubsystemBase {
     rightMaster.configAllSettings(talonConfig);
     leftMaster.configAllSettings(talonConfig);
 
-    rightMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 1, 0);
-    leftMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 1, 0);
+    rightMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
+    leftMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
 
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
+
+    rightMaster.setSensorPhase(false);
+    leftMaster.setSensorPhase(true);
 
     rightFollower1.follow(rightMaster);
     rightFollower2.follow(rightMaster);
 
     leftFollower1.follow(leftMaster);
     leftFollower2.follow(leftMaster);
+
+    zeroEncoder();
   }
 
   /**
@@ -140,6 +150,26 @@ public class DriveTrain extends SubsystemBase {
   public void voltDrive(double leftVoltage, double rightVoltage) {
     leftMaster.setVoltage(leftVoltage);
     rightMaster.setVoltage(rightVoltage);
+    drive.feed();
+  }
+
+  public void tankDriveVelocity(double leftVelocity, double rightVelocity) {
+    var leftAccel = (leftVelocity - stepsPerDecisecToMetersPerSec(leftMaster.getSelectedSensorVelocity())) / .20;
+    var rightAccel = (rightVelocity - stepsPerDecisecToMetersPerSec(rightMaster.getSelectedSensorVelocity())) / .20;
+
+    var leftFeedForwardVolts = feedForward.calculate(leftVelocity, leftAccel);
+    var rightFeedForwardVolts = feedForward.calculate(rightVelocity, rightAccel);
+
+    leftMaster.set(
+        ControlMode.Velocity,
+        metersPerSecToStepsPerDecisec(leftVelocity),
+        DemandType.ArbitraryFeedForward,
+        leftFeedForwardVolts / 12);
+    rightMaster.set(
+        ControlMode.Velocity,
+        metersPerSecToStepsPerDecisec(rightVelocity),
+        DemandType.ArbitraryFeedForward,
+        rightFeedForwardVolts / 12);
     drive.feed();
   }
 
@@ -197,8 +227,30 @@ public class DriveTrain extends SubsystemBase {
     return (getRightEncoderPosition() + getLeftEncoderPosition()) / 2.0;
   }
 
+  public void zeroEncoder(){
+    rightMaster.setSelectedSensorPosition(0, 0, 10);
+    leftMaster.setSelectedSensorPosition(0, 0, 10);
+    System.out.println("Encoders have been zeroed");
+  }
+
   public Pose2d getPose() {
     return odometry.getPoseMeters();
+  }
+
+  public static double stepsToMeters(int steps) {
+    return (wheelCircumferenceMeters / countPerRevolution) * steps;
+  }
+
+  public static double stepsPerDecisecToMetersPerSec(int stepsPerDecisec) {
+    return stepsToMeters(stepsPerDecisec * 10);
+  }
+
+  public static double metersToSteps(double meters) {
+    return (meters / wheelCircumferenceMeters) * countPerRevolution;
+  }
+
+  public static double metersPerSecToStepsPerDecisec(double metersPerSec) {
+    return metersToSteps(metersPerSec) * .1d;
   }
 
   @Override
@@ -208,5 +260,14 @@ public class DriveTrain extends SubsystemBase {
 
     odometry.update(Rotation2d.fromDegrees(getHeading()), getLeftEncoderPosition(),
         getRightEncoderPosition());
+
+    SmartDashboard.putNumber("Left Encoder: ", getLeftEncoderPosition());
+    SmartDashboard.putNumber("Right Encoder: ", getRightEncoderPosition());
+
+    SmartDashboard.putNumber("Left Encoder Meters: ", stepsToMeters(getLeftEncoderPosition()));
+    SmartDashboard.putNumber("Right Encoder Meters: ", stepsToMeters(getRightEncoderPosition()));
+
+
+//    SmartDashboard.putData(new InstantCommand(instance::zeroEncoder, instance));
   }
 }
