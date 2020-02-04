@@ -7,37 +7,29 @@
 
 package frc.robot;
 
-import static frc.robot.Constants.DriveConstants.kP;
-import static frc.robot.Constants.DriveConstants.kS;
-import static frc.robot.Constants.DriveConstants.kV;
-import static frc.robot.Constants.DriveConstants.kA;
-import static frc.robot.Constants.DriveConstants.kKinematics;
+import static frc.robot.Constants.DriveConstants.VOLTAGE_CONSTRAINT;
+import static frc.robot.Constants.DriveConstants.kinematics;
 import static frc.robot.Constants.DriveConstants.kMaxAccelerationMetersPerSecondSquared;
 import static frc.robot.Constants.DriveConstants.kMaxSpeedMetersPerSecond;
-import static frc.robot.Constants.DriveConstants.kRamseteZ;
-import static frc.robot.Constants.DriveConstants.kRamseteB;
+import static frc.robot.Constants.DriveConstants.ramseteZ;
+import static frc.robot.Constants.DriveConstants.ramseteB;
 import static frc.robot.Constants.IntakeConstants.defaultIntakePower;
 import static frc.robot.Constants.IntakeConstants.defualtJointPower;
 import static frc.robot.Constants.OperatorInputConstants.altControllerPort;
 import static frc.robot.Constants.OperatorInputConstants.driveControllerPort;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
-import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
-import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Transform2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
-import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -47,10 +39,10 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.RunIntake;
 import frc.robot.commands.ToggleJoint;
+import frc.robot.commands.ZeroEncoder;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -111,6 +103,9 @@ public class RobotContainer {
 
     JoystickButton toggleJointPosition = new JoystickButton(altController, Button.kY.value);
     toggleJointPosition.whenPressed(new ToggleJoint(defualtJointPower).withTimeout(1));
+
+    JoystickButton zeroEncoder = new JoystickButton(driveController, Button.kA.value);
+    zeroEncoder.whenPressed(new ZeroEncoder());
   }
 
   /**
@@ -120,28 +115,23 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    var autoVoltageConstraint =
-        new DifferentialDriveVoltageConstraint(
-            new SimpleMotorFeedforward(kS,
-                kV,
-                kA),
-            kKinematics, 8);
+//    var autoVoltageConstraint = VOLTAGE_CONSTRAINT;
     // Create config for trajectory
     TrajectoryConfig config =
         new TrajectoryConfig(kMaxSpeedMetersPerSecond,
             kMaxAccelerationMetersPerSecondSquared)
             // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(kKinematics)
+            .setKinematics(kinematics)
             // Apply the voltage constraint
-            .addConstraint(autoVoltageConstraint);
+            .addConstraint(VOLTAGE_CONSTRAINT);
 
     // Straight
     Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
         new Pose2d(0, 0, new Rotation2d(0)),
         List.of(
-            new Translation2d(0.5, 0)
+            new Translation2d(0.25, 0)
         ),
-        new Pose2d(1, 0, new Rotation2d(0)),
+        new Pose2d(0.5, 0, new Rotation2d(0)),
         config
     );
 
@@ -177,14 +167,17 @@ public class RobotContainer {
 //      DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
 //    }
 
-    return new InstantCommand(drive::zeroEncoder, drive).andThen(new RamseteCommand(
-        trajectory,
-        drive::getPose,
-        new RamseteController(kRamseteB, kRamseteZ),
-        kKinematics,
-        drive::tankDriveVelocity,
-        drive))
-        .andThen(drive::stopDrive, drive)
+    var sample = trajectory.sample(1);
+
+    return new InstantCommand(drive::zeroEncoder, drive).andThen(drive::zeroYaw, drive)
+        .andThen(new RamseteCommand(
+            trajectory,
+            drive::getPose,
+            new RamseteController(ramseteB, ramseteZ),
+            kinematics,
+            drive::tankDriveVelocity,
+            drive))
+        .andThen(drive::stopDrive, drive).andThen(new PrintCommand(sample.toString()))
         .beforeStarting(drive::zeroEncoder, drive);
   }
 }

@@ -46,21 +46,21 @@ public final class Constants {
     public static final double wheelDiameterMeters = 0.1524;
     public static final double wheelCircumferenceMeters = wheelDiameterMeters * Math.PI;
 
-    // If Measured in meters right should be 0.58m
+    // If Measured in meters trackWidth should be 0.58m
     public static final double trackWidth = 0.5792883856032899;
-    public static final DifferentialDriveKinematics kKinematics = new DifferentialDriveKinematics(
+    public static final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(
         trackWidth);
 
     public static final DifferentialDriveVoltageConstraint VOLTAGE_CONSTRAINT =
-        new DifferentialDriveVoltageConstraint(feedForward, kKinematics, maxVoltageAuto);
+        new DifferentialDriveVoltageConstraint(feedForward, kinematics, maxVoltageAuto);
 
     // Will change.
-    public static final double kMaxSpeedMetersPerSecond = 0.5;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 0.1;
+    public static final double kMaxSpeedMetersPerSecond = 1.5;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 1;
 
     // These are standard m/s. Values provided by wpilib docs
-    public static final double kRamseteB = 2;
-    public static final double kRamseteZ = 0.7;
+    public static final double ramseteB = 2;
+    public static final double ramseteZ = 0.7;
   }
 
   public static final class OperatorInputConstants {

@@ -89,7 +89,7 @@ public class DriveTrain extends SubsystemBase {
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
 
     rightMaster.setSensorPhase(false);
-    leftMaster.setSensorPhase(true);
+    leftMaster.setSensorPhase(false);
 
     leftMaster.setInverted(true);
     leftFollower1.setInverted(true);
@@ -100,6 +100,8 @@ public class DriveTrain extends SubsystemBase {
 
     leftFollower1.follow(leftMaster);
     leftFollower2.follow(leftMaster);
+
+    drive.setRightSideInverted(false);
 
     zeroEncoder();
   }
@@ -161,13 +163,10 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public void tankDriveVelocity(double leftVelocity, double rightVelocity) {
-    var leftAccel = (leftVelocity - stepsPerDecisecToMetersPerSec(leftMaster.getSelectedSensorVelocity())) / .1;
-    var rightAccel = (rightVelocity - stepsPerDecisecToMetersPerSec(rightMaster.getSelectedSensorVelocity())) / .1;
-
-    System.out.println("Left Velocity: " + leftVelocity);
-    System.out.println("Right Velocity: " + rightVelocity);
-    System.out.println("Left Acceleration: " + leftAccel);
-    System.out.println("Right Acceleration: " + rightAccel);
+    var leftAccel =
+        (leftVelocity - stepsPerDecisecToMetersPerSec(leftMaster.getSelectedSensorVelocity())) / .2;
+    var rightAccel =
+        (rightVelocity - stepsPerDecisecToMetersPerSec(rightMaster.getSelectedSensorVelocity())) / .2;
 
     SmartDashboard.putNumber("Left Velocity", leftVelocity);
     SmartDashboard.putNumber("Right Velocity", rightVelocity);
@@ -177,9 +176,6 @@ public class DriveTrain extends SubsystemBase {
 
     var leftFeedForwardVolts = feedForward.calculate(leftVelocity, leftAccel);
     var rightFeedForwardVolts = feedForward.calculate(rightVelocity, rightAccel);
-
-    SmartDashboard.putNumber("Left Volts", leftFeedForwardVolts);
-    SmartDashboard.putNumber("Right Volts", rightFeedForwardVolts);
 
     leftMaster.set(
         ControlMode.Velocity,
@@ -191,6 +187,13 @@ public class DriveTrain extends SubsystemBase {
         metersPerSecToStepsPerDecisec(rightVelocity),
         DemandType.ArbitraryFeedForward,
         rightFeedForwardVolts / 12);
+
+    System.out.println("Pose: " + getPose());
+    System.out.println("Left Velocity: " + leftVelocity);
+    System.out.println("Right Velocity: " + rightVelocity);
+    System.out.println("Left Volts: " + leftFeedForwardVolts);
+    System.out.println("Right Volts: " + rightFeedForwardVolts);
+
     drive.feed();
   }
 
@@ -220,8 +223,9 @@ public class DriveTrain extends SubsystemBase {
     return gyro.getPitch();
   }
 
+  // Ben has earned genius tier.
   public double getHeading() {
-    return Math.IEEEremainder(getYaw(), 360);
+    return Math.IEEEremainder(getYaw(), 360) * -1;
   }
 
   public int getLeftEncoderPosition() {
@@ -248,9 +252,9 @@ public class DriveTrain extends SubsystemBase {
     return (getRightEncoderPosition() + getLeftEncoderPosition()) / 2.0;
   }
 
-  public void zeroEncoder(){
-    rightMaster.setSelectedSensorPosition(0, 0, 10);
-    leftMaster.setSelectedSensorPosition(0, 0, 10);
+  public void zeroEncoder() {
+    rightMaster.setSelectedSensorPosition(0);
+    leftMaster.setSelectedSensorPosition(0);
     System.out.println("Encoders have been zeroed");
   }
 
@@ -274,23 +278,21 @@ public class DriveTrain extends SubsystemBase {
     return metersToSteps(metersPerSec) * .1d;
   }
 
-  public void stopDrive(){
-    drive.arcadeDrive(0,0);
+  public void stopDrive() {
+    drive.arcadeDrive(0, 0);
   }
 
   @Override
   public void periodic() {
+
     SmartDashboard.putNumber("Gyro Yaw", getYaw());
     SmartDashboard.putNumber("Gyro Pitch", getPitch());
 
-    odometry.update(Rotation2d.fromDegrees(getHeading()), getLeftEncoderPosition(),
-        getRightEncoderPosition());
+    odometry.update(Rotation2d.fromDegrees(getHeading()), stepsToMeters(getLeftEncoderPosition()),
+        stepsToMeters(getRightEncoderPosition()));
 
-    SmartDashboard.putNumber("Left Encoder: ", getLeftEncoderPosition());
-    SmartDashboard.putNumber("Right Encoder: ", getRightEncoderPosition());
-
-    SmartDashboard.putNumber("Left Encoder Meters: ", stepsToMeters(getLeftEncoderPosition()));
-    SmartDashboard.putNumber("Right Encoder Meters: ", stepsToMeters(getRightEncoderPosition()));
+    SmartDashboard.putNumber("LeftEncoder(m): ", stepsToMeters(getLeftEncoderPosition()));
+    SmartDashboard.putNumber("RightEncoder(m): ", stepsToMeters(getRightEncoderPosition()));
 
 //    SmartDashboard.putData(new InstantCommand(instance::zeroEncoder, instance));
   }
