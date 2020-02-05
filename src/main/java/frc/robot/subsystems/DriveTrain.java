@@ -33,7 +33,6 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveTrain extends SubsystemBase {
@@ -49,6 +48,8 @@ public class DriveTrain extends SubsystemBase {
   private WPI_TalonSRX leftMaster;
   private WPI_VictorSPX leftFollower1;
   private WPI_VictorSPX leftFollower2;
+
+  private Pose2d savedPose;
 
   private final DifferentialDriveOdometry odometry;
 
@@ -278,6 +279,12 @@ public class DriveTrain extends SubsystemBase {
     return metersToSteps(metersPerSec) * .1d;
   }
 
+  public void resetOdometry(){
+    zeroEncoder();
+    savedPose = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
+    odometry.resetPosition(savedPose, Rotation2d.fromDegrees(getHeading()));
+  }
+
   public void stopDrive() {
     drive.arcadeDrive(0, 0);
   }
@@ -293,6 +300,8 @@ public class DriveTrain extends SubsystemBase {
 
     SmartDashboard.putNumber("LeftEncoder(m): ", stepsToMeters(getLeftEncoderPosition()));
     SmartDashboard.putNumber("RightEncoder(m): ", stepsToMeters(getRightEncoderPosition()));
+
+    SmartDashboard.putNumber("Heading: ", getHeading());
 
 //    SmartDashboard.putData(new InstantCommand(instance::zeroEncoder, instance));
   }

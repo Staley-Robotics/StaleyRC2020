@@ -18,6 +18,7 @@ import static frc.robot.Constants.IntakeConstants.defualtJointPower;
 import static frc.robot.Constants.OperatorInputConstants.altControllerPort;
 import static frc.robot.Constants.OperatorInputConstants.driveControllerPort;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -43,6 +44,7 @@ import frc.robot.commands.ZeroEncoder;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -108,6 +110,10 @@ public class RobotContainer {
     zeroEncoder.whenPressed(new ZeroEncoder());
   }
 
+  public void resetOdometry() {
+    new InstantCommand(drive::resetOdometry, drive).schedule();
+  }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
@@ -115,7 +121,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-//    var autoVoltageConstraint = VOLTAGE_CONSTRAINT;
+
     // Create config for trajectory
     TrajectoryConfig config =
         new TrajectoryConfig(kMaxSpeedMetersPerSecond,
@@ -125,15 +131,16 @@ public class RobotContainer {
             // Apply the voltage constraint
             .addConstraint(VOLTAGE_CONSTRAINT);
 
-    // Straight
-    Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
-        new Pose2d(0, 0, new Rotation2d(0)),
-        List.of(
-            new Translation2d(0.25, 0)
-        ),
-        new Pose2d(0.5, 0, new Rotation2d(0)),
-        config
-    );
+
+//    // Straight
+//    Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
+//        new Pose2d(0, 0, new Rotation2d(0)),
+//        List.of(
+//            new Translation2d(0.25, 0)
+//        ),
+//        new Pose2d(1, 0, new Rotation2d(0)),
+//        config
+//    );
 
 //    Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
 //        // Start at the origin facing the +X direction
@@ -156,16 +163,16 @@ public class RobotContainer {
 //      e.printStackTrace();
 //    }
 
-//    String trajectoryJSON = "output/Straight.wpilib.json";
-//
-//    Trajectory trajectory = null;
-//
-//    try {
-//      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
-//      trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-//    } catch (IOException ex) {
-//      DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
-//    }
+    String trajectoryJSON = "output/Straight.wpilib.json";
+
+    Trajectory trajectory = null;
+
+    try {
+      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+      trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+    } catch (IOException ex) {
+      DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+    }
 
     var sample = trajectory.sample(1);
 
