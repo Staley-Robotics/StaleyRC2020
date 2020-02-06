@@ -7,18 +7,18 @@ public class ZeroEncoder extends CommandBase {
 
   DriveTrain drive;
 
-  public ZeroEncoder(){
+  public ZeroEncoder() {
     drive = DriveTrain.getInstance();
     addRequirements(drive);
   }
 
   @Override
-  public void execute(){
+  public void execute() {
     drive.zeroEncoder();
   }
 
   @Override
-  public boolean isFinished(){
+  public boolean isFinished() {
     return true;
   }
 }

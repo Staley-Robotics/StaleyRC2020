@@ -7,8 +7,8 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.DriveConstants.feedForward;
 import static frc.robot.Constants.DriveConstants.countPerRevolution;
+import static frc.robot.Constants.DriveConstants.feedForward;
 import static frc.robot.Constants.DriveConstants.kD;
 import static frc.robot.Constants.DriveConstants.kP;
 import static frc.robot.Constants.DriveConstants.lMotorFollower1Port;
@@ -26,12 +26,10 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -39,6 +37,7 @@ public class DriveTrain extends SubsystemBase {
 
   private static DriveTrain instance;
   public DifferentialDrive drive;
+
   private AHRS gyro;
 
   private WPI_TalonSRX rightMaster;
@@ -50,7 +49,6 @@ public class DriveTrain extends SubsystemBase {
   private WPI_VictorSPX leftFollower2;
 
   private Pose2d savedPose;
-
   private final DifferentialDriveOdometry odometry;
 
   public DriveTrain() {
@@ -58,20 +56,17 @@ public class DriveTrain extends SubsystemBase {
     rightMaster = new WPI_TalonSRX(rMotorMasterPort);
     rightFollower1 = new WPI_VictorSPX(rMotorFollower1Port);
     rightFollower2 = new WPI_VictorSPX(rMotorFollower2Port);
-    final SpeedControllerGroup leftMotors = new SpeedControllerGroup(rightMaster, rightFollower1,
-        rightFollower2);
 
     leftMaster = new WPI_TalonSRX(lMotorMasterPort);
     leftFollower1 = new WPI_VictorSPX(lMotorFollower1Port);
     leftFollower2 = new WPI_VictorSPX(lMotorFollower2Port);
-    final SpeedControllerGroup rightMotors = new SpeedControllerGroup(leftMaster, leftFollower1,
-        leftFollower2);
 
     gyro = new AHRS();
 
     drive = new DifferentialDrive(leftMaster, rightMaster);
     drive.setSafetyEnabled(false);
 
+    // Configuring the Talons for Path planning.
     TalonSRXConfiguration talonConfig = new TalonSRXConfiguration();
     talonConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.CTRE_MagEncoder_Relative;
     talonConfig.slot0.kP = kP;
@@ -107,6 +102,21 @@ public class DriveTrain extends SubsystemBase {
     zeroEncoder();
   }
 
+  @Override
+  public void periodic() {
+
+    SmartDashboard.putNumber("Gyro Yaw", getYaw());
+    SmartDashboard.putNumber("Gyro Pitch", getPitch());
+
+    odometry.update(Rotation2d.fromDegrees(getHeading()), stepsToMeters(getLeftEncoderPosition()),
+        stepsToMeters(getRightEncoderPosition()));
+
+    SmartDashboard.putNumber("LeftEncoder(m): ", stepsToMeters(getLeftEncoderPosition()));
+    SmartDashboard.putNumber("RightEncoder(m): ", stepsToMeters(getRightEncoderPosition()));
+
+    SmartDashboard.putNumber("Heading: ", getHeading());
+  }
+
   /**
    * Makes DriveTrain a singleton.
    */
@@ -117,9 +127,7 @@ public class DriveTrain extends SubsystemBase {
     return instance;
   }
 
-  public void tankDrive(double leftSpeed, double rightSpeed) {
-    drive.tankDrive(leftSpeed, rightSpeed);
-  }
+  /* Drive Code */
 
   /**
    * Takes Forward, backward and rotate power to control movement of robot with 3 different inputs.
@@ -146,34 +154,24 @@ public class DriveTrain extends SubsystemBase {
     } else {
       drive.arcadeDrive(0, rotate);
     }
-
-//    System.out.println("Driving at: " + );
-
   }
 
   /**
-   * voltDrive compensates for volt fluctuations so auto is more accurate.
+   * Takes leftVelocity and rightVelocity to accurately move in auto.
    *
-   * @param leftVoltage
-   * @param rightVoltage
+   * @param leftVelocity  Motor's left Velocity
+   * @param rightVelocity Motor's Right Velocity
    */
-  public void voltDrive(double leftVoltage, double rightVoltage) {
-    leftMaster.setVoltage(leftVoltage);
-    rightMaster.setVoltage(rightVoltage);
-    drive.feed();
-  }
-
   public void tankDriveVelocity(double leftVelocity, double rightVelocity) {
     var leftAccel =
-        (leftVelocity - stepsPerDecisecToMetersPerSec(leftMaster.getSelectedSensorVelocity())) / .2;
+        (leftVelocity - stepsPerDecisecToMetersPerSec(getLeftEncoderVelocity())) / .2;
     var rightAccel =
-        (rightVelocity - stepsPerDecisecToMetersPerSec(rightMaster.getSelectedSensorVelocity())) / .2;
+        (rightVelocity - stepsPerDecisecToMetersPerSec(getRightEncoderVelocity())) / .2;
 
-    SmartDashboard.putNumber("Left Velocity", leftVelocity);
-    SmartDashboard.putNumber("Right Velocity", rightVelocity);
-
-    SmartDashboard.putNumber("Left Acceleration", leftAccel);
-    SmartDashboard.putNumber("Right Acceleration", rightAccel);
+    // SmartDashboard.putNumber("Left Velocity", leftVelocity);
+    // SmartDashboard.putNumber("Right Velocity", rightVelocity);
+    // SmartDashboard.putNumber("Left Acceleration", leftAccel);
+    // SmartDashboard.putNumber("Right Acceleration", rightAccel);
 
     var leftFeedForwardVolts = feedForward.calculate(leftVelocity, leftAccel);
     var rightFeedForwardVolts = feedForward.calculate(rightVelocity, rightAccel);
@@ -189,22 +187,20 @@ public class DriveTrain extends SubsystemBase {
         DemandType.ArbitraryFeedForward,
         rightFeedForwardVolts / 12);
 
-    System.out.println("Pose: " + getPose());
-    System.out.println("Left Velocity: " + leftVelocity);
-    System.out.println("Right Velocity: " + rightVelocity);
-    System.out.println("Left Volts: " + leftFeedForwardVolts);
-    System.out.println("Right Volts: " + rightFeedForwardVolts);
+    // System.out.println("Pose: " + getPose());
+    // System.out.println("Left Velocity: " + leftVelocity);
+    // System.out.println("Right Velocity: " + rightVelocity);
+    // System.out.println("Left Volts: " + leftFeedForwardVolts);
+    // System.out.println("Right Volts: " + rightFeedForwardVolts);
 
     drive.feed();
   }
 
-  public double getTurnRate() {
-    return gyro.getRate();
+  public void stopDrive() {
+    drive.arcadeDrive(0, 0);
   }
 
-  public void zeroYaw() {
-    gyro.zeroYaw();
-  }
+  /* Gyro */
 
   /**
    * Gets Yaw. Yaw is the angle which the robot turns.
@@ -224,10 +220,11 @@ public class DriveTrain extends SubsystemBase {
     return gyro.getPitch();
   }
 
-  // Ben has earned genius tier.
-  public double getHeading() {
-    return Math.IEEEremainder(getYaw(), 360) * -1;
+  public void zeroYaw() {
+    gyro.zeroYaw();
   }
+
+  /* Encoder Values */
 
   public int getLeftEncoderPosition() {
     return leftMaster.getSelectedSensorPosition(0);
@@ -237,36 +234,32 @@ public class DriveTrain extends SubsystemBase {
     return rightMaster.getSelectedSensorPosition(0);
   }
 
-  public int getLeftEncoderSpeed() {
-    return leftMaster.getSelectedSensorVelocity(0);
+  public int getLeftEncoderVelocity() {
+    return leftMaster.getSelectedSensorVelocity();
   }
 
-  public int getRightEncoderSpeed() {
-    return rightMaster.getSelectedSensorVelocity(0);
+  public int getRightEncoderVelocity() {
+    return rightMaster.getSelectedSensorVelocity();
   }
 
-  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(getRightEncoderSpeed(), getLeftEncoderSpeed());
-  }
+  /* Encoder Math */
 
-  public double getAverageEncoderDistance() {
-    return (getRightEncoderPosition() + getLeftEncoderPosition()) / 2.0;
-  }
-
-  public void zeroEncoder() {
-    rightMaster.setSelectedSensorPosition(0);
-    leftMaster.setSelectedSensorPosition(0);
-    System.out.println("Encoders have been zeroed");
-  }
-
-  public Pose2d getPose() {
-    return odometry.getPoseMeters();
-  }
-
+  /**
+   * Converts encoder values to meters.
+   *
+   * @param steps Encoder readings in Deciseconds.
+   * @return Converted value.
+   */
   public static double stepsToMeters(int steps) {
     return (wheelCircumferenceMeters / countPerRevolution) * steps;
   }
 
+  /**
+   * Allows us to work with meters per seconds.
+   *
+   * @param stepsPerDecisec Encoder readings in Deciseconds.
+   * @return Converted value.
+   */
   public static double stepsPerDecisecToMetersPerSec(int stepsPerDecisec) {
     return stepsToMeters(stepsPerDecisec * 10);
   }
@@ -275,34 +268,48 @@ public class DriveTrain extends SubsystemBase {
     return (meters / wheelCircumferenceMeters) * countPerRevolution;
   }
 
+  /**
+   * Conversion back to Deciseconds.
+   *
+   * @param metersPerSec Encoder readings in seconds.
+   * @return Converted value.
+   */
   public static double metersPerSecToStepsPerDecisec(double metersPerSec) {
     return metersToSteps(metersPerSec) * .1d;
   }
 
-  public void resetOdometry(){
+  public void zeroEncoder() {
+    rightMaster.setSelectedSensorPosition(0);
+    leftMaster.setSelectedSensorPosition(0);
+    System.out.println("Encoders have been zeroed");
+  }
+
+  /* Odometry */
+
+  /**
+   * See {@Pose2d}.
+   *
+   * @return Current Pose of the robot.
+   */
+  public Pose2d getPose() {
+    return odometry.getPoseMeters();
+  }
+
+  /**
+   * Ben has acquired genius tier.
+   *
+   * @return Converts Yaw to 180 to -180.
+   */
+  public double getHeading() {
+    return Math.IEEEremainder(getYaw(), 360) * -1;
+  }
+
+  /**
+   * Sets the robot's current position as the origin.
+   */
+  public void resetOdometry() {
     zeroEncoder();
     savedPose = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
     odometry.resetPosition(savedPose, Rotation2d.fromDegrees(getHeading()));
-  }
-
-  public void stopDrive() {
-    drive.arcadeDrive(0, 0);
-  }
-
-  @Override
-  public void periodic() {
-
-    SmartDashboard.putNumber("Gyro Yaw", getYaw());
-    SmartDashboard.putNumber("Gyro Pitch", getPitch());
-
-    odometry.update(Rotation2d.fromDegrees(getHeading()), stepsToMeters(getLeftEncoderPosition()),
-        stepsToMeters(getRightEncoderPosition()));
-
-    SmartDashboard.putNumber("LeftEncoder(m): ", stepsToMeters(getLeftEncoderPosition()));
-    SmartDashboard.putNumber("RightEncoder(m): ", stepsToMeters(getRightEncoderPosition()));
-
-    SmartDashboard.putNumber("Heading: ", getHeading());
-
-//    SmartDashboard.putData(new InstantCommand(instance::zeroEncoder, instance));
   }
 }

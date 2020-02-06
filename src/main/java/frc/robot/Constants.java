@@ -54,9 +54,9 @@ public final class Constants {
     public static final DifferentialDriveVoltageConstraint VOLTAGE_CONSTRAINT =
         new DifferentialDriveVoltageConstraint(feedForward, kinematics, maxVoltageAuto);
 
-    // Will change.
-    public static final double kMaxSpeedMetersPerSecond = 1.5;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 1;
+    // Keep in case we want to create trajectory without PathWeaver
+    public static final double maxSpeedMetersPerSecond = 1.5;
+    public static final double maxAccelerationMetersPerSecondSquared = 1;
 
     // These are standard m/s. Values provided by wpilib docs
     public static final double ramseteB = 2;

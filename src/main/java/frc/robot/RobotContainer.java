@@ -7,12 +7,9 @@
 
 package frc.robot;
 
-import static frc.robot.Constants.DriveConstants.VOLTAGE_CONSTRAINT;
 import static frc.robot.Constants.DriveConstants.kinematics;
-import static frc.robot.Constants.DriveConstants.kMaxAccelerationMetersPerSecondSquared;
-import static frc.robot.Constants.DriveConstants.kMaxSpeedMetersPerSecond;
-import static frc.robot.Constants.DriveConstants.ramseteZ;
 import static frc.robot.Constants.DriveConstants.ramseteB;
+import static frc.robot.Constants.DriveConstants.ramseteZ;
 import static frc.robot.Constants.IntakeConstants.defaultIntakePower;
 import static frc.robot.Constants.IntakeConstants.defualtJointPower;
 import static frc.robot.Constants.OperatorInputConstants.altControllerPort;
@@ -24,17 +21,11 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.controller.RamseteController;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -44,9 +35,7 @@ import frc.robot.commands.ZeroEncoder;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
 
 /**
@@ -62,6 +51,7 @@ public class RobotContainer {
   private CommandBase auto;
   private final DriveTrain drive;
   private final Intake intake;
+  private Trajectory trajectory;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -73,6 +63,17 @@ public class RobotContainer {
     drive = DriveTrain.getInstance();
 
     auto = null;
+    trajectory = null;
+
+    String trajectoryName = "Straight";
+
+    try {
+      // Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+      // trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      trajectory = loadTrajectory(trajectoryName);
+    } catch (IOException ex) {
+      DriverStation.reportError("Unable to open trajectory: " + trajectoryName, ex.getStackTrace());
+    }
 
     drive.setDefaultCommand(
         new RunCommand(
@@ -84,6 +85,13 @@ public class RobotContainer {
             drive));
   }
 
+  /**
+   * Allows us to choose our Trajectory.
+   *
+   * @param trajectoryName Name of Trajectory file.
+   * @return Trajectory path to be used.
+   * @throws IOException Can't find the file in the directory.
+   */
   private Trajectory loadTrajectory(String trajectoryName) throws IOException {
     return TrajectoryUtil.fromPathweaverJson(
         Filesystem.getDeployDirectory().toPath().resolve(
@@ -100,6 +108,7 @@ public class RobotContainer {
     driveController = new XboxController(driveControllerPort);
     altController = new XboxController(altControllerPort);
 
+    // Runs Intake
     JoystickButton toggleIntake = new JoystickButton(altController, Button.kX.value);
     toggleIntake.toggleWhenPressed(new RunIntake(defaultIntakePower));
 
@@ -117,65 +126,9 @@ public class RobotContainer {
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
-   * @return the command to run in autonomous
+   * @return the command to run in autonomous.
    */
   public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-
-    // Create config for trajectory
-    TrajectoryConfig config =
-        new TrajectoryConfig(kMaxSpeedMetersPerSecond,
-            kMaxAccelerationMetersPerSecondSquared)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(kinematics)
-            // Apply the voltage constraint
-            .addConstraint(VOLTAGE_CONSTRAINT);
-
-
-//    // Straight
-//    Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
-//        new Pose2d(0, 0, new Rotation2d(0)),
-//        List.of(
-//            new Translation2d(0.25, 0)
-//        ),
-//        new Pose2d(1, 0, new Rotation2d(0)),
-//        config
-//    );
-
-//    Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
-//        // Start at the origin facing the +X direction
-//        new Pose2d(0, 0, new Rotation2d(0)),
-//        // Pass through these two interior waypoints, making an 's' curve path
-//        List.of(
-//            new Translation2d(1, 1),
-//            new Translation2d(2, -1)
-//        ),
-//        // End 3 meters straight ahead of where we started, facing forward
-//        new Pose2d(3, 0, new Rotation2d(0)),
-//        // Pass config
-//        config
-//    );
-
-//    Trajectory trajectory = null;
-//    try {
-//      trajectory = loadTrajectory("Straight");
-//    } catch (IOException e) {
-//      e.printStackTrace();
-//    }
-
-    String trajectoryJSON = "output/Straight.wpilib.json";
-
-    Trajectory trajectory = null;
-
-    try {
-      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
-      trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-    } catch (IOException ex) {
-      DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
-    }
-
-    var sample = trajectory.sample(1);
-
     return new InstantCommand(drive::zeroEncoder, drive).andThen(drive::zeroYaw, drive)
         .andThen(new RamseteCommand(
             trajectory,
@@ -184,7 +137,7 @@ public class RobotContainer {
             kinematics,
             drive::tankDriveVelocity,
             drive))
-        .andThen(drive::stopDrive, drive).andThen(new PrintCommand(sample.toString()))
+        .andThen(drive::stopDrive, drive)
         .beforeStarting(drive::zeroEncoder, drive);
   }
 }
