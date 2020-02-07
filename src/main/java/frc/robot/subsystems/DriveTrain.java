@@ -51,9 +51,6 @@ import java.util.Objects;
 public class DriveTrain extends SubsystemBase {
 
   private static DriveTrain instance;
-  public DifferentialDrive drive;
-
-  private AHRS gyro;
 
   private WPI_TalonSRX rightMaster;
   private WPI_VictorSPX rightFollower1;
@@ -63,15 +60,15 @@ public class DriveTrain extends SubsystemBase {
   private WPI_VictorSPX leftFollower1;
   private WPI_VictorSPX leftFollower2;
 
-  private Pose2d savedPose;
+  private DifferentialDrive drive;
+
+  private AHRS gyro;
+  private boolean isGyroInverted;
+
   private final DifferentialDriveOdometry odometry;
-
-  private Trajectory trajectory;
-
-  String trajectoryName;
+  private Pose2d savedPose;
 
   public DriveTrain() {
-
     rightMaster = new WPI_TalonSRX(rMotorMasterPort);
     rightFollower1 = new WPI_VictorSPX(rMotorFollower1Port);
     rightFollower2 = new WPI_VictorSPX(rMotorFollower2Port);
@@ -79,11 +76,6 @@ public class DriveTrain extends SubsystemBase {
     leftMaster = new WPI_TalonSRX(lMotorMasterPort);
     leftFollower1 = new WPI_VictorSPX(lMotorFollower1Port);
     leftFollower2 = new WPI_VictorSPX(lMotorFollower2Port);
-
-    gyro = new AHRS();
-
-    drive = new DifferentialDrive(leftMaster, rightMaster);
-    drive.setSafetyEnabled(false);
 
     TalonSRXConfiguration talonConfig = new TalonSRXConfiguration();
     talonConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.CTRE_MagEncoder_Relative;
@@ -97,13 +89,12 @@ public class DriveTrain extends SubsystemBase {
     rightMaster.configAllSettings(talonConfig);
     leftMaster.configAllSettings(talonConfig);
 
-    rightMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
-    leftMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
-
-    odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
-
     rightMaster.setSensorPhase(false);
     leftMaster.setSensorPhase(false);
+
+    rightMaster.setInverted(false);
+    rightFollower1.setInverted(false);
+    rightFollower2.setInverted(false);
 
     leftMaster.setInverted(true);
     leftFollower1.setInverted(true);
@@ -115,9 +106,14 @@ public class DriveTrain extends SubsystemBase {
     leftFollower1.follow(leftMaster);
     leftFollower2.follow(leftMaster);
 
+    drive = new DifferentialDrive(leftMaster, rightMaster);
+    drive.setSafetyEnabled(false);
     drive.setRightSideInverted(false);
 
-    trajectory = null;
+    gyro = new AHRS();
+    isGyroInverted = true;
+
+    odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
 
     zeroEncoder();
   }
@@ -149,7 +145,8 @@ public class DriveTrain extends SubsystemBase {
   /* Drive Code */
 
   /**
-   * Takes Forward, backward and rotate power to control movement of robot with 3 different inputs.
+   * Used in teleop as right trigger = forward power, left trigger = backward power, left stick
+   * x-axis = rotate power.
    */
   public void worldOfTanksDrive(double forward, double backward, double rotate) {
     double speedModifier = 1;
@@ -187,11 +184,6 @@ public class DriveTrain extends SubsystemBase {
     var rightAccel =
         (rightVelocity - stepsPerDecisecToMetersPerSec(getRightEncoderVelocity())) / .2;
 
-    // SmartDashboard.putNumber("Left Velocity", leftVelocity);
-    // SmartDashboard.putNumber("Right Velocity", rightVelocity);
-    // SmartDashboard.putNumber("Left Acceleration", leftAccel);
-    // SmartDashboard.putNumber("Right Acceleration", rightAccel);
-
     var leftFeedForwardVolts = feedForward.calculate(leftVelocity, leftAccel);
     var rightFeedForwardVolts = feedForward.calculate(rightVelocity, rightAccel);
 
@@ -206,14 +198,22 @@ public class DriveTrain extends SubsystemBase {
         DemandType.ArbitraryFeedForward,
         rightFeedForwardVolts / 12);
 
-    // System.out.println("Pose: " + getPose());
-    // System.out.println("Left Velocity: " + leftVelocity);
-    // System.out.println("Right Velocity: " + rightVelocity);
-    // System.out.println("Left Volts: " + leftFeedForwardVolts);
-    // System.out.println("Right Volts: " + rightFeedForwardVolts);
-
     drive.feed();
   }
+  //    Invert all motors, encoders, gyro
+  //    public void invertDrive(){
+  //      rightMaster.setSensorPhase(true);
+  //      leftMaster.setSensorPhase(true);
+  //
+  //      drive.setRightSideInverted(false);
+  //
+  //      leftMaster.setInverted(true);
+  //      leftFollower1.setInverted(true);
+  //      leftFollower1.setInverted(true);
+  //
+  //      // Gyro was already inverted previously, we set it false here.
+  //      setGyroInverted(false);
+  //    }
 
   public void stopDrive() {
     drive.arcadeDrive(0, 0);
@@ -243,7 +243,11 @@ public class DriveTrain extends SubsystemBase {
     gyro.zeroYaw();
   }
 
-  /* Encoder Values */
+  public void setGyroInverted(boolean inversion){
+    isGyroInverted = inversion;
+  }
+
+  /* Encoder */
 
   public int getLeftEncoderPosition() {
     return leftMaster.getSelectedSensorPosition(0);
@@ -261,12 +265,10 @@ public class DriveTrain extends SubsystemBase {
     return rightMaster.getSelectedSensorVelocity();
   }
 
-  /* Encoder Math */
-
   /**
    * Converts encoder values to meters.
    *
-   * @param steps Encoder readings in Deciseconds.
+   * @param steps Encoder values.
    * @return Converted value.
    */
   public static double stepsToMeters(int steps) {
@@ -274,7 +276,7 @@ public class DriveTrain extends SubsystemBase {
   }
 
   /**
-   * Allows us to work with meters per seconds.
+   * Converts encoder velocity to meters per second.
    *
    * @param stepsPerDecisec Encoder readings in Deciseconds.
    * @return Converted value.
@@ -283,6 +285,12 @@ public class DriveTrain extends SubsystemBase {
     return stepsToMeters(stepsPerDecisec * 10);
   }
 
+  /**
+   * Converts meters to standard encoder values.
+   *
+   * @param meters Meters travelled.
+   * @return Converted value.
+   */
   public static double metersToSteps(double meters) {
     return (meters / wheelCircumferenceMeters) * countPerRevolution;
   }
@@ -320,7 +328,7 @@ public class DriveTrain extends SubsystemBase {
    * @return Converts Yaw to 180 to -180.
    */
   public double getHeading() {
-    return Math.IEEEremainder(getYaw(), 360) * -1;
+    return Math.IEEEremainder(getYaw(), 360) * (isGyroInverted ? -1 : 1);
   }
 
   /**
@@ -332,8 +340,10 @@ public class DriveTrain extends SubsystemBase {
     odometry.resetPosition(savedPose, Rotation2d.fromDegrees(getHeading()));
   }
 
+  /* Trajectory */
+
   /**
-   * Allows us to choose our Trajectory.
+   * Loads trajectory from given name.
    *
    * @param trajectoryName Name of Trajectory file.
    * @return Trajectory path to be used.
@@ -350,12 +360,14 @@ public class DriveTrain extends SubsystemBase {
   }
 
   /**
-   * Command runs the programmed auto paths.
-   * @param trajectoryName Name of trajectory
-   * @return Auto Command with given trajectory
+   * Creates Trajectory Command from trajectory file name.
+   *
+   * @param trajectoryName Name of trajectory file.
+   * @return Auto Command with given trajectory.
    */
   public Command getAutonomousCommand(String trajectoryName) {
-    return new InstantCommand(this::zeroEncoder, this).andThen(this::zeroYaw, this)
+    return new InstantCommand(this::zeroEncoder, this)
+        .andThen(this::zeroYaw, this)
         .andThen(new RamseteCommand(
             Objects.requireNonNull(loadTrajectory(trajectoryName)),
             this::getPose,
@@ -363,8 +375,6 @@ public class DriveTrain extends SubsystemBase {
             kinematics,
             this::tankDriveVelocity,
             this))
-        .andThen(this::stopDrive, this)
-        .beforeStarting(this::zeroEncoder, this);
+        .andThen(this::stopDrive, this);
   }
-
 }

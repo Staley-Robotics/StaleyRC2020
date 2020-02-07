@@ -28,5 +28,8 @@
   <suppress files="RobotContainer.java"
     lines="102"
     message="'METHOD_DEF' should be separated from previous statement."/>
+  <suppress files="TestAuto.java"
+    lines="10"
+    message="Missing a Javadoc comment."/>
 
 </suppressions>
