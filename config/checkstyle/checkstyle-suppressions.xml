@@ -25,5 +25,8 @@
   <suppress files="RunIntake.java"
     lines="13"
     message="Missing a Javadoc comment."/>
+  <suppress files="RobotContainer.java"
+    lines="102"
+    message="'METHOD_DEF' should be separated from previous statement."/>
 
 </suppressions>

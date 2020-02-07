@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.controller.RamseteController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -48,10 +49,13 @@ public class RobotContainer {
 
   private XboxController driveController;
   private XboxController altController;
-  private CommandBase auto;
+
   private final DriveTrain drive;
   private final Intake intake;
-  private Trajectory trajectory;
+
+  private SendableChooser<Command> autoChooser;
+  private CommandBase auto;
+
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -62,18 +66,8 @@ public class RobotContainer {
     intake = Intake.getInstance();
     drive = DriveTrain.getInstance();
 
+    autoChooser.setDefaultOption("Straight Auto", drive.getAutonomousCommand("Straight"));
     auto = null;
-    trajectory = null;
-
-    String trajectoryName = "Straight";
-
-    try {
-      // Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
-      // trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-      trajectory = loadTrajectory(trajectoryName);
-    } catch (IOException ex) {
-      DriverStation.reportError("Unable to open trajectory: " + trajectoryName, ex.getStackTrace());
-    }
 
     drive.setDefaultCommand(
         new RunCommand(
@@ -85,18 +79,6 @@ public class RobotContainer {
             drive));
   }
 
-  /**
-   * Allows us to choose our Trajectory.
-   *
-   * @param trajectoryName Name of Trajectory file.
-   * @return Trajectory path to be used.
-   * @throws IOException Can't find the file in the directory.
-   */
-  private Trajectory loadTrajectory(String trajectoryName) throws IOException {
-    return TrajectoryUtil.fromPathweaverJson(
-        Filesystem.getDeployDirectory().toPath().resolve(
-            Paths.get("output", trajectoryName + ".wpilib.json")));
-  }
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -119,6 +101,7 @@ public class RobotContainer {
     zeroEncoder.whenPressed(new ZeroEncoder());
   }
 
+  // TODO: This will need to go somewhere else later on.
   public void resetOdometry() {
     new InstantCommand(drive::resetOdometry, drive).schedule();
   }
@@ -129,15 +112,6 @@ public class RobotContainer {
    * @return the command to run in autonomous.
    */
   public Command getAutonomousCommand() {
-    return new InstantCommand(drive::zeroEncoder, drive).andThen(drive::zeroYaw, drive)
-        .andThen(new RamseteCommand(
-            trajectory,
-            drive::getPose,
-            new RamseteController(ramseteB, ramseteZ),
-            kinematics,
-            drive::tankDriveVelocity,
-            drive))
-        .andThen(drive::stopDrive, drive)
-        .beforeStarting(drive::zeroEncoder, drive);
+    return null;
   }
 }
