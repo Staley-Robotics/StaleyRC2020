@@ -367,8 +367,7 @@ public class DriveTrain extends SubsystemBase {
    * @return Auto Command with given trajectory.
    */
   public Command getAutonomousCommand(String trajectoryName) {
-    return new InstantCommand(this::zeroEncoder, this)
-        .andThen(this::zeroYaw, this)
+    return new InstantCommand()
         .andThen(new RamseteCommand(
             Objects.requireNonNull(loadTrajectory(trajectoryName)),
             this::getPose,

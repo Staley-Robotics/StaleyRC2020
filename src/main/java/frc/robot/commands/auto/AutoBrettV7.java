@@ -16,10 +16,11 @@ public class AutoBrettV7 extends SequentialCommandGroup {
     drive = DriveTrain.getInstance();
 
     addCommands(
-        new InstantCommand(drive::resetOdometry),
-        drive.getAutonomousCommand("Forward"),
+        new InstantCommand(drive::resetOdometry, drive),
+        new InstantCommand(drive::zeroEncoder, drive),
+        drive.getAutonomousCommand("TurnRight"),
         new WaitCommand(3),
-        drive.getAutonomousCommand("ForwardContinue")
+        drive.getAutonomousCommand("ForwardAfterTurn")
     );
   }
 }

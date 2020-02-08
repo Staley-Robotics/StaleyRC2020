@@ -11,7 +11,7 @@
   <!--  <suppress message="Missing a Javadoc comment"/>-->
 
   <suppress files="DriveTrain.java"
-    lines="0-317"
+    lines="0-319"
     message="Missing a Javadoc comment."/>
   <suppress files="Intake.java"
     lines="32"
