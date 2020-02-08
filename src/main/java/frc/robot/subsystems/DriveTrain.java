@@ -63,7 +63,7 @@ public class DriveTrain extends SubsystemBase {
   private DifferentialDrive drive;
 
   private AHRS gyro;
-  private boolean isGyroInverted;
+  private double gyroInversionNumber;
 
   private final DifferentialDriveOdometry odometry;
   private Pose2d savedPose;
@@ -111,7 +111,7 @@ public class DriveTrain extends SubsystemBase {
     drive.setRightSideInverted(false);
 
     gyro = new AHRS();
-    isGyroInverted = true;
+    gyroInversionNumber = -1;
 
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
 
@@ -200,6 +200,7 @@ public class DriveTrain extends SubsystemBase {
 
     drive.feed();
   }
+
   //    Invert all motors, encoders, gyro
   //    public void invertDrive(){
   //      rightMaster.setSensorPhase(true);
@@ -243,8 +244,8 @@ public class DriveTrain extends SubsystemBase {
     gyro.zeroYaw();
   }
 
-  public void setGyroInverted(boolean inversion){
-    isGyroInverted = inversion;
+  public void setGyroInverted(boolean inversion) {
+    gyroInversionNumber = (inversion ? -1 : 1);
   }
 
   /* Encoder */
@@ -328,7 +329,7 @@ public class DriveTrain extends SubsystemBase {
    * @return Converts Yaw to 180 to -180.
    */
   public double getHeading() {
-    return Math.IEEEremainder(getYaw(), 360) * (isGyroInverted ? -1 : 1);
+    return Math.IEEEremainder(getYaw(), 360) * gyroInversionNumber;
   }
 
   /**
