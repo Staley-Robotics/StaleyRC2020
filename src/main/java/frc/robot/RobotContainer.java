@@ -27,6 +27,7 @@ import frc.robot.commands.ZeroEncoder;
 import frc.robot.commands.auto.AutoBrettV7;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Vision;
 
 
 /**
@@ -42,6 +43,7 @@ public class RobotContainer {
 
   private final DriveTrain drive;
   private final Intake intake;
+  private final Vision vision;
 
   private SendableChooser<Command> autoChooser;
 
@@ -54,6 +56,7 @@ public class RobotContainer {
 
     drive = DriveTrain.getInstance();
     intake = Intake.getInstance();
+    vision = Vision.getInstance();
 
     autoChooser = new SendableChooser<>();
 
