@@ -79,7 +79,7 @@ public class Vision extends SubsystemBase {
   }
 
   /**
-   * Gets and returns pitch from chameleon vision network table.
+   * Gets and returns pitch (up/down angle of displacement) from chameleon vision network table.
    *
    * @return Calculated pitch
    */
@@ -89,7 +89,7 @@ public class Vision extends SubsystemBase {
   }
 
   /**
-   * Gets and returns yaw from chameleon vision network table.
+   * Gets and returns yaw (left/right angle of displacement) from chameleon vision network table.
    *
    * @return Calculated yaw
    */
