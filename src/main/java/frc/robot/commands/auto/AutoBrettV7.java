@@ -7,13 +7,13 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.DriveTrain;
 
+/**
+ * Drives Forward 1.5 meters, waits 3 seconds and travels another 1.5 meters.
+ */
 public class AutoBrettV7 extends SequentialCommandGroup {
 
   DriveTrain drive;
 
-  /**
-   * Drives Forward 1.5 meters, waits 3 seconds and travels another 1.5 meters.
-   */
   public AutoBrettV7() {
     drive = DriveTrain.getInstance();
 

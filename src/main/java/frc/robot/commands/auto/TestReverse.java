@@ -1,12 +1,7 @@
 package frc.robot.commands.auto;
 
-import static frc.robot.Constants.DriveConstants.kinematics;
-import static frc.robot.Constants.DriveConstants.maxAccelerationMetersPerSecondSquared;
-import static frc.robot.Constants.DriveConstants.maxVelocityMetersPerSecond;
-
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
