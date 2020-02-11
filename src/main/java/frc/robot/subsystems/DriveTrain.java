@@ -15,6 +15,8 @@ import static frc.robot.Constants.DriveConstants.kinematics;
 import static frc.robot.Constants.DriveConstants.lMotorFollower1Port;
 import static frc.robot.Constants.DriveConstants.lMotorFollower2Port;
 import static frc.robot.Constants.DriveConstants.lMotorMasterPort;
+import static frc.robot.Constants.DriveConstants.maxAccelerationMetersPerSecondSquared;
+import static frc.robot.Constants.DriveConstants.maxVelocityMetersPerSecond;
 import static frc.robot.Constants.DriveConstants.rMotorFollower1Port;
 import static frc.robot.Constants.DriveConstants.rMotorFollower2Port;
 import static frc.robot.Constants.DriveConstants.rMotorMasterPort;
@@ -29,7 +31,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -38,7 +39,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
@@ -46,11 +47,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -193,11 +192,6 @@ public class DriveTrain extends SubsystemBase {
     var rightAccel =
         (rightVelocity - stepsPerDecisecToMetersPerSec(getRightEncoderVelocity())) / .2;
 
-    SmartDashboard.putNumber("Left Velocity", leftVelocity);
-    SmartDashboard.putNumber("Right Velocity", rightVelocity);
-    SmartDashboard.putNumber("Left Acceleration", leftAccel);
-    SmartDashboard.putNumber("Right Acceleration", rightAccel);
-
     var leftFeedForwardVolts = feedForward.calculate(leftVelocity, leftAccel);
     var rightFeedForwardVolts = feedForward.calculate(rightVelocity, rightAccel);
 
@@ -211,14 +205,6 @@ public class DriveTrain extends SubsystemBase {
         metersPerSecToStepsPerDecisec(rightVelocity),
         DemandType.ArbitraryFeedForward,
         rightFeedForwardVolts / 12);
-
-    System.out.println("Left Acceleration: " + leftAccel);
-    System.out.println("Right Acceleration: " + rightAccel);
-    System.out.println("Left Velocity: " + leftVelocity);
-    System.out.println("Right Velocity: " + rightVelocity);
-    System.out.println("Pose: " + getPose());
-    System.out.println("Left Volts: " + leftFeedForwardVolts);
-    System.out.println("Right Volts: " + rightFeedForwardVolts);
 
     drive.feed();
   }
@@ -350,21 +336,28 @@ public class DriveTrain extends SubsystemBase {
   /* Trajectory */
 
   /**
-   * Loads trajectory from given name.
+   * Gets a TrajectoryConfig.
    *
-   * @param trajectoryName Name of Trajectory file.
-   * @return Trajectory path to be used.
+   * @param isReversed Determines if the bot goes backwards or forwards during a trajectory.
+   * @return Trajectory Configuration.
    */
-  private Trajectory loadTrajectory(String trajectoryName) {
-    try {
-      Path myPath = Filesystem.getDeployDirectory().toPath()
-          .resolve(Paths.get("output", trajectoryName + ".wpilib.json"));
-
-      System.out.println("My Actual Good Path: " + myPath.toString());
-      return TrajectoryUtil.fromPathweaverJson(myPath);
-    } catch (IOException e) {
-      DriverStation.reportError(e.toString(), false);
-      return null;
+  public TrajectoryConfig getTrajectoryConfig(boolean isReversed) {
+    if (isReversed) {
+      return new TrajectoryConfig(
+          maxVelocityMetersPerSecond,
+          maxAccelerationMetersPerSecondSquared)
+          .setReversed(true)
+          .setKinematics(kinematics)
+          .setStartVelocity(0)
+          .setEndVelocity(0);
+    } else {
+      return new TrajectoryConfig(
+          maxVelocityMetersPerSecond,
+          maxAccelerationMetersPerSecondSquared)
+          .setKinematics(kinematics)
+          .setStartVelocity(0)
+          .setEndVelocity(0)
+          .setReversed(false);
     }
   }
 
@@ -376,7 +369,6 @@ public class DriveTrain extends SubsystemBase {
    * @return List of Pose2d objects
    */
   public List<Pose2d> getPoseListFromPathWeaverJson(String trajectoryName) {
-    System.out.println("START GETPOSELIST");
     ArrayList<Pose2d> poseList = new ArrayList<>();
     double x;
     double y;
@@ -393,8 +385,6 @@ public class DriveTrain extends SubsystemBase {
       reader = Json.createReader(fis);
 
       wholeFile = reader.readArray();
-
-      System.out.println(trajectoryPath);
 
       reader.close();
     } catch (IOException e) {
@@ -413,26 +403,7 @@ public class DriveTrain extends SubsystemBase {
 
       poseList.add(new Pose2d(x, y, new Rotation2d(radians)));
     }
-    System.out.println("REACHED POSELIST: " + poseList);
     return poseList;
-  }
-
-  /**
-   * Creates Trajectory Command from trajectory file name.
-   *
-   * @param trajectoryName Name of trajectory file.
-   * @return Auto Command with given trajectory.
-   */
-  public Command getAutonomousCommandFromPathWeaver(String trajectoryName) {
-    return new InstantCommand()
-        .andThen(new RamseteCommand(
-            Objects.requireNonNull(loadTrajectory(trajectoryName)),
-            this::getPose,
-            new RamseteController(ramseteB, ramseteZ),
-            kinematics,
-            this::tankDriveVelocity,
-            this))
-        .andThen(this::stopDrive, this);
   }
 
   /**

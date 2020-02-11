@@ -17,10 +17,7 @@ public class TestReverse extends SequentialCommandGroup {
 
   private DriveTrain drive;
 
-  TrajectoryConfig trajectoryConfigForward;
-  private TrajectoryConfig trajectoryConfigReverse;
-
-  Trajectory trajectoryForward;
+  private Trajectory trajectoryForward;
   private Trajectory trajectoryReverse;
 
   private Pose2d pose;
@@ -31,30 +28,14 @@ public class TestReverse extends SequentialCommandGroup {
   public TestReverse() {
     drive = DriveTrain.getInstance();
 
-    trajectoryConfigForward = new TrajectoryConfig(
-        maxVelocityMetersPerSecond,
-        maxAccelerationMetersPerSecondSquared)
-        .setKinematics(kinematics)
-        .setStartVelocity(0)
-        .setEndVelocity(0)
-        .setReversed(false);
-
-    trajectoryConfigReverse = new TrajectoryConfig(
-        maxVelocityMetersPerSecond,
-        maxAccelerationMetersPerSecondSquared)
-        .setReversed(true)
-        .setKinematics(kinematics)
-        .setStartVelocity(0)
-        .setEndVelocity(0);
-
     trajectoryForward = TrajectoryGenerator.generateTrajectory(
         drive.getPoseListFromPathWeaverJson("TurnRight"),
-        trajectoryConfigForward
+        drive.getTrajectoryConfig(false)
     );
 
     trajectoryReverse = TrajectoryGenerator.generateTrajectory(
         drive.getPoseListFromPathWeaverJson("ReverseTurnRight"),
-        trajectoryConfigReverse
+        drive.getTrajectoryConfig(true)
     );
 
     addCommands(

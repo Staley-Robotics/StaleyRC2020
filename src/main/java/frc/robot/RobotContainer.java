@@ -60,6 +60,8 @@ public class RobotContainer {
     autoChooser.setDefaultOption("TestAuto", new TestReverse());
     autoChooser.addOption("Straight Auto", new AutoBrettV7());
 
+    SmartDashboard.putData("Auto", autoChooser);
+
     drive.setDefaultCommand(
         new RunCommand(
             () ->
@@ -69,7 +71,7 @@ public class RobotContainer {
                     driveController.getX(GenericHID.Hand.kLeft)),
             drive));
 
-    SmartDashboard.putData("Auto", autoChooser);
+
   }
 
 
