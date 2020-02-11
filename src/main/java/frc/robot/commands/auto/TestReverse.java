@@ -2,36 +2,67 @@ package frc.robot.commands.auto;
 
 import static frc.robot.Constants.DriveConstants.kinematics;
 import static frc.robot.Constants.DriveConstants.maxAccelerationMetersPerSecondSquared;
-import static frc.robot.Constants.DriveConstants.maxSpeedMetersPerSecond;
+import static frc.robot.Constants.DriveConstants.maxVelocityMetersPerSecond;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
-import frc.robot.Constants;
-import frc.robot.Constants.DriveConstants;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.DriveTrain;
 
-public class TestReverse {
+public class TestReverse extends SequentialCommandGroup {
 
   private DriveTrain drive;
 
-  private TrajectoryConfig trajectoryConfig;
-  private Trajectory trajectory;
+  TrajectoryConfig trajectoryConfigForward;
+  private TrajectoryConfig trajectoryConfigReverse;
+
+  Trajectory trajectoryForward;
+  private Trajectory trajectoryReverse;
 
   private Pose2d pose;
 
   /**
-   * Currently unfinished, Drives robot in reverse/\.
+   * Auto command for testing.
    */
   public TestReverse() {
     drive = DriveTrain.getInstance();
 
-    trajectoryConfig = new TrajectoryConfig(
-        maxSpeedMetersPerSecond,
+    trajectoryConfigForward = new TrajectoryConfig(
+        maxVelocityMetersPerSecond,
         maxAccelerationMetersPerSecondSquared)
         .setKinematics(kinematics)
-        .setStartVelocity(0.5)
-        .setEndVelocity(0.5)
-        .setReversed(true);
+        .setStartVelocity(0)
+        .setEndVelocity(0)
+        .setReversed(false);
+
+    trajectoryConfigReverse = new TrajectoryConfig(
+        maxVelocityMetersPerSecond,
+        maxAccelerationMetersPerSecondSquared)
+        .setReversed(true)
+        .setKinematics(kinematics)
+        .setStartVelocity(0)
+        .setEndVelocity(0);
+
+    trajectoryForward = TrajectoryGenerator.generateTrajectory(
+        drive.getPoseListFromPathWeaverJson("TurnRight"),
+        trajectoryConfigForward
+    );
+
+    trajectoryReverse = TrajectoryGenerator.generateTrajectory(
+        drive.getPoseListFromPathWeaverJson("ReverseTurnRight"),
+        trajectoryConfigReverse
+    );
+
+    addCommands(
+        new InstantCommand(drive::resetOdometry, drive),
+        new InstantCommand(drive::zeroEncoder, drive),
+        drive.getAutonomousCommandFromTrajectory(trajectoryForward),
+        new WaitCommand(2),
+        drive.getAutonomousCommandFromTrajectory(trajectoryReverse)
+    );
   }
 }

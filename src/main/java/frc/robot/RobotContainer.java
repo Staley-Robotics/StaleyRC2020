@@ -18,13 +18,13 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.RunIntake;
 import frc.robot.commands.ToggleJoint;
 import frc.robot.commands.ZeroEncoder;
 import frc.robot.commands.auto.AutoBrettV7;
+import frc.robot.commands.auto.TestReverse;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
 
@@ -57,7 +57,8 @@ public class RobotContainer {
 
     autoChooser = new SendableChooser<>();
 
-    autoChooser.setDefaultOption("Straight Auto", new AutoBrettV7());
+    autoChooser.setDefaultOption("TestAuto", new TestReverse());
+    autoChooser.addOption("Straight Auto", new AutoBrettV7());
 
     drive.setDefaultCommand(
         new RunCommand(
@@ -93,10 +94,6 @@ public class RobotContainer {
     zeroEncoder.whenPressed(new ZeroEncoder());
   }
 
-  // TODO: This will need to go somewhere else later on.
-  public void resetOdometry() {
-    new InstantCommand(drive::resetOdometry, drive).schedule();
-  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

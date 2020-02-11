@@ -7,7 +7,7 @@ import frc.robot.subsystems.DriveTrain;
 
 public class AutoBrettV7 extends SequentialCommandGroup {
 
-  private DriveTrain drive;
+  DriveTrain drive;
 
   /**
    * Drives Forward 1.5 meters, waits 3 seconds and travels another 1.5 meters.
@@ -18,9 +18,9 @@ public class AutoBrettV7 extends SequentialCommandGroup {
     addCommands(
         new InstantCommand(drive::resetOdometry, drive),
         new InstantCommand(drive::zeroEncoder, drive),
-        drive.getAutonomousCommand("TurnRight"),
+        drive.getAutonomousCommandFromPathWeaver("Forward"),
         new WaitCommand(3),
-        drive.getAutonomousCommand("ForwardAfterTurn")
+        drive.getAutonomousCommandFromPathWeaver("ForwardContinue")
     );
   }
 }

@@ -31,5 +31,8 @@
   <suppress files="TestAuto.java"
     lines="10"
     message="Missing a Javadoc comment."/>
+  <suppress files="DriveTrain"
+    lines="329"
+    message="Missing a Javadoc comment."/>
 
 </suppressions>

@@ -43,9 +43,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class DriveTrain extends SubsystemBase {
@@ -184,6 +193,11 @@ public class DriveTrain extends SubsystemBase {
     var rightAccel =
         (rightVelocity - stepsPerDecisecToMetersPerSec(getRightEncoderVelocity())) / .2;
 
+    SmartDashboard.putNumber("Left Velocity", leftVelocity);
+    SmartDashboard.putNumber("Right Velocity", rightVelocity);
+    SmartDashboard.putNumber("Left Acceleration", leftAccel);
+    SmartDashboard.putNumber("Right Acceleration", rightAccel);
+
     var leftFeedForwardVolts = feedForward.calculate(leftVelocity, leftAccel);
     var rightFeedForwardVolts = feedForward.calculate(rightVelocity, rightAccel);
 
@@ -198,23 +212,16 @@ public class DriveTrain extends SubsystemBase {
         DemandType.ArbitraryFeedForward,
         rightFeedForwardVolts / 12);
 
+    System.out.println("Left Acceleration: " + leftAccel);
+    System.out.println("Right Acceleration: " + rightAccel);
+    System.out.println("Left Velocity: " + leftVelocity);
+    System.out.println("Right Velocity: " + rightVelocity);
+    System.out.println("Pose: " + getPose());
+    System.out.println("Left Volts: " + leftFeedForwardVolts);
+    System.out.println("Right Volts: " + rightFeedForwardVolts);
+
     drive.feed();
   }
-
-  //    Invert all motors, encoders, gyro
-  //    public void invertDrive(){
-  //      rightMaster.setSensorPhase(true);
-  //      leftMaster.setSensorPhase(true);
-  //
-  //      drive.setRightSideInverted(false);
-  //
-  //      leftMaster.setInverted(true);
-  //      leftFollower1.setInverted(true);
-  //      leftFollower1.setInverted(true);
-  //
-  //      // Gyro was already inverted previously, we set it false here.
-  //      setGyroInverted(false);
-  //    }
 
   public void stopDrive() {
     drive.arcadeDrive(0, 0);
@@ -336,7 +343,6 @@ public class DriveTrain extends SubsystemBase {
    * Sets the robot's current position as the origin.
    */
   public void resetOdometry() {
-    zeroEncoder();
     savedPose = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
     odometry.resetPosition(savedPose, Rotation2d.fromDegrees(getHeading()));
   }
@@ -351,13 +357,64 @@ public class DriveTrain extends SubsystemBase {
    */
   private Trajectory loadTrajectory(String trajectoryName) {
     try {
-      return TrajectoryUtil.fromPathweaverJson(
-          Filesystem.getDeployDirectory().toPath().resolve(
-              Paths.get("output", trajectoryName + ".wpilib.json")));
+      Path myPath = Filesystem.getDeployDirectory().toPath()
+          .resolve(Paths.get("output", trajectoryName + ".wpilib.json"));
+
+      System.out.println("My Actual Good Path: " + myPath.toString());
+      return TrajectoryUtil.fromPathweaverJson(myPath);
     } catch (IOException e) {
       DriverStation.reportError(e.toString(), false);
       return null;
     }
+  }
+
+  /**
+   * Replicates data from Pathweaver produced JSON file so that we can input our own Trajectory
+   * Configuration.
+   *
+   * @param trajectoryName Name of Trajectory
+   * @return List of Pose2d objects
+   */
+  public List<Pose2d> getPoseListFromPathWeaverJson(String trajectoryName) {
+    System.out.println("START GETPOSELIST");
+    ArrayList<Pose2d> poseList = new ArrayList<>();
+    double x;
+    double y;
+    double radians;
+    InputStream fis;
+    JsonReader reader;
+    JsonArray wholeFile = null;
+    try {
+      String trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(
+          Paths.get("output", trajectoryName + ".wpilib.json")).toString();
+
+      fis = new FileInputStream(trajectoryPath);
+
+      reader = Json.createReader(fis);
+
+      wholeFile = reader.readArray();
+
+      System.out.println(trajectoryPath);
+
+      reader.close();
+    } catch (IOException e) {
+      System.out.println("CATCH RAN");
+      e.printStackTrace();
+    }
+
+    for (JsonObject state : wholeFile.getValuesAs(JsonObject.class)) {
+      JsonObject pose = state.getJsonObject("pose");
+      JsonObject translation = pose.getJsonObject("translation");
+      JsonObject rotation = pose.getJsonObject("rotation");
+
+      x = translation.getJsonNumber("x").doubleValue();
+      y = translation.getJsonNumber("y").doubleValue();
+      radians = rotation.getJsonNumber("radians").doubleValue();
+
+      poseList.add(new Pose2d(x, y, new Rotation2d(radians)));
+    }
+    System.out.println("REACHED POSELIST: " + poseList);
+    return poseList;
   }
 
   /**
@@ -366,10 +423,28 @@ public class DriveTrain extends SubsystemBase {
    * @param trajectoryName Name of trajectory file.
    * @return Auto Command with given trajectory.
    */
-  public Command getAutonomousCommand(String trajectoryName) {
+  public Command getAutonomousCommandFromPathWeaver(String trajectoryName) {
     return new InstantCommand()
         .andThen(new RamseteCommand(
             Objects.requireNonNull(loadTrajectory(trajectoryName)),
+            this::getPose,
+            new RamseteController(ramseteB, ramseteZ),
+            kinematics,
+            this::tankDriveVelocity,
+            this))
+        .andThen(this::stopDrive, this);
+  }
+
+  /**
+   * Creates a command using trajectory that drives the robot during autonomous.
+   *
+   * @param trajectory A combination of pose and speed.
+   * @return Auto command with given pose.
+   */
+  public Command getAutonomousCommandFromTrajectory(Trajectory trajectory) {
+    return new InstantCommand()
+        .andThen(new RamseteCommand(
+            trajectory,
             this::getPose,
             new RamseteController(ramseteB, ramseteZ),
             kinematics,
