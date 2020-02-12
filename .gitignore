@@ -14,9 +14,8 @@ gradle-app.setting
 /.idea/
 /.vscode/
 /bin/
+/PathFinder/
+/PathWeaver/
 .classpath
 .project
 org.eclipse.buildship.core.prefs
-StaleyRC2020.iml
-StaleyRC2020.ipr
-StaleyRC2020.iws

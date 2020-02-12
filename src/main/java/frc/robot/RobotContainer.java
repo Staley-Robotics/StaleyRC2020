@@ -18,17 +18,16 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.RunIntake;
-import frc.robot.commands.ToggleJoint;
-import frc.robot.commands.ZeroEncoder;
 import frc.robot.commands.auto.AutoBrettV7;
+import frc.robot.commands.auto.TestReverse;
+import frc.robot.commands.drivetrain.ZeroEncoder;
+import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.intake.ToggleJoint;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Vision;
-
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -47,7 +46,6 @@ public class RobotContainer {
 
   private SendableChooser<Command> autoChooser;
 
-
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -60,7 +58,10 @@ public class RobotContainer {
 
     autoChooser = new SendableChooser<>();
 
-    autoChooser.setDefaultOption("Straight Auto", new AutoBrettV7());
+    autoChooser.setDefaultOption("TestAuto", new TestReverse());
+    autoChooser.addOption("Straight Auto", new AutoBrettV7());
+
+    SmartDashboard.putData("Auto", autoChooser);
 
     drive.setDefaultCommand(
         new RunCommand(
@@ -70,10 +71,7 @@ public class RobotContainer {
                     driveController.getTriggerAxis(GenericHID.Hand.kLeft),
                     driveController.getX(GenericHID.Hand.kLeft)),
             drive));
-
-    SmartDashboard.putData("Auto", autoChooser);
   }
-
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -94,11 +92,6 @@ public class RobotContainer {
 
     JoystickButton zeroEncoder = new JoystickButton(driveController, Button.kA.value);
     zeroEncoder.whenPressed(new ZeroEncoder());
-  }
-
-  // TODO: This will need to go somewhere else later on.
-  public void resetOdometry() {
-    new InstantCommand(drive::resetOdometry, drive).schedule();
   }
 
   /**
