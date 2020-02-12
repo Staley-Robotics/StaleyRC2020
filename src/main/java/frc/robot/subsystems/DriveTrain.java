@@ -71,7 +71,6 @@ public class DriveTrain extends SubsystemBase {
   private DifferentialDrive drive;
 
   private AHRS gyro;
-  private double gyroInversionNumber;
 
   private final DifferentialDriveOdometry odometry;
   private Pose2d savedPose;
@@ -119,7 +118,6 @@ public class DriveTrain extends SubsystemBase {
     drive.setRightSideInverted(false);
 
     gyro = new AHRS();
-    gyroInversionNumber = -1;
 
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
 
@@ -237,10 +235,6 @@ public class DriveTrain extends SubsystemBase {
     gyro.zeroYaw();
   }
 
-  public void setGyroInverted(boolean inversion) {
-    gyroInversionNumber = (inversion ? -1 : 1);
-  }
-
   /* Encoder */
 
   public int getLeftEncoderPosition() {
@@ -322,7 +316,7 @@ public class DriveTrain extends SubsystemBase {
    * @return Converts Yaw to 180 to -180.
    */
   public double getHeading() {
-    return Math.IEEEremainder(getYaw(), 360) * gyroInversionNumber;
+    return Math.IEEEremainder(getYaw(), 360) * -1;
   }
 
   /**
@@ -342,23 +336,11 @@ public class DriveTrain extends SubsystemBase {
    * @return Trajectory Configuration.
    */
   public TrajectoryConfig getTrajectoryConfig(boolean isReversed) {
-    if (isReversed) {
-      return new TrajectoryConfig(
-          maxVelocityMetersPerSecond,
-          maxAccelerationMetersPerSecondSquared)
-          .setReversed(true)
-          .setKinematics(kinematics)
-          .setStartVelocity(0)
-          .setEndVelocity(0);
-    } else {
-      return new TrajectoryConfig(
-          maxVelocityMetersPerSecond,
-          maxAccelerationMetersPerSecondSquared)
-          .setKinematics(kinematics)
-          .setStartVelocity(0)
-          .setEndVelocity(0)
-          .setReversed(false);
-    }
+    return new TrajectoryConfig(maxVelocityMetersPerSecond, maxAccelerationMetersPerSecondSquared)
+        .setKinematics(kinematics)
+        .setStartVelocity(0)
+        .setEndVelocity(0)
+        .setReversed(isReversed);
   }
 
   /**
@@ -370,9 +352,6 @@ public class DriveTrain extends SubsystemBase {
    */
   public List<Pose2d> getPoseListFromPathWeaverJson(String trajectoryName) {
     ArrayList<Pose2d> poseList = new ArrayList<>();
-    double x;
-    double y;
-    double radians;
     InputStream fis;
     JsonReader reader;
     JsonArray wholeFile = null;
@@ -397,9 +376,9 @@ public class DriveTrain extends SubsystemBase {
       JsonObject translation = pose.getJsonObject("translation");
       JsonObject rotation = pose.getJsonObject("rotation");
 
-      x = translation.getJsonNumber("x").doubleValue();
-      y = translation.getJsonNumber("y").doubleValue();
-      radians = rotation.getJsonNumber("radians").doubleValue();
+      double x = translation.getJsonNumber("x").doubleValue();
+      double y = translation.getJsonNumber("y").doubleValue();
+      double radians = rotation.getJsonNumber("radians").doubleValue();
 
       poseList.add(new Pose2d(x, y, new Rotation2d(radians)));
     }

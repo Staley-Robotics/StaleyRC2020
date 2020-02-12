@@ -1,11 +1,11 @@
-package frc.robot.commands;
+package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrain;
 
 public class ZeroEncoder extends CommandBase {
 
-  DriveTrain drive;
+  private DriveTrain drive;
 
   public ZeroEncoder() {
     drive = DriveTrain.getInstance();

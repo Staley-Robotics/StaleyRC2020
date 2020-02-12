@@ -54,7 +54,6 @@ public final class Constants {
     public static final DifferentialDriveVoltageConstraint VOLTAGE_CONSTRAINT =
         new DifferentialDriveVoltageConstraint(feedForward, kinematics, maxVoltageAuto);
 
-    // Keep in case we want to create trajectory without PathWeaver
     public static final double maxVelocityMetersPerSecond = 1;
     public static final double maxAccelerationMetersPerSecondSquared = 1;
 

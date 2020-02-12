@@ -34,5 +34,11 @@
   <suppress files="DriveTrain"
     lines="329"
     message="Missing a Javadoc comment."/>
+  <suppress files="AutoBrettV7.java"
+    lines="17"
+    message="Missing a Javadoc comment."/>
+  <suppress files="TestReverse.java"
+    lines="20"
+    message="Missing a Javadoc comment."/>
 
 </suppressions>
