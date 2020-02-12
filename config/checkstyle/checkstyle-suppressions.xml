@@ -40,5 +40,4 @@
   <suppress files="TestReverse.java"
     lines="20"
     message="Missing a Javadoc comment."/>
-
 </suppressions>

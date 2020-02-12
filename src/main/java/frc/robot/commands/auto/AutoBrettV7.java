@@ -12,9 +12,10 @@ import frc.robot.subsystems.DriveTrain;
  */
 public class AutoBrettV7 extends SequentialCommandGroup {
 
-  DriveTrain drive;
+  private DriveTrain drive;
 
   public AutoBrettV7() {
+
     drive = DriveTrain.getInstance();
 
     Trajectory trajectoryForward = TrajectoryGenerator.generateTrajectory(

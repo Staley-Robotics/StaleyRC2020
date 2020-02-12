@@ -27,6 +27,7 @@ import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.ToggleJoint;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Vision;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -41,6 +42,7 @@ public class RobotContainer {
 
   private final DriveTrain drive;
   private final Intake intake;
+  private final Vision vision;
 
   private SendableChooser<Command> autoChooser;
 
@@ -52,6 +54,7 @@ public class RobotContainer {
 
     drive = DriveTrain.getInstance();
     intake = Intake.getInstance();
+    vision = Vision.getInstance();
 
     autoChooser = new SendableChooser<>();
 
@@ -90,7 +93,6 @@ public class RobotContainer {
     JoystickButton zeroEncoder = new JoystickButton(driveController, Button.kA.value);
     zeroEncoder.whenPressed(new ZeroEncoder());
   }
-
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
