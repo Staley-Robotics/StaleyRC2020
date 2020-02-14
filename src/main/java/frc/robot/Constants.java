@@ -62,12 +62,11 @@ public final class Constants {
     public static final double ramseteZ = 0.7;
   }
 
-  public static final class OperatorInputConstants {
+  public static final class FeederConstants {
+    public static final int topMasterPort = 00;
+    public static final int bottomMasterPort = 00;
 
-    public static final int driveControllerPort = 0;
-    public static final int altControllerPort = 1;
   }
-
   public static final class IntakeConstants {
 
     public static final int jointMotorPort = 0;
@@ -75,6 +74,12 @@ public final class Constants {
 
     public static final double defaultIntakePower = 0.2;
     public static final double defualtJointPower = 0.2;
+  }
+
+  public static final class OperatorInputConstants {
+
+    public static final int driveControllerPort = 0;
+    public static final int altControllerPort = 1;
   }
 
   public static final class SensorConstants {
