@@ -81,4 +81,10 @@ public final class Constants {
 
     public static final int limitSwitchPort = 0;
   }
+
+  public static final class WinchConstants {
+
+    public static final int leftWinchPort = 00;
+    public static final int rightWinchPort = 00;
+  }
 }
