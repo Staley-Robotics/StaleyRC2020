@@ -67,6 +67,7 @@ public final class Constants {
     public static final int bottomMasterPort = 00;
 
   }
+
   public static final class IntakeConstants {
 
     public static final int jointMotorPort = 0;
