@@ -37,6 +37,9 @@ public class DriveTrain extends SubsystemBase {
   private WPI_VictorSPX leftFollower1;
   private WPI_VictorSPX leftFollower2;
 
+  /**
+   * Constructor.
+   */
   public DriveTrain() {
     rightMaster = new WPI_TalonSRX(rMotorMasterPort);
     rightFollower1 = new WPI_VictorSPX(rMotorFollower1Port);
