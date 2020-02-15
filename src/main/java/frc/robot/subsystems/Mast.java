@@ -12,9 +12,9 @@ import static frc.robot.Constants.MastConstants.mastMotorPort;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class TelescopicMast extends SubsystemBase {
+public class Mast extends SubsystemBase {
 
-  private static Intake instance;
+  private static Mast instance;
 
   private VictorSP mastMotor;
 
@@ -23,17 +23,18 @@ public class TelescopicMast extends SubsystemBase {
     retracted
   }
 
-  public TelescopicMast() {
+  public Mast() {
     mastMotor = new VictorSP(mastMotorPort);
   }
 
   /**
-   * You're mom.
-   * @return mom.
+   * Makes Mast a singleton.
+   *
+   * @return mast instance
    */
-  public static Intake getInstance() {
+  public static Mast getInstance() {
     if (instance == null) {
-      instance = new Intake();
+      instance = new Mast();
     }
     return instance;
   }

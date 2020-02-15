@@ -60,6 +60,6 @@ public final class Constants {
   }
 
   public static final class MastConstants {
-    public static final int mastMotorPort = 0;
+    public static final int mastMotorPort = 00;
   }
 }
