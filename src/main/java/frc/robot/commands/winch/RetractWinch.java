@@ -9,17 +9,23 @@ public class RetractWinch extends CommandBase {
 
   private double motorPower;
 
+  /**
+   * Retracts winch at motor power. For example, a new RetractWinch(1) will retract the winch at
+   * full speed.
+   *
+   * @param motorPower power to feed motors.
+   */
   public RetractWinch(double motorPower) {
     winch = Winch.getInstance();
     addRequirements(winch);
 
-    this.motorPower = motorPower;
+    this.motorPower = -1 * motorPower;
 
   }
 
   @Override
   public void execute() {
-    winch.runWinch(-this.motorPower);
+    winch.runWinch(this.motorPower);
   }
 
   @Override

@@ -19,6 +19,9 @@ public class Winch extends SubsystemBase {
   private WPI_VictorSPX leftWinch;
   private WPI_VictorSPX rightWinch;
 
+  /**
+   * Winch Constructor.
+   */
   public Winch() {
 
     leftWinch = new WPI_VictorSPX(leftWinchPort);
@@ -28,7 +31,7 @@ public class Winch extends SubsystemBase {
   }
 
   /**
-   * MAkes Winch a singleton.
+   * Makes Winch a singleton.
    * @return
    */
   public static Winch getInstance() {
