@@ -33,7 +33,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -43,7 +42,6 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
@@ -54,7 +52,6 @@ import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -76,15 +73,14 @@ public class DriveTrain extends SubsystemBase {
   private DifferentialDrive drive;
 
   private AHRS gyro;
-  private double gyroInversionNumber;
 
   private final DifferentialDriveOdometry odometry;
   private Pose2d savedPose;
 
   private DoubleSolenoid shifter;
-  private PistonState pistonState;
+  private ShifterState shifterState;
 
-  public enum PistonState {
+  public enum ShifterState {
     low,
     high
   }
@@ -132,13 +128,12 @@ public class DriveTrain extends SubsystemBase {
     drive.setRightSideInverted(false);
 
     gyro = new AHRS();
-    gyroInversionNumber = -1;
 
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
 
     shifter = new DoubleSolenoid(0, 7);
 
-    pistonState = PistonState.high;
+    shifterState = ShifterState.high;
 
     zeroEncoder();
   }
@@ -156,7 +151,7 @@ public class DriveTrain extends SubsystemBase {
 
     SmartDashboard.putNumber("Heading: ", getHeading());
 
-    SmartDashboard.putString("Piston State", getPistonState().toString());
+    SmartDashboard.putString("Piston State", getShifterState().toString());
   }
 
   /**
@@ -228,21 +223,6 @@ public class DriveTrain extends SubsystemBase {
     drive.feed();
   }
 
-  //    Invert all motors, encoders, gyro
-  //    public void invertDrive(){
-  //      rightMaster.setSensorPhase(true);
-  //      leftMaster.setSensorPhase(true);
-  //
-  //      drive.setRightSideInverted(false);
-  //
-  //      leftMaster.setInverted(true);
-  //      leftFollower1.setInverted(true);
-  //      leftFollower1.setInverted(true);
-  //
-  //      // Gyro was already inverted previously, we set it false here.
-  //      setGyroInverted(false);
-  //    }
-
   public void stopDrive() {
     drive.arcadeDrive(0, 0);
   }
@@ -269,10 +249,6 @@ public class DriveTrain extends SubsystemBase {
 
   public void zeroYaw() {
     gyro.zeroYaw();
-  }
-
-  public void setGyroInverted(boolean inversion) {
-    gyroInversionNumber = (inversion ? -1 : 1);
   }
 
   /* Encoder */
@@ -356,14 +332,13 @@ public class DriveTrain extends SubsystemBase {
    * @return Converts Yaw to 180 to -180.
    */
   public double getHeading() {
-    return Math.IEEEremainder(getYaw(), 360) * gyroInversionNumber;
+    return Math.IEEEremainder(getYaw(), 360) * -1;
   }
 
   /**
    * Sets the robot's current position as the origin.
    */
   public void resetOdometry() {
-    zeroEncoder();
     savedPose = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
     odometry.resetPosition(savedPose, Rotation2d.fromDegrees(getHeading()));
   }
@@ -446,22 +421,22 @@ public class DriveTrain extends SubsystemBase {
 
   public void shiftLow() {
     shifter.set(Value.kForward);
-    pistonState = PistonState.low;
+    shifterState = ShifterState.low;
   }
 
   public void shiftHigh() {
     shifter.set(Value.kReverse);
-    pistonState = PistonState.high;
+    shifterState = ShifterState.high;
   }
 
-  public PistonState getPistonState() {
-    return pistonState;
+  public ShifterState getShifterState() {
+    return shifterState;
   }
 
   public void toggleShift() {
-    if (pistonState == PistonState.high) {
+    if (shifterState == ShifterState.high) {
       shiftLow();
-    } else if (pistonState == PistonState.low) {
+    } else if (shifterState == ShifterState.low) {
       shiftHigh();
     } else {
       throw new IllegalStateException("bruh");

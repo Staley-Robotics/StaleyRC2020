@@ -13,19 +13,10 @@ public class Pneumatics extends SubsystemBase {
 
   private static Pneumatics instance;
   private Compressor compressor;
-  private CompressorState compressorState;
-
-  public enum CompressorState {
-    on,
-    off
-  }
 
   private Pneumatics() {
     compressor = new Compressor(compressorPort);
-
-    compressorState = CompressorState.off;
   }
-
 
   /**
    * Makes Pneumatics a singleton.
@@ -46,12 +37,10 @@ public class Pneumatics extends SubsystemBase {
   }
 
   public void compressorToggle() {
-    if (compressorState == CompressorState.off) {
-      runCompressor();
-      compressorState = CompressorState.on;
-    } else if (compressorState == CompressorState.on) {
+    if (compressor.getClosedLoopControl()) {
       stopCompressor();
-      compressorState = CompressorState.off;
+    } else {
+      runCompressor();
     }
   }
 }

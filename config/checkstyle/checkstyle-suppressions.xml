@@ -41,6 +41,6 @@
     lines="20"
     message="Missing a Javadoc comment."/>
   <suppress files="Pneumatics.java"
-    lines="48"
+    lines="39"
     message="Missing a Javadoc comment."/>
 </suppressions>

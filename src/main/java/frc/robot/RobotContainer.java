@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.ZeroEncoder;
@@ -61,8 +60,9 @@ public class RobotContainer {
     vision = Vision.getInstance();
 
     autoChooser = new SendableChooser<>();
-
     autoChooser.setDefaultOption("Straight Auto", new AutoBrettV7());
+
+    SmartDashboard.putData("Auto", autoChooser);
 
     drive.setDefaultCommand(
         new RunCommand(
@@ -74,8 +74,6 @@ public class RobotContainer {
             drive));
 
     configureButtonBindings();
-
-    SmartDashboard.putData("Auto", autoChooser);
   }
 
 
@@ -93,6 +91,7 @@ public class RobotContainer {
     zeroEncoder.whenPressed(new ZeroEncoder());
 
     /* Alt Controller */
+
     JoystickButton toggleIntake = new JoystickButton(altController, Button.kX.value);
     toggleIntake.toggleWhenPressed(new RunIntake(defaultIntakePower));
 
@@ -104,11 +103,6 @@ public class RobotContainer {
 
     JoystickButton togglePiston = new JoystickButton(altController, Button.kA.value);
     togglePiston.whenPressed(drive::toggleShift, drive);
-  }
-
-  // TODO: This will need to go somewhere else later on.
-  public void resetOdometry() {
-    new InstantCommand(drive::resetOdometry, drive).schedule();
   }
 
   /**
