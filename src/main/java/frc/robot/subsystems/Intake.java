@@ -62,6 +62,7 @@ public class Intake extends SubsystemBase {
 
   /**
    * Sets the state of the Pivot opposite to what it currently is.
+   *
    * @param currentState the state of the Pivot.
    */
   public void setPivotState(PivotState currentState) {

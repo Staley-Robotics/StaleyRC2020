@@ -7,14 +7,39 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.MastConstants.mastMotorPort;
+
+import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Climber extends SubsystemBase {
-  /**
-   * Creates a new Climber.
-   */
-  public Climber() {
+/**
+ * Mast Subsystem. 1 VictorSP, 1 mini cim. Telescoping mast carries the climber's payload up to the
+ * bar. Then we winch ourselves up.
+ */
+public class Mast extends SubsystemBase {
 
+  private static Mast instance;
+
+  private VictorSP mastMotor;
+
+  public Mast() {
+    mastMotor = new VictorSP(mastMotorPort);
+  }
+
+  /**
+   * Makes Mast a singleton.
+   *
+   * @return mast instance
+   */
+  public static Mast getInstance() {
+    if (instance == null) {
+      instance = new Mast();
+    }
+    return instance;
+  }
+
+  public void runMast(double power) {
+    mastMotor.set(power);
   }
 
   @Override

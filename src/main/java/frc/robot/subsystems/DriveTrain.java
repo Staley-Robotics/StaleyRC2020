@@ -179,7 +179,7 @@ public class DriveTrain extends SubsystemBase {
 
     // Deadzones for rotate.
     if (rotate > 0.1 || rotate < 0.1) {
-      rotate = rotate * turnSpeedModifier;
+      rotate = -rotate * turnSpeedModifier;
     } else {
       rotate = 0;
     }
