@@ -81,4 +81,9 @@ public final class Constants {
 
     public static final int limitSwitchPort = 0;
   }
+
+  public static final class PneumaticConstants {
+
+    public static final int compressorPort = 0;
+  }
 }

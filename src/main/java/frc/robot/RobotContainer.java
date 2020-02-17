@@ -18,16 +18,18 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.ZeroEncoder;
 import frc.robot.commands.auto.AutoBrettV7;
-import frc.robot.commands.auto.TestReverse;
-import frc.robot.commands.drivetrain.ZeroEncoder;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.ToggleJoint;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.Vision;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -41,27 +43,26 @@ public class RobotContainer {
   private XboxController altController;
 
   private final DriveTrain drive;
+  private final Pneumatics pneumatics;
   private final Intake intake;
   private final Vision vision;
 
   private SendableChooser<Command> autoChooser;
 
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    configureButtonBindings();
 
     drive = DriveTrain.getInstance();
+    pneumatics = Pneumatics.getInstance();
     intake = Intake.getInstance();
     vision = Vision.getInstance();
 
     autoChooser = new SendableChooser<>();
 
-    autoChooser.setDefaultOption("TestAuto", new TestReverse());
-    autoChooser.addOption("Straight Auto", new AutoBrettV7());
-
-    SmartDashboard.putData("Auto", autoChooser);
+    autoChooser.setDefaultOption("Straight Auto", new AutoBrettV7());
 
     drive.setDefaultCommand(
         new RunCommand(
@@ -71,7 +72,12 @@ public class RobotContainer {
                     driveController.getTriggerAxis(GenericHID.Hand.kLeft),
                     driveController.getX(GenericHID.Hand.kLeft)),
             drive));
+
+    configureButtonBindings();
+
+    SmartDashboard.putData("Auto", autoChooser);
   }
+
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -83,15 +89,26 @@ public class RobotContainer {
     driveController = new XboxController(driveControllerPort);
     altController = new XboxController(altControllerPort);
 
-    // Runs Intake
+    JoystickButton zeroEncoder = new JoystickButton(driveController, Button.kA.value);
+    zeroEncoder.whenPressed(new ZeroEncoder());
+
+    /* Alt Controller */
     JoystickButton toggleIntake = new JoystickButton(altController, Button.kX.value);
     toggleIntake.toggleWhenPressed(new RunIntake(defaultIntakePower));
 
     JoystickButton toggleJointPosition = new JoystickButton(altController, Button.kY.value);
     toggleJointPosition.whenPressed(new ToggleJoint(defualtJointPower).withTimeout(1));
 
-    JoystickButton zeroEncoder = new JoystickButton(driveController, Button.kA.value);
-    zeroEncoder.whenPressed(new ZeroEncoder());
+    JoystickButton toggleCompressor = new JoystickButton(altController, Button.kBumperLeft.value);
+    toggleCompressor.whenPressed(pneumatics::compressorToggle, pneumatics);
+
+    JoystickButton togglePiston = new JoystickButton(altController, Button.kA.value);
+    togglePiston.whenPressed(drive::toggleShift, drive);
+  }
+
+  // TODO: This will need to go somewhere else later on.
+  public void resetOdometry() {
+    new InstantCommand(drive::resetOdometry, drive).schedule();
   }
 
   /**
