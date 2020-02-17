@@ -40,4 +40,13 @@
   <suppress files="TestReverse.java"
     lines="20"
     message="Missing a Javadoc comment."/>
-</suppressions>
+  <suppress files="WallOfFlesh.java"
+    lines="49"
+    message="Abbreviation in name 'runWOFSpinner' must contain no more than '2' consecutive capital letters."/>
+  <suppress files="SpinToCount.java"
+    lines="14"
+    message="Abbreviation in name 'WOF' must contain no more than '2' consecutive capital letters."/>
+  <suppress files="SpinToCount.java"
+    lines="17"
+    message="Missing a Javadoc comment."/>
+  </suppressions>
