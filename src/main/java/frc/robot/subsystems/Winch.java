@@ -14,9 +14,8 @@ import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
- * Winch subsystem. 2 mini cims, 2 Victor SP.
- * <p>
- * Winch pulls the robot up during climbing.
+ * Winch subsystem. 2 mini cims, 2 Victor SP. Winch connects from the body of the robot to the
+ * climbing payload to pull the robot up during climbing.
  */
 public class Winch extends SubsystemBase {
 
