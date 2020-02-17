@@ -11,7 +11,7 @@
   <!--  <suppress message="Missing a Javadoc comment"/>-->
 
   <suppress files="DriveTrain.java"
-    lines="39"
+    lines="0-470"
     message="Missing a Javadoc comment."/>
   <suppress files="Intake.java"
     lines="32"
@@ -24,5 +24,23 @@
     message="Missing a Javadoc comment."/>
   <suppress files="RunIntake.java"
     lines="13"
+    message="Missing a Javadoc comment."/>
+  <suppress files="RobotContainer.java"
+    lines="102"
+    message="'METHOD_DEF' should be separated from previous statement."/>
+  <suppress files="TestAuto.java"
+    lines="10"
+    message="Missing a Javadoc comment."/>
+  <suppress files="DriveTrain"
+    lines="329"
+    message="Missing a Javadoc comment."/>
+  <suppress files="AutoBrettV7.java"
+    lines="17"
+    message="Missing a Javadoc comment."/>
+  <suppress files="TestReverse.java"
+    lines="20"
+    message="Missing a Javadoc comment."/>
+  <suppress files="Pneumatics.java"
+    lines="39"
     message="Missing a Javadoc comment."/>
 </suppressions>

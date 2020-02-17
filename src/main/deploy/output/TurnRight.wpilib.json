@@ -1,0 +1,32 @@
+[
+  {
+    "time": 0.0,
+    "velocity": 0.0,
+    "acceleration": 1.0,
+    "pose": {
+      "translation": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "rotation": {
+        "radians": 0.0
+      }
+    },
+    "curvature": 0.0
+  },
+  {
+    "time": 0.4990676262149138,
+    "velocity": 0.4990676262149138,
+    "acceleration": 1.0000000000000002,
+    "pose": {
+      "translation": {
+        "x": 1,
+        "y": -1
+      },
+      "rotation": {
+        "radians": 4.71239
+      }
+    },
+    "curvature": -0.4881706895197283
+  }
+]

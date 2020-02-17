@@ -7,6 +7,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants.  This class should not be used for any other purpose.  All constants should be
@@ -26,6 +30,36 @@ public final class Constants {
     public static final int lMotorMasterPort = 4;
     public static final int lMotorFollower1Port = 6;
     public static final int lMotorFollower2Port = 7;
+
+    public static final double kS = 0.702;
+    public static final double kV = 5.3;
+    public static final double kA = 0.341;
+    public static final double kP = 0.00175;
+    public static final double kD = 0;
+    public static final double rSquared = 1.0;
+
+    public static final SimpleMotorFeedforward feedForward = new SimpleMotorFeedforward(kS, kV, kA);
+
+    public static final double maxVoltageAuto = 11;
+
+    public static final int countPerRevolution = 4096;
+    public static final double wheelDiameterMeters = 0.1524;
+    public static final double wheelCircumferenceMeters = wheelDiameterMeters * Math.PI;
+
+    // If Measured in meters trackWidth should be 0.58m
+    public static final double trackWidth = 0.5792883856032899;
+    public static final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(
+        trackWidth);
+
+    public static final DifferentialDriveVoltageConstraint VOLTAGE_CONSTRAINT =
+        new DifferentialDriveVoltageConstraint(feedForward, kinematics, maxVoltageAuto);
+
+    public static final double maxVelocityMetersPerSecond = 1;
+    public static final double maxAccelerationMetersPerSecondSquared = 1;
+
+    // These are standard m/s. Values provided by wpilib docs
+    public static final double ramseteB = 2;
+    public static final double ramseteZ = 0.7;
   }
 
   public static final class OperatorInputConstants {
@@ -51,5 +85,10 @@ public final class Constants {
   public static final class MastConstants {
 
     public static final int mastMotorPort = 00;
+  }
+  
+  public static final class PneumaticConstants {
+
+    public static final int compressorPort = 0;
   }
 }
