@@ -7,16 +7,34 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.FeederConstants.bottomMasterPort;
-import static frc.robot.Constants.FeederConstants.topMasterPort;
+import static frc.robot.Constants.MagazineConstants.bottomMasterPort;
+import static frc.robot.Constants.MagazineConstants.pistonHardStopForwardChannel;
+import static frc.robot.Constants.MagazineConstants.pistonHardStopReverseChannel;
+import static frc.robot.Constants.MagazineConstants.topMasterPort;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+/**
+ * Magazine that holds 5 balls. It will run constantly while we are intaking. Once we get a ball, it
+ * will be taken towards the shooter until it finds it can't move any more (either by collision with
+ * our piston hard stop or another ball). Once we have 5 balls, our driver will stop the magazine
+ * from running. When we shoot, we retract the piston hard stop and then shoot.
+ */
 public class Magazine extends SubsystemBase {
+
+  private DoubleSolenoid pistonHardStop;
   private static Magazine instance;
   private WPI_TalonSRX topMaster;
   private WPI_TalonSRX bottomMaster;
+  private PistonHardStopState pistonHardStopState;
+
+  private enum PistonHardStopState {
+    extended,
+    retracted
+  }
 
   /**
    * Constructor.
@@ -26,10 +44,13 @@ public class Magazine extends SubsystemBase {
     bottomMaster = new WPI_TalonSRX(bottomMasterPort);
     topMaster.setInverted(false);
     bottomMaster.setInverted(true);
+    pistonHardStop = new DoubleSolenoid(pistonHardStopForwardChannel, pistonHardStopReverseChannel);
+    extendHardStop();
   }
 
   /**
    * Makes Magazine a singleton.
+   *
    * @return Magazine instance
    */
   public static Magazine getInstance() {
@@ -37,6 +58,16 @@ public class Magazine extends SubsystemBase {
       instance = new Magazine();
     }
     return instance;
+  }
+
+  public void extendHardStop() {
+    pistonHardStop.set(Value.kForward);
+    pistonHardStopState = PistonHardStopState.extended;
+  }
+
+  public void retractHardStop() {
+    pistonHardStop.set(Value.kReverse);
+    pistonHardStopState = PistonHardStopState.retracted;
   }
 
   @Override

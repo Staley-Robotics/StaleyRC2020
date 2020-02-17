@@ -62,10 +62,12 @@ public final class Constants {
     public static final double ramseteZ = 0.7;
   }
 
-  public static final class FeederConstants {
+  public static final class MagazineConstants {
+
     public static final int topMasterPort = 00;
     public static final int bottomMasterPort = 00;
-
+    public static final int pistonHardStopForwardChannel = 00;
+    public static final int pistonHardStopReverseChannel = 00;
   }
 
   public static final class IntakeConstants {

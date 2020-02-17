@@ -3,32 +3,32 @@ package frc.robot.commands.magazine;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Magazine;
 
-public class RunMagazineBackward extends CommandBase {
+public class RunMagazine extends CommandBase {
 
   private Magazine magazine;
 
   private double motorPower;
 
   /**
-   * Runs magazine in reverse at motor power. For example, a new RunMagazineBackward(1) will run the
-   * magazine backward at top speed.
+   * Runs magazine at motor power. For example, a new RunMagazine(1) will run the magazine towards
+   * the shooter at top speed.
    *
    * @param motorPower power to feed motors.
    */
-  public RunMagazineBackward(double motorPower) {
+  public RunMagazine(double motorPower) {
     magazine = Magazine.getInstance();
     addRequirements(magazine);
 
-    this.motorPower = -1 * motorPower;
+    this.motorPower = motorPower;
   }
 
   @Override
   public void execute() {
-    magazine.runMagazine(this.motorPower);
+    magazine.runMagazine(motorPower);
   }
 
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }
