@@ -21,17 +21,19 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ControlType;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class ShooterFlyWheel extends SubsystemBase {
+/**
+ * Two neos spin a single flywheel shooter at incredibly high speed.
+ */
+public class Shooter extends SubsystemBase {
 
   private CANSparkMax leftShooterNeo;
   private CANSparkMax rightShooterNeo;
 
   private CANPIDController PIDController;
 
-  private CANEncoder flyWheelEncoder;
+  private CANEncoder shooterEncoder;
 
   /*These thresholds are used by commands to decide how close the flywhell's velocity needs to be to
   its setpoint before a ball is fed.
@@ -43,7 +45,7 @@ public class ShooterFlyWheel extends SubsystemBase {
   public final double targetHeight = 5;
   public final double shooterHeight = 4;
 
-  public ShooterFlyWheel() {
+  public Shooter() {
 
     leftShooterNeo = new CANSparkMax(leftShooterNeoPort, MotorType.kBrushless);
     rightShooterNeo = new CANSparkMax(rightShooterNeoPort, MotorType.kBrushless);
@@ -53,9 +55,9 @@ public class ShooterFlyWheel extends SubsystemBase {
     leftShooterNeo.setIdleMode(IdleMode.kCoast);
     rightShooterNeo.setIdleMode(IdleMode.kCoast);
 
-    flyWheelEncoder = rightShooterNeo.getEncoder();
+    shooterEncoder = rightShooterNeo.getEncoder();
     PIDController = rightShooterNeo.getPIDController();
-    PIDController.setFeedbackDevice(flyWheelEncoder);
+    PIDController.setFeedbackDevice(shooterEncoder);
 
     updatePIDConstants();
     stop();
@@ -112,7 +114,7 @@ public class ShooterFlyWheel extends SubsystemBase {
   }
 
   /**
-   * Calculates surface velocity from RPM
+   * Calculates surface velocity from RPM.
    *
    * @param rpm revolutions per minute of the NEOS.
    * @return calculated surface velocity in meters per second.
