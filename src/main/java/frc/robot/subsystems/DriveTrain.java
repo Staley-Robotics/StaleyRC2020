@@ -31,6 +31,8 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -74,6 +76,14 @@ public class DriveTrain extends SubsystemBase {
 
   private final DifferentialDriveOdometry odometry;
   private Pose2d savedPose;
+
+  private DoubleSolenoid shifter;
+  private ShifterState shifterState;
+
+  public enum ShifterState {
+    low,
+    high
+  }
 
   public DriveTrain() {
     rightMaster = new WPI_TalonSRX(rMotorMasterPort);
@@ -121,6 +131,10 @@ public class DriveTrain extends SubsystemBase {
 
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
 
+    shifter = new DoubleSolenoid(0, 7);
+
+    shifterState = ShifterState.high;
+
     zeroEncoder();
   }
 
@@ -136,6 +150,8 @@ public class DriveTrain extends SubsystemBase {
     SmartDashboard.putNumber("RightEncoder(m): ", stepsToMeters(getRightEncoderPosition()));
 
     SmartDashboard.putNumber("Heading: ", getHeading());
+
+    SmartDashboard.putString("Piston State", getShifterState().toString());
   }
 
   /**
@@ -401,5 +417,29 @@ public class DriveTrain extends SubsystemBase {
             this::tankDriveVelocity,
             this))
         .andThen(this::stopDrive, this);
+  }
+
+  public void shiftLow() {
+    shifter.set(Value.kForward);
+    shifterState = ShifterState.low;
+  }
+
+  public void shiftHigh() {
+    shifter.set(Value.kReverse);
+    shifterState = ShifterState.high;
+  }
+
+  public ShifterState getShifterState() {
+    return shifterState;
+  }
+
+  public void toggleShift() {
+    if (shifterState == ShifterState.high) {
+      shiftLow();
+    } else if (shifterState == ShifterState.low) {
+      shiftHigh();
+    } else {
+      throw new IllegalStateException("bruh");
+    }
   }
 }
