@@ -30,9 +30,6 @@ public final class Constants {
 
   public static final class OperatorInputConstants {
 
-    /**
-     * This comment needs to be here for the code to build.
-     */
     public static final int driveControllerPort = 0;
     public static final int altControllerPort = 1;
   }

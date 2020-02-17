@@ -13,20 +13,14 @@ import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
- * Mast Subsystem.
- * 1 VictorSP, 1 mini cim
- * carries the climber's payload up to the bar.
+ * Mast Subsystem. 1 VictorSP, 1 mini cim. Telescoping mast carries the climber's payload up to the
+ * bar. Then we winch ourselves up.
  */
 public class Mast extends SubsystemBase {
 
   private static Mast instance;
 
   private VictorSP mastMotor;
-
-  public enum MastState {
-    expanded,
-    retracted
-  }
 
   public Mast() {
     mastMotor = new VictorSP(mastMotorPort);

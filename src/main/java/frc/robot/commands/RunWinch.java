@@ -13,6 +13,7 @@ public class RunWinch extends CommandBase {
 
   /**
    * Runs winch at motor power. Positive is extend
+   *
    * @param motorPower power to feed motors.
    */
   public RunWinch(double motorPower) {

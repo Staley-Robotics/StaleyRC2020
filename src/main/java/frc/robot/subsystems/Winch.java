@@ -14,9 +14,9 @@ import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
- * Winch subsystem.
- * 2 mini cims, 2 Victor SP
- * pulls us up during climbing
+ * Winch subsystem. 2 mini cims, 2 Victor SP.
+ * <p>
+ * Winch pulls the robot up during climbing.
  */
 public class Winch extends SubsystemBase {
 
@@ -36,6 +36,7 @@ public class Winch extends SubsystemBase {
 
   /**
    * Makes Winch a singleton.
+   *
    * @return Winch instance
    */
   public static Winch getInstance() {
