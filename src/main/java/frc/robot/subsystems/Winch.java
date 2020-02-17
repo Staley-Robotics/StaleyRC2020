@@ -10,31 +10,33 @@ package frc.robot.subsystems;
 import static frc.robot.Constants.DriveConstants.lMotorFollower1Port;
 import static frc.robot.Constants.DriveConstants.lMotorFollower2Port;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+/**
+ * Winch subsystem.
+ * 2 mini cims, 2 Victor SP
+ * pulls us up during climbing
+ */
 public class Winch extends SubsystemBase {
 
   private static Winch instance;
-  /**
-   * Creates a new Winch.
-   */
-  private WPI_VictorSPX leftWinch;
-  private WPI_VictorSPX rightWinch;
+  private VictorSP leftWinch;
+  private VictorSP rightWinch;
 
   /**
-   * Winch for climbing. 2 mini cims powered by 2 Victor SP
+   * Winch for climbing.
    */
   public Winch() {
-    leftWinch = new WPI_VictorSPX(lMotorFollower1Port);
-    rightWinch = new WPI_VictorSPX(lMotorFollower2Port);
+    leftWinch = new VictorSP(lMotorFollower1Port);
+    rightWinch = new VictorSP(lMotorFollower2Port);
     leftWinch.setInverted(false);
     rightWinch.setInverted(true);
   }
 
   /**
    * Makes Winch a singleton.
-   * @return Wxinch instance
+   * @return Winch instance
    */
   public static Winch getInstance() {
     if (instance == null) {
