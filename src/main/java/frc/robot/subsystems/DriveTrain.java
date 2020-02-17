@@ -15,6 +15,8 @@ import static frc.robot.Constants.DriveConstants.kinematics;
 import static frc.robot.Constants.DriveConstants.lMotorFollower1Port;
 import static frc.robot.Constants.DriveConstants.lMotorFollower2Port;
 import static frc.robot.Constants.DriveConstants.lMotorMasterPort;
+import static frc.robot.Constants.DriveConstants.maxAccelerationMetersPerSecondSquared;
+import static frc.robot.Constants.DriveConstants.maxVelocityMetersPerSecond;
 import static frc.robot.Constants.DriveConstants.rMotorFollower1Port;
 import static frc.robot.Constants.DriveConstants.rMotorFollower2Port;
 import static frc.robot.Constants.DriveConstants.rMotorMasterPort;
@@ -40,14 +42,23 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class DriveTrain extends SubsystemBase {
@@ -360,32 +371,71 @@ public class DriveTrain extends SubsystemBase {
   /* Trajectory */
 
   /**
-   * Loads trajectory from given name.
+   * Gets a TrajectoryConfig.
    *
-   * @param trajectoryName Name of Trajectory file.
-   * @return Trajectory path to be used.
+   * @param isReversed Determines if the bot goes backwards or forwards during a trajectory.
+   * @return Trajectory Configuration.
    */
-  private Trajectory loadTrajectory(String trajectoryName) {
-    try {
-      return TrajectoryUtil.fromPathweaverJson(
-          Filesystem.getDeployDirectory().toPath().resolve(
-              Paths.get("output", trajectoryName + ".wpilib.json")));
-    } catch (IOException e) {
-      DriverStation.reportError(e.toString(), false);
-      return null;
-    }
+  public TrajectoryConfig getTrajectoryConfig(boolean isReversed) {
+    return new TrajectoryConfig(maxVelocityMetersPerSecond, maxAccelerationMetersPerSecondSquared)
+        .setKinematics(kinematics)
+        .setStartVelocity(0)
+        .setEndVelocity(0)
+        .setReversed(isReversed);
   }
 
   /**
-   * Creates Trajectory Command from trajectory file name.
+   * Replicates data from Pathweaver produced JSON file so that we can input our own Trajectory
+   * Configuration.
    *
-   * @param trajectoryName Name of trajectory file.
-   * @return Auto Command with given trajectory.
+   * @param trajectoryName Name of Trajectory
+   * @return List of Pose2d objects
    */
-  public Command getAutonomousCommand(String trajectoryName) {
+  public List<Pose2d> getPoseListFromPathWeaverJson(String trajectoryName) {
+    ArrayList<Pose2d> poseList = new ArrayList<>();
+    InputStream fis;
+    JsonReader reader;
+    JsonArray wholeFile = null;
+    try {
+      String trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(
+          Paths.get("output", trajectoryName + ".wpilib.json")).toString();
+
+      fis = new FileInputStream(trajectoryPath);
+
+      reader = Json.createReader(fis);
+
+      wholeFile = reader.readArray();
+
+      reader.close();
+    } catch (IOException e) {
+      System.out.println("CATCH RAN");
+      e.printStackTrace();
+    }
+
+    for (JsonObject state : wholeFile.getValuesAs(JsonObject.class)) {
+      JsonObject pose = state.getJsonObject("pose");
+      JsonObject translation = pose.getJsonObject("translation");
+      JsonObject rotation = pose.getJsonObject("rotation");
+
+      double x = translation.getJsonNumber("x").doubleValue();
+      double y = translation.getJsonNumber("y").doubleValue();
+      double radians = rotation.getJsonNumber("radians").doubleValue();
+
+      poseList.add(new Pose2d(x, y, new Rotation2d(radians)));
+    }
+    return poseList;
+  }
+
+  /**
+   * Creates a command using trajectory that drives the robot during autonomous.
+   *
+   * @param trajectory A combination of pose and speed.
+   * @return Auto command with given pose.
+   */
+  public Command getAutonomousCommandFromTrajectory(Trajectory trajectory) {
     return new InstantCommand()
         .andThen(new RamseteCommand(
-            Objects.requireNonNull(loadTrajectory(trajectoryName)),
+            trajectory,
             this::getPose,
             new RamseteController(ramseteB, ramseteZ),
             kinematics,
@@ -408,14 +458,12 @@ public class DriveTrain extends SubsystemBase {
     return pistonState;
   }
 
-  public void toggleShift(){
-    if(pistonState == PistonState.high){
+  public void toggleShift() {
+    if (pistonState == PistonState.high) {
       shiftLow();
-    }
-    else if(pistonState == PistonState.low){
+    } else if (pistonState == PistonState.low) {
       shiftHigh();
-    }
-    else{
+    } else {
       throw new IllegalStateException("bruh");
     }
   }
