@@ -62,10 +62,12 @@ public final class Constants {
     public static final double ramseteZ = 0.7;
   }
 
-  public static final class OperatorInputConstants {
+  public static final class MagazineConstants {
 
-    public static final int driveControllerPort = 0;
-    public static final int altControllerPort = 1;
+    public static final int topMasterPort = 00;
+    public static final int bottomMasterPort = 00;
+    public static final int pistonHardStopForwardChannel = 00;
+    public static final int pistonHardStopReverseChannel = 00;
   }
 
   public static final class IntakeConstants {
@@ -75,6 +77,12 @@ public final class Constants {
 
     public static final double defaultIntakePower = 0.2;
     public static final double defualtJointPower = 0.2;
+  }
+
+  public static final class OperatorInputConstants {
+
+    public static final int driveControllerPort = 0;
+    public static final int altControllerPort = 1;
   }
 
   public static final class SensorConstants {
@@ -93,5 +101,15 @@ public final class Constants {
     public static double shooterI = 0;
     public static double shooterD = 4;
     public static double shooterF = 0.00017;
+  }
+  
+  public static final class MastConstants {
+
+    public static final int mastMotorPort = 00;
+  }
+  
+  public static final class PneumaticConstants {
+
+    public static final int compressorPort = 0;
   }
 }

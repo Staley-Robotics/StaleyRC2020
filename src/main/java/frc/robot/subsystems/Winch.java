@@ -7,18 +7,51 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.DriveConstants.lMotorFollower1Port;
+import static frc.robot.Constants.DriveConstants.lMotorFollower2Port;
+
+import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+/**
+ * Winch subsystem. 2 mini cims, 2 Victor SP. Winch connects from the body of the robot to the
+ * climbing payload to pull the robot up during climbing.
+ */
 public class Winch extends SubsystemBase {
+
+  private static Winch instance;
+  private VictorSP leftWinch;
+  private VictorSP rightWinch;
+
   /**
-   * Creates a new Winch.
+   * Winch for climbing.
    */
   public Winch() {
+    leftWinch = new VictorSP(lMotorFollower1Port);
+    rightWinch = new VictorSP(lMotorFollower2Port);
+    leftWinch.setInverted(false);
+    rightWinch.setInverted(true);
+  }
 
+  /**
+   * Makes Winch a singleton.
+   *
+   * @return Winch instance
+   */
+  public static Winch getInstance() {
+    if (instance == null) {
+      instance = new Winch();
+    }
+    return instance;
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public void runWinch(double motorPower) {
+    leftWinch.set(motorPower);
+    rightWinch.set(motorPower);
   }
 }
