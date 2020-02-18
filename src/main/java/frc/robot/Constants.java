@@ -90,6 +90,19 @@ public final class Constants {
     public static final int limitSwitchPort = 0;
   }
 
+  public static final class ShooterConstants {
+
+    public static final int leftShooterNeoPort = 2;
+    public static final int rightShooterNeoPort = 3;
+    public static final double flyWheelRadius = 2;
+
+    //temporary values
+    public static double shooterP = 0.0011;
+    public static double shooterI = 0;
+    public static double shooterD = 4;
+    public static double shooterF = 0.00017;
+  }
+  
   public static final class MastConstants {
 
     public static final int mastMotorPort = 00;

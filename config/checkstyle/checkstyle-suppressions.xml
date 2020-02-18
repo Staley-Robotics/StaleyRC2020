@@ -5,11 +5,6 @@
   "https://checkstyle.org/dtds/suppressions_1_2.dtd">
 
 <suppressions>
-  <!-- <suppress checks="MemberName"
-    files="Robot.java"
-    lines="21-23"/> -->
-  <!--  <suppress message="Missing a Javadoc comment"/>-->
-
   <suppress files="DriveTrain.java"
     lines="0-470"
     message="Missing a Javadoc comment."/>
@@ -40,6 +35,21 @@
   <suppress files="TestReverse.java"
     lines="20"
     message="Missing a Javadoc comment."/>
+  <suppress files="Shooter.java"
+    lines="34"
+    message="Abbreviation in name 'PIDController' must contain no more than '2' consecutive capital letters."/>
+  <suppress files="Shooter.java"
+    lines="34"
+    message="Member name 'PIDController' must match pattern"/>
+  <suppress files="Shooter.java"
+    lines="48"
+    message="Missing a Javadoc comment."/>
+  <suppress files="Shooter.java"
+    lines="74"
+    message="Abbreviation in name 'updatePIDConstants' must contain no more than '2' consecutive capital letters."/>
+  <suppress files="Shooter.java"
+    lines="132"
+    message="Abbreviation in name 'surfaceVelocityToRPM' must contain no more than '2' consecutive capital letters."/>
   <suppress files="Pneumatics.java"
     lines="39"
     message="Missing a Javadoc comment."/>
