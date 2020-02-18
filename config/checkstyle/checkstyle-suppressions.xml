@@ -47,7 +47,7 @@
   <suppress files="WallOfFlesh.java"
     lines="61"
     message="Abbreviation in name 'runWOFSpinner' must contain no more than '2' consecutive capital letters."/>
-  </suppressions>
+
   <suppress files="Shooter.java"
     lines="34"
     message="Abbreviation in name 'PIDController' must contain no more than '2' consecutive capital letters."/>
