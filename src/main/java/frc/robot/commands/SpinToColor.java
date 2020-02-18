@@ -56,7 +56,3 @@ public class SpinToColor extends CommandBase {
     wallOfFlesh.runWOFSpinner(0);
   }
 }
-
-
-
-

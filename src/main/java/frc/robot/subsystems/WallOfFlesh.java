@@ -38,6 +38,18 @@ public class WallOfFlesh extends SubsystemBase {
     WOFMotor = new WPI_TalonSRX(WallOfFleshConstants.wallOfFleshMotorPort);
   }
 
+  /**
+   * Makes WOF a singleton.
+   *
+   * @return WOF instance.
+   */
+  public static WallOfFlesh getInstance() {
+    if (instance == null) {
+      instance = new WallOfFlesh();
+    }
+    return instance;
+  }
+
   public Color[] getColors() {
     return Colors;
   }
@@ -64,18 +76,6 @@ public class WallOfFlesh extends SubsystemBase {
         * 4096);
     WOFMotor.getSelectedSensorPosition();
     WOFMotor.set(ControlMode.Position, WOFMotor.getSelectedSensorPosition() + goalEncoderTick);
-  }
-
-  /**
-   * Makes WOF a singleton.
-   *
-   * @return WOF instance.
-   */
-  public static WallOfFlesh getInstance() {
-    if (instance == null) {
-      instance = new WallOfFlesh();
-    }
-    return instance;
   }
 
   @Override

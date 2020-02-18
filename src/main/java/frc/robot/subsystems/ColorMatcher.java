@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 
-
 /**
  * Code Copied from FRC225 RI3D.
  */

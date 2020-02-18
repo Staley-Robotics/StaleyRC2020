@@ -37,7 +37,3 @@ public class SpinToCount extends CommandBase {
     wallOfFlesh.runWOFSpinner(0);
   }
 }
-
-
-
-
