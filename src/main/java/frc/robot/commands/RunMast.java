@@ -1,12 +1,13 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Mast;
 
 public class RunMast extends CommandBase {
 
   private Mast mast;
-
+  private DriveTrain driveTrain;
   private double motorPower;
 
   /**
