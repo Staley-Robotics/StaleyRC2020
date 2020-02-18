@@ -90,6 +90,15 @@ public final class Constants {
     public static final int limitSwitchPort = 0;
   }
 
+  public static final class WallOfFleshConstants {
+
+    public static final int wallOfFleshMotorPort = 00;
+    public static final double spinnerRadius = 50000;
+    public static final double spinnerPower = 0.3;
+    public static final double wallOfFleshSpinnerCircumference = 3;
+    public static final double wallOfFleshCircumference = 100;
+  }
+  
   public static final class ShooterConstants {
 
     public static final int leftShooterNeoPort = 2;
