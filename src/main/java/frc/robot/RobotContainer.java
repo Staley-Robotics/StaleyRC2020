@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.ZeroEncoder;
 import frc.robot.commands.auto.AutoBrettV7;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.ToggleJoint;
@@ -86,9 +85,6 @@ public class RobotContainer {
   private void configureButtonBindings() {
     driveController = new XboxController(driveControllerPort);
     altController = new XboxController(altControllerPort);
-
-    JoystickButton zeroEncoder = new JoystickButton(driveController, Button.kA.value);
-    zeroEncoder.whenPressed(new ZeroEncoder());
 
     /* Alt Controller */
 

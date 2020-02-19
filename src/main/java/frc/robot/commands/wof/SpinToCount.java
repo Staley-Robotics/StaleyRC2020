@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.wof;
 
 import static frc.robot.Constants.WallOfFleshConstants.wallOfFleshCircumference;
 import static frc.robot.Constants.WallOfFleshConstants.wallOfFleshSpinnerCircumference;
