@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class Shooter extends SubsystemBase {
 
+  private static Shooter instance;
   private CANSparkMax leftShooterNeo;
   private CANSparkMax rightShooterNeo;
 
@@ -79,6 +80,13 @@ public class Shooter extends SubsystemBase {
     PIDController.setFF(shooterF);
   }
 
+  public static Shooter getInstance() {
+    if (instance == null) {
+      instance = new Shooter();
+    }
+    return instance;
+  }
+
   /**
    * Sets the PID target from surface velocity.
    *
@@ -109,8 +117,9 @@ public class Shooter extends SubsystemBase {
    *
    * @param distance distance from the target in inches.
    */
-  public void calculateSurfaceVelocity(double distance) {
+  public double calculateSurfaceVelocity(double distance) {
     //Lots of commented math I don't want to copy
+    return 2;
   }
 
   /**
