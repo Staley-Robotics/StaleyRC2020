@@ -20,8 +20,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.ZeroEncoder;
 import frc.robot.commands.auto.AutoBrettV7;
+import frc.robot.commands.auto.AutoTwo;
+import frc.robot.commands.auto.SpotJacked;
+import frc.robot.commands.auto.Yoink;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.ToggleJoint;
 import frc.robot.subsystems.DriveTrain;
@@ -60,7 +62,10 @@ public class RobotContainer {
     vision = Vision.getInstance();
 
     autoChooser = new SendableChooser<>();
-    autoChooser.setDefaultOption("Straight Auto", new AutoBrettV7());
+    autoChooser.setDefaultOption("Auto BrettV7", new AutoBrettV7());
+    autoChooser.addOption("Auto Two", new AutoTwo());
+    autoChooser.addOption("Spot Jacked", new SpotJacked());
+    autoChooser.addOption("Yoink", new Yoink());
 
     SmartDashboard.putData("Auto", autoChooser);
 
@@ -87,8 +92,8 @@ public class RobotContainer {
     driveController = new XboxController(driveControllerPort);
     altController = new XboxController(altControllerPort);
 
-    JoystickButton zeroEncoder = new JoystickButton(driveController, Button.kA.value);
-    zeroEncoder.whenPressed(new ZeroEncoder());
+//    JoystickButton zeroEncoder = new JoystickButton(driveController, Button.kA.value);
+//    zeroEncoder.whenPressed(new ZeroEncoder());
 
     /* Alt Controller */
 
