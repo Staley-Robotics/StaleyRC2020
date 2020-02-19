@@ -20,14 +20,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.auto.AutoBrettV7;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.ToggleJoint;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.Vision;
-
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -59,7 +57,6 @@ public class RobotContainer {
     vision = Vision.getInstance();
 
     autoChooser = new SendableChooser<>();
-    autoChooser.setDefaultOption("Straight Auto", new AutoBrettV7());
 
     SmartDashboard.putData("Auto", autoChooser);
 

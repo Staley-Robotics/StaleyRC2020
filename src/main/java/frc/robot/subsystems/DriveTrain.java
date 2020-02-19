@@ -22,8 +22,8 @@ import static frc.robot.Constants.DriveConstants.rMotorFollower2Port;
 import static frc.robot.Constants.DriveConstants.rMotorMasterPort;
 import static frc.robot.Constants.DriveConstants.ramseteB;
 import static frc.robot.Constants.DriveConstants.ramseteZ;
-import static frc.robot.Constants.DriveConstants.wheelCircumferenceMeters;
 import static frc.robot.Constants.DriveConstants.rotateDeadzone;
+import static frc.robot.Constants.DriveConstants.wheelCircumferenceMeters;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
