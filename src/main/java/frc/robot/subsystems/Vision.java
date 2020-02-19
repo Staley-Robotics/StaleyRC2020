@@ -27,6 +27,7 @@ public class Vision extends SubsystemBase {
 
   /**
    * Makes Vision a singleton.
+   *
    * @return Vision
    */
   public static Vision getInstance() {

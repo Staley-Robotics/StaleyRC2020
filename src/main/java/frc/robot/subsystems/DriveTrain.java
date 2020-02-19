@@ -23,6 +23,7 @@ import static frc.robot.Constants.DriveConstants.rMotorMasterPort;
 import static frc.robot.Constants.DriveConstants.ramseteB;
 import static frc.robot.Constants.DriveConstants.ramseteZ;
 import static frc.robot.Constants.DriveConstants.wheelCircumferenceMeters;
+import static frc.robot.Constants.DriveConstants.rotateDeadzone;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
@@ -33,6 +34,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -86,13 +88,18 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public DriveTrain() {
-    rightMaster = new WPI_TalonSRX(rMotorMasterPort);
-    rightFollower1 = new WPI_VictorSPX(rMotorFollower1Port);
-    rightFollower2 = new WPI_VictorSPX(rMotorFollower2Port);
+    try {
+      rightMaster = new WPI_TalonSRX(rMotorMasterPort);
+      rightFollower1 = new WPI_VictorSPX(rMotorFollower1Port);
+      rightFollower2 = new WPI_VictorSPX(rMotorFollower2Port);
 
-    leftMaster = new WPI_TalonSRX(lMotorMasterPort);
-    leftFollower1 = new WPI_VictorSPX(lMotorFollower1Port);
-    leftFollower2 = new WPI_VictorSPX(lMotorFollower2Port);
+      leftMaster = new WPI_TalonSRX(lMotorMasterPort);
+      leftFollower1 = new WPI_VictorSPX(lMotorFollower1Port);
+      leftFollower2 = new WPI_VictorSPX(lMotorFollower2Port);
+    } catch (RuntimeException ex) {
+      DriverStation
+          .reportError("Error Instantiating drive motor controllers: " + ex.getMessage(), true);
+    }
 
     TalonSRXConfiguration talonConfig = new TalonSRXConfiguration();
     talonConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.CTRE_MagEncoder_Relative;
@@ -126,8 +133,11 @@ public class DriveTrain extends SubsystemBase {
     drive = new DifferentialDrive(leftMaster, rightMaster);
     drive.setSafetyEnabled(false);
     drive.setRightSideInverted(false);
-
-    gyro = new AHRS();
+    try {
+      gyro = new AHRS();
+    } catch (RuntimeException ex) {
+      DriverStation.reportError("Error Instantiating Gyro: " + ex.getMessage(), true);
+    }
 
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
 
@@ -178,7 +188,7 @@ public class DriveTrain extends SubsystemBase {
     forward = forward * speedModifier;
 
     // Deadzones for rotate.
-    if (rotate > 0.1 || rotate < 0.1) {
+    if (rotate > rotateDeadzone || rotate < rotateDeadzone) {
       rotate = -rotate * turnSpeedModifier;
     } else {
       rotate = 0;
