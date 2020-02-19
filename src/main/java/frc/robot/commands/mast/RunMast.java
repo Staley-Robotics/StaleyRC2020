@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.mast;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Mast;
@@ -6,7 +6,6 @@ import frc.robot.subsystems.Mast;
 public class RunMast extends CommandBase {
 
   private Mast mast;
-
   private double motorPower;
 
   /**

@@ -60,6 +60,14 @@ public final class Constants {
     // These are standard m/s. Values provided by wpilib docs
     public static final double ramseteB = 2;
     public static final double ramseteZ = 0.7;
+
+    public static final double turnP = 0.5;
+    public static final double turnI = 0.5;
+    public static final double turnD = 0.5;
+
+    public static final double turnToleranceDeg = 0.5;
+    public static final double turnRateToleranceDegPerS = 5;
+
   }
 
   public static final class MagazineConstants {
@@ -98,7 +106,7 @@ public final class Constants {
     public static final double wallOfFleshSpinnerCircumference = 3;
     public static final double wallOfFleshCircumference = 100;
   }
-  
+
   public static final class ShooterConstants {
 
     public static final int leftShooterNeoPort = 2;
@@ -111,12 +119,12 @@ public final class Constants {
     public static double shooterD = 4;
     public static double shooterF = 0.00017;
   }
-  
+
   public static final class MastConstants {
 
     public static final int mastMotorPort = 00;
   }
-  
+
   public static final class PneumaticConstants {
 
     public static final int compressorPort = 0;
