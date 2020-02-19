@@ -7,18 +7,23 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.shooter.ShootBalls;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Vision;
 
-public class AutoTwo extends SequentialCommandGroup {
+/**
+ * Immediately shoots pre-loaded balls. Moves to friendly trench to gather 3 balls. Turns and moves
+ * back to face the generator and then shoots the 3 collected balls.
+ */
+public class CenteredSixBall extends SequentialCommandGroup {
 
   private DriveTrain drive;
-  private Intake intake;
+  private Vision vision;
 
-  public AutoTwo() {
+  public CenteredSixBall() {
 
     drive = DriveTrain.getInstance();
-    intake = Intake.getInstance();
+    vision = Vision.getInstance();
 
     Trajectory trajectoryForward = TrajectoryGenerator.generateTrajectory(
         drive.getPoseListFromPathWeaverJson("ShootAndTurn"),
@@ -31,11 +36,11 @@ public class AutoTwo extends SequentialCommandGroup {
     addCommands(
         new InstantCommand(drive::resetOdometry, drive),
         new InstantCommand(drive::zeroEncoder, drive),
-        //needs a shooter command here
+        new ShootBalls(vision.calculateDistance(vision.getPitch())),
         drive.getAutonomousCommandFromTrajectory(trajectoryForward),
         new RunIntake(defaultIntakePower).withTimeout(10),
-        drive.getAutonomousCommandFromTrajectory(trajectoryForwardContinue)
-        //needs a shooter command here
+        drive.getAutonomousCommandFromTrajectory(trajectoryForwardContinue),
+        new ShootBalls(vision.calculateDistance(vision.getPitch()))
     );
   }
 }

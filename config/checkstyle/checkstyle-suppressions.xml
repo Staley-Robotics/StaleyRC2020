@@ -69,4 +69,19 @@
   <suppress files="Pneumatics.java"
     lines="39"
     message="Missing a Javadoc comment."/>
+  <suppress files="AutoBrettV7.java"
+    lines="16"
+    message="Missing a Javadoc comment."/>
+  <suppress files="CenteredSixBall.java"
+    lines="23"
+    message="Missing a Javadoc comment."/>
+  <suppress files="LeftSixBall.java"
+    lines="23"
+    message="Missing a Javadoc comment."/>
+  <suppress files="RightToEnemyTrenchToShoot.java"
+    lines="23"
+    message="Missing a Javadoc comment."/>
+  <suppress files="ShootThenMoveOff.java"
+    lines="19"
+    message="Missing a Javadoc comment."/>
 </suppressions>

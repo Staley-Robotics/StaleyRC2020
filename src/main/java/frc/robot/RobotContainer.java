@@ -21,12 +21,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auto.AutoBrettV7;
+import frc.robot.commands.auto.CenteredSixBall;
+import frc.robot.commands.auto.LeftSixBall;
+import frc.robot.commands.auto.RightToEnemyTrenchToShoot;
+import frc.robot.commands.auto.ShootThenMoveOff;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.ToggleJoint;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pneumatics;
-import frc.robot.subsystems.Vision;
 
 
 /**
@@ -42,8 +44,6 @@ public class RobotContainer {
 
   private final DriveTrain drive;
   private final Pneumatics pneumatics;
-  private final Intake intake;
-  private final Vision vision;
 
   private SendableChooser<Command> autoChooser;
 
@@ -55,11 +55,13 @@ public class RobotContainer {
 
     drive = DriveTrain.getInstance();
     pneumatics = Pneumatics.getInstance();
-    intake = Intake.getInstance();
-    vision = Vision.getInstance();
 
     autoChooser = new SendableChooser<>();
-    autoChooser.setDefaultOption("Straight Auto", new AutoBrettV7());
+    autoChooser.setDefaultOption("AutoBrettV7", new AutoBrettV7());
+    autoChooser.addOption("Center Six Ball", new CenteredSixBall());
+    autoChooser.addOption("Shoot Then Move", new ShootThenMoveOff());
+    autoChooser.addOption("Spot Jacked", new LeftSixBall());
+    autoChooser.addOption("Yoink", new RightToEnemyTrenchToShoot());
 
     SmartDashboard.putData("Auto", autoChooser);
 
