@@ -12,6 +12,7 @@ import static frc.robot.Constants.IntakeConstants.jointMotorPort;
 import static frc.robot.Constants.SensorConstants.limitSwitchPort;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -30,9 +31,13 @@ public class Intake extends SubsystemBase {
   }
 
   public Intake() {
-    limitSwitch = new DigitalInput(limitSwitchPort);
-    jointMotor = new VictorSP(jointMotorPort);
-    intakeMotor = new VictorSP(intakeMotorPort);
+    try {
+      jointMotor = new VictorSP(jointMotorPort);
+      intakeMotor = new VictorSP(intakeMotorPort);
+    } catch (RuntimeException ex) {
+      DriverStation
+          .reportError("Error Instantiating Intake Motor Controllers: " + ex.getMessage(), true);
+    }
 
     pivotState = PivotState.up;
   }

@@ -21,6 +21,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ControlType;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -47,10 +48,13 @@ public class Shooter extends SubsystemBase {
   public final double shooterHeight = 4;
 
   public Shooter() {
-
-    leftShooterNeo = new CANSparkMax(leftShooterNeoPort, MotorType.kBrushless);
-    rightShooterNeo = new CANSparkMax(rightShooterNeoPort, MotorType.kBrushless);
-
+    try {
+      leftShooterNeo = new CANSparkMax(leftShooterNeoPort, MotorType.kBrushless);
+      rightShooterNeo = new CANSparkMax(rightShooterNeoPort, MotorType.kBrushless);
+    } catch (RuntimeException ex) {
+      DriverStation
+          .reportError("Error Instantiating Shooter Motor Controllers: " + ex.getMessage(), true);
+    }
     leftShooterNeo.follow(rightShooterNeo, true);
 
     leftShooterNeo.setIdleMode(IdleMode.kCoast);
@@ -99,7 +103,7 @@ public class Shooter extends SubsystemBase {
   /**
    * Calculates the surface velocity from neo RPM.
    *
-   * @retrun calculated surface velocity.
+   * @return calculated surface velocity.
    */
   public double getFlyWheelSpeed() {
     return rpmToSurfaceVelocity(rightShooterNeo.getEncoder().getVelocity());

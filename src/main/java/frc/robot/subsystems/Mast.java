@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.MastConstants.mastMotorPort;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -23,7 +24,12 @@ public class Mast extends SubsystemBase {
   private VictorSP mastMotor;
 
   public Mast() {
-    mastMotor = new VictorSP(mastMotorPort);
+    try {
+      mastMotor = new VictorSP(mastMotorPort);
+    } catch (RuntimeException ex) {
+      DriverStation
+          .reportError("Error Instantiating Mast Motor Controllers: " + ex.getMessage(), true);
+    }
   }
 
   /**

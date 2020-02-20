@@ -15,6 +15,7 @@ import static frc.robot.Constants.MagazineConstants.topMasterPort;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -40,8 +41,13 @@ public class Magazine extends SubsystemBase {
    * Constructor.
    */
   public Magazine() {
-    topMaster = new WPI_TalonSRX(topMasterPort);
-    bottomMaster = new WPI_TalonSRX(bottomMasterPort);
+    try {
+      topMaster = new WPI_TalonSRX(topMasterPort);
+      bottomMaster = new WPI_TalonSRX(bottomMasterPort);
+    } catch (RuntimeException ex) {
+      DriverStation
+          .reportError("Error Instantiating Magazine Motor Controllers: " + ex.getMessage(), true);
+    }
     topMaster.setInverted(false);
     bottomMaster.setInverted(true);
     pistonHardStop = new DoubleSolenoid(pistonHardStopForwardChannel, pistonHardStopReverseChannel);

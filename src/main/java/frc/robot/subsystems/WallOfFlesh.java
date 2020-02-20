@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.WallOfFleshConstants;
@@ -35,7 +36,12 @@ public class WallOfFlesh extends SubsystemBase {
         ColorMatcher.kRedTarget,
         ColorMatcher.kYellowTarget,
         ColorMatcher.kBlueTarget};
-    WOFMotor = new WPI_TalonSRX(WallOfFleshConstants.wallOfFleshMotorPort);
+    try {
+      WOFMotor = new WPI_TalonSRX(WallOfFleshConstants.wallOfFleshMotorPort);
+    } catch (RuntimeException ex) {
+      DriverStation
+          .reportError("Error Instantiating WOF Motor Controllers: " + ex.getMessage(), true);
+    }
   }
 
   /**
