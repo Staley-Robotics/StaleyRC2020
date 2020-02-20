@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.WallOfFleshConstants;
@@ -25,7 +26,7 @@ public class WallOfFlesh extends SubsystemBase {
   private static Color[] Colors;
   private static WallOfFlesh instance;
 
-  private static WPI_TalonSRX WofMotor;
+  private static WPI_TalonSRX WOFMotor;
   private DoubleSolenoid wofPiston;
 
   /**
@@ -38,7 +39,12 @@ public class WallOfFlesh extends SubsystemBase {
         ColorMatcher.kRedTarget,
         ColorMatcher.kYellowTarget,
         ColorMatcher.kBlueTarget};
-    WofMotor = new WPI_TalonSRX(WallOfFleshConstants.wallOfFleshMotorPort);
+    try {
+      WOFMotor = new WPI_TalonSRX(WallOfFleshConstants.wallOfFleshMotorPort);
+    } catch (RuntimeException ex) {
+      DriverStation
+          .reportError("Error Instantiating WOF Motor Controllers: " + ex.getMessage(), true);
+    }
     wofPiston = new DoubleSolenoid(0, 7);
   }
 
@@ -55,7 +61,6 @@ public class WallOfFlesh extends SubsystemBase {
   }
 
   public Color[] getColors() {
-
     return Colors;
   }
 
@@ -64,8 +69,7 @@ public class WallOfFlesh extends SubsystemBase {
   }
 
   public void runWOFSpinner(double power) {
-
-    WofMotor.set(power);
+    WOFMotor.set(power);
   }
 
   public Color getCurrentColor() {
@@ -88,8 +92,8 @@ public class WallOfFlesh extends SubsystemBase {
   public void spinDistance(double distance) {
     int goalEncoderTick = (int) ((distance / (2 * Math.PI * WallOfFleshConstants.spinnerRadius))
         * 4096);
-    WofMotor.getSelectedSensorPosition();
-    WofMotor.set(ControlMode.Position, WofMotor.getSelectedSensorPosition() + goalEncoderTick);
+    WOFMotor.getSelectedSensorPosition();
+    WOFMotor.set(ControlMode.Position, WOFMotor.getSelectedSensorPosition() + goalEncoderTick);
   }
 
   @Override

@@ -27,6 +27,7 @@ public class Vision extends SubsystemBase {
 
   /**
    * Makes Vision a singleton.
+   *
    * @return Vision
    */
   public static Vision getInstance() {
@@ -71,7 +72,7 @@ public class Vision extends SubsystemBase {
   /**
    * Calculates distance using trig and a pitch measurement. See https://docs.limelightvision.io/en/latest/cs_estimating_distance.html#using-a-fixed-angle-camera
    *
-   * @return
+   * @return Calculated Distance.
    */
   public double calculateDistance(double pitch) {
     return (bottomOfTargetHeight - fixedCameraHeight) / (Math
