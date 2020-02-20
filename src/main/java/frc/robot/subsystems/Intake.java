@@ -32,7 +32,6 @@ public class Intake extends SubsystemBase {
 
   public Intake() {
     try {
-
       jointMotor = new VictorSP(jointMotorPort);
       intakeMotor = new VictorSP(intakeMotorPort);
     } catch (RuntimeException ex) {
