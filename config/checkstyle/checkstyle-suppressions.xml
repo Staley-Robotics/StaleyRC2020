@@ -12,7 +12,7 @@
     lines="33"
     message="Missing a Javadoc comment."/>
   <suppress files="Intake.java"
-    lines="46"
+    lines="45"
     message="Missing a Javadoc comment."/>
   <suppress files="ToggleJoint.java"
     lines="12"
