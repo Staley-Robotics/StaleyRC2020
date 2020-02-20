@@ -23,6 +23,9 @@ public class Mast extends SubsystemBase {
 
   private VictorSP mastMotor;
 
+  /**
+   * Constructor.
+   */
   public Mast() {
     try {
       mastMotor = new VictorSP(mastMotorPort);
