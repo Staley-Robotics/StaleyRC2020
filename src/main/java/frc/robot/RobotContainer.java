@@ -8,15 +8,17 @@
 package frc.robot;
 
 import static frc.robot.Constants.IntakeConstants.defaultIntakePower;
-import static frc.robot.Constants.IntakeConstants.defualtJointPower;
+import static frc.robot.Constants.IntakeConstants.defaultJointPower;
 import static frc.robot.Constants.OperatorInputConstants.altControllerPort;
 import static frc.robot.Constants.OperatorInputConstants.driveControllerPort;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -27,9 +29,16 @@ import frc.robot.commands.auto.RightToEnemyTrenchToShoot;
 import frc.robot.commands.auto.ShootThenMoveOff;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.ToggleJoint;
+import frc.robot.commands.mast.RunMast;
+import frc.robot.commands.shooter.ShootBallsCommandGroup;
+import frc.robot.commands.vision.VisionYawAlign;
+import frc.robot.commands.winch.RunWinch;
+import frc.robot.commands.wof.SpinToColor;
+import frc.robot.commands.wof.SpinToCount;
+import frc.robot.enums.XboxController.DpadButton;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Pneumatics;
-
+import frc.robot.subsystems.WallOfFlesh;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -44,6 +53,7 @@ public class RobotContainer {
 
   private final DriveTrain drive;
   private final Pneumatics pneumatics;
+  private final WallOfFlesh wallOfFlesh;
 
   private SendableChooser<Command> autoChooser;
 
@@ -55,6 +65,7 @@ public class RobotContainer {
 
     drive = DriveTrain.getInstance();
     pneumatics = Pneumatics.getInstance();
+    wallOfFlesh = WallOfFlesh.getInstance();
 
     autoChooser = new SendableChooser<>();
     autoChooser.setDefaultOption("AutoBrettV7", new AutoBrettV7());
@@ -90,17 +101,47 @@ public class RobotContainer {
 
     /* Alt Controller */
 
-    JoystickButton toggleIntake = new JoystickButton(altController, Button.kX.value);
-    toggleIntake.toggleWhenPressed(new RunIntake(defaultIntakePower));
+    JoystickButton runIntake = new JoystickButton(altController, Button.kA.value);
+    runIntake.whenHeld(new RunIntake(defaultIntakePower));
 
-    JoystickButton toggleJointPosition = new JoystickButton(altController, Button.kY.value);
-    toggleJointPosition.whenPressed(new ToggleJoint(defualtJointPower).withTimeout(1));
+    JoystickButton toggleJointPosition = new JoystickButton(altController, Button.kX.value);
+    toggleJointPosition.whenPressed(new ToggleJoint(defaultJointPower).withTimeout(1));
 
-    JoystickButton toggleCompressor = new JoystickButton(altController, Button.kBumperLeft.value);
+    JoystickButton toggleCompressor = new JoystickButton(altController, Button.kY.value);
     toggleCompressor.whenPressed(pneumatics::compressorToggle, pneumatics);
 
-    JoystickButton togglePiston = new JoystickButton(altController, Button.kA.value);
+    JoystickButton shoot = new JoystickButton(altController, Button.kB.value);
+    shoot.whenPressed(new ShootBallsCommandGroup());
+
+    JoystickButton wofUp = new JoystickButton(altController, DpadButton.kDpadUp.value);
+    wofUp.whenPressed(wallOfFlesh::raiseWof, wallOfFlesh);
+
+    JoystickButton wofDown = new JoystickButton(altController, DpadButton.kDpadDown.value);
+    wofDown.whenPressed(wallOfFlesh::lowerWof, wallOfFlesh);
+
+    JoystickButton wofSpinNumber = new JoystickButton(altController, DpadButton.kDpadLeft.value);
+    wofSpinNumber.whenPressed(new SpinToCount(3.5));
+
+    JoystickButton wofSpinColor = new JoystickButton(altController, DpadButton.kDpadRight.value);
+    wofSpinColor.whenPressed(new SpinToColor(Color.kBlue));
+
+    JoystickButton mastUp = new JoystickButton(altController, Button.kBumperLeft.value);
+    mastUp.whileHeld(new RunMast(0.5));
+
+    JoystickButton mastDown = new JoystickButton(altController, Button.kBumperRight.value);
+    mastDown.whileHeld(new RunMast(-0.5));
+
+    JoystickButton winchExtend = new JoystickButton(altController, Axis.kRightTrigger.value);
+    winchExtend.whileHeld(new RunWinch(0.5));
+
+    JoystickButton winchRetract = new JoystickButton(altController, Axis.kLeftTrigger.value);
+    winchRetract.whileHeld(new RunWinch(-0.5));
+
+    JoystickButton togglePiston = new JoystickButton(driveController, Button.kX.value);
     togglePiston.whenPressed(drive::toggleShift, drive);
+
+    JoystickButton lineUpShot = new JoystickButton(driveController, Button.kB.value);
+    lineUpShot.whenPressed(new VisionYawAlign());
   }
 
   /**

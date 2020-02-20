@@ -9,6 +9,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.WallOfFleshConstants;
@@ -23,7 +25,8 @@ public class WallOfFlesh extends SubsystemBase {
   private static Color[] Colors;
   private static WallOfFlesh instance;
 
-  private static WPI_TalonSRX WOFMotor;
+  private static WPI_TalonSRX WofMotor;
+  private DoubleSolenoid wofPiston;
 
   /**
    * Constructor.
@@ -35,7 +38,8 @@ public class WallOfFlesh extends SubsystemBase {
         ColorMatcher.kRedTarget,
         ColorMatcher.kYellowTarget,
         ColorMatcher.kBlueTarget};
-    WOFMotor = new WPI_TalonSRX(WallOfFleshConstants.wallOfFleshMotorPort);
+    WofMotor = new WPI_TalonSRX(WallOfFleshConstants.wallOfFleshMotorPort);
+    wofPiston = new DoubleSolenoid(0, 7);
   }
 
   /**
@@ -51,6 +55,7 @@ public class WallOfFlesh extends SubsystemBase {
   }
 
   public Color[] getColors() {
+
     return Colors;
   }
 
@@ -59,11 +64,20 @@ public class WallOfFlesh extends SubsystemBase {
   }
 
   public void runWOFSpinner(double power) {
-    WOFMotor.set(power);
+
+    WofMotor.set(power);
   }
 
   public Color getCurrentColor() {
     return colorMatcher.get_color();
+  }
+
+  public void raiseWof() {
+    wofPiston.set(Value.kForward);
+  }
+
+  public void lowerWof() {
+    wofPiston.set(Value.kReverse);
   }
 
   /**
@@ -74,8 +88,8 @@ public class WallOfFlesh extends SubsystemBase {
   public void spinDistance(double distance) {
     int goalEncoderTick = (int) ((distance / (2 * Math.PI * WallOfFleshConstants.spinnerRadius))
         * 4096);
-    WOFMotor.getSelectedSensorPosition();
-    WOFMotor.set(ControlMode.Position, WOFMotor.getSelectedSensorPosition() + goalEncoderTick);
+    WofMotor.getSelectedSensorPosition();
+    WofMotor.set(ControlMode.Position, WofMotor.getSelectedSensorPosition() + goalEncoderTick);
   }
 
   @Override
