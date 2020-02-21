@@ -25,12 +25,12 @@ public class RightToEnemyTrenchToShoot extends SequentialCommandGroup {
     vision = Vision.getInstance();
 
     Trajectory trajectoryForward = TrajectoryGenerator.generateTrajectory(
-        drive.getPoseListFromPathWeaverJson("SpotJackedStart"),
+        drive.getPoseListFromPathWeaverJson("ForwardToTrench"),
         drive.getTrajectoryConfig(false));
 
     Trajectory trajectoryForwardContinue = TrajectoryGenerator.generateTrajectory(
-        drive.getPoseListFromPathWeaverJson("SpotJackedEnd"),
-        drive.getTrajectoryConfig(false));
+        drive.getPoseListFromPathWeaverJson("ReverseOutOfTrench"),
+        drive.getTrajectoryConfig(true));
 
     addCommands(
         new InstantCommand(drive::resetOdometry, drive),
