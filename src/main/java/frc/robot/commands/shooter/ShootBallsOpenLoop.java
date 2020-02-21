@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Magazine;
 import frc.robot.subsystems.Shooter;
 
-public class ShootBalls extends CommandBase {
+public class ShootBallsOpenLoop extends CommandBase {
 
   private Shooter shooter;
   private Magazine magazine;
@@ -15,7 +15,7 @@ public class ShootBalls extends CommandBase {
    *
    * @param distance distance to base shot off of.
    */
-  public ShootBalls(double distance) {
+  public ShootBallsOpenLoop(double distance) {
     shooter = Shooter.getInstance();
     magazine = Magazine.getInstance();
     addRequirements(shooter, magazine);
