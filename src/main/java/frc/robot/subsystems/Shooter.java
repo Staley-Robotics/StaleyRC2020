@@ -145,4 +145,13 @@ public class Shooter extends SubsystemBase {
   private double surfaceVelocityToRPM(double surfaceVelocity) {
     return surfaceVelocity * 60 / (flyWheelRadius * 2 * Math.PI);
   }
+
+  /**
+   * Uses right trigger to shoot for testing.
+   *
+   * @param neoVelocity the speed that the shooter shoots balls
+   */
+  public void shooterTesting(double neoVelocity) {
+    rightShooterNeo.set(neoVelocity);
+  }
 }

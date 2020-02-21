@@ -9,8 +9,8 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.IntakeConstants.intakeMotorPort;
 import static frc.robot.Constants.IntakeConstants.jointMotorPort;
-import static frc.robot.Constants.SensorConstants.limitSwitchPort;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.VictorSP;
@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Intake extends SubsystemBase {
 
   private static Intake instance;
-  private static VictorSP jointMotor;
+  private static WPI_TalonSRX jointMotor;
   private static VictorSP intakeMotor;
   private DigitalInput limitSwitch;
   private PivotState pivotState;
@@ -32,7 +32,7 @@ public class Intake extends SubsystemBase {
 
   public Intake() {
     try {
-      jointMotor = new VictorSP(jointMotorPort);
+      jointMotor = new WPI_TalonSRX(jointMotorPort);
       intakeMotor = new VictorSP(intakeMotorPort);
     } catch (RuntimeException ex) {
       DriverStation
@@ -42,6 +42,10 @@ public class Intake extends SubsystemBase {
     pivotState = PivotState.up;
   }
 
+  /**
+   * Makes Intake a singleton.
+   * @return instance of intake
+   */
   public static Intake getInstance() {
     if (instance == null) {
       instance = new Intake();
@@ -63,6 +67,10 @@ public class Intake extends SubsystemBase {
 
   public PivotState getPivotState() {
     return pivotState;
+  }
+
+  public double getEncoderValue() {
+    return jointMotor.getSelectedSensorPosition();
   }
 
   /**

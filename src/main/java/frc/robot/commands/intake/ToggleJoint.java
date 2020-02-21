@@ -34,8 +34,8 @@ public class ToggleJoint extends CommandBase {
    */
   @Override
   public boolean isFinished() {
-    if (intake.getPivotState() == PivotState.down) {
-      return intake.getLimitSwitch();
+    if (intake.getEncoderValue() == 0.5) {
+      return true;
     } else {
       return false;
     }

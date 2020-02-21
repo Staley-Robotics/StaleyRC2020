@@ -23,7 +23,7 @@ public class ShootThenMoveOff extends SequentialCommandGroup {
 
     Trajectory forwardPastAutoLine = TrajectoryGenerator.generateTrajectory(
         drive.getPoseListFromPathWeaverJson("Forward"),
-        drive.getTrajectoryConfig(false));
+        drive.getTrajectoryConfig(true));
 
     addCommands(
         new InstantCommand(drive::resetOdometry, drive),
