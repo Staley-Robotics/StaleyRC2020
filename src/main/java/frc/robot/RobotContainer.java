@@ -89,13 +89,6 @@ public class RobotContainer {
                     driveController.getX(GenericHID.Hand.kLeft)),
             drive));
 
-    shooter.setDefaultCommand(
-        new RunCommand(
-            () ->
-                shooter.shooterTesting(
-                  altController.getTriggerAxis(GenericHID.Hand.kRight)),
-            shooter));
-
     configureButtonBindings();
   }
 
@@ -142,8 +135,8 @@ public class RobotContainer {
     JoystickButton mastDown = new JoystickButton(altController, Button.kBumperRight.value);
     mastDown.whileHeld(new RunMast(-0.5));
 
-    //JoystickButton winchExtend = new JoystickButton(altController, Axis.kRightTrigger.value);
-    //winchExtend.whileHeld(new RunWinch(0.5));
+    JoystickButton winchExtend = new JoystickButton(altController, Axis.kRightTrigger.value);
+    winchExtend.whileHeld(new RunWinch(0.5));
 
     JoystickButton winchRetract = new JoystickButton(altController, Axis.kLeftTrigger.value);
     winchRetract.whileHeld(new RunWinch(-0.5));

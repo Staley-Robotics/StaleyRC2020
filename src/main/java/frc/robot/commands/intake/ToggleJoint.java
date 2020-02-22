@@ -17,16 +17,20 @@ public class ToggleJoint extends CommandBase {
     addRequirements(intake);
   }
 
+  @Override
+  public void initialize() {
+    if (intake.getPivotState() == PivotState.up) {
+      intake.lowerIntake();
+    } else {
+      intake.raiseIntake();
+    }
+  }
+
   /**
    * If PivotState is down, send negative power. Otherwise, send positive power.
    */
   @Override
   public void execute() {
-    if (intake.getPivotState() == PivotState.down) {
-      intake.runJoint(-motorPower);
-    } else {
-      intake.runJoint(motorPower);
-    }
   }
 
   /**
@@ -34,11 +38,7 @@ public class ToggleJoint extends CommandBase {
    */
   @Override
   public boolean isFinished() {
-    if (intake.getEncoderValue() == 0.5) {
-      return true;
-    } else {
-      return false;
-    }
+    return true;
   }
 
   /**
