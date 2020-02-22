@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.WallOfFleshConstants;
+import frc.robot.util.ColorMatcher;
 
 /**
  * Wall of Flesh subsystem. 1 775 powered by a talon srx with an encoder a piston color sensor.
