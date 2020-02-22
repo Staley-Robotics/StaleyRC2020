@@ -41,10 +41,8 @@ public class ToggleJoint extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     if (intake.getPivotState() == PivotState.up) {
-      intake.runJoint(0);
       intake.setPivotState(intake.getPivotState());
     } else if (intake.getPivotState() == PivotState.down) {
-      intake.runJoint(0);
       intake.setPivotState(intake.getPivotState());
     }
   }

@@ -79,10 +79,6 @@ public class Intake extends SubsystemBase {
     jointMotor.set(ControlMode.Position, higherPosition);
   }
 
-  public void runJoint(double power) {
-    jointMotor.set(power);
-  }
-
   public void runIntake(double power) {
     intakeMotor.set(power);
   }
