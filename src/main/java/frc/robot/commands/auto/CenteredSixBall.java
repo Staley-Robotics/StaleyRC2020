@@ -39,7 +39,7 @@ public class CenteredSixBall extends SequentialCommandGroup {
         new InstantCommand(drive::zeroEncoder, drive),
         new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch())),
         drive.getAutonomousCommandFromTrajectory(trajectoryForward),
-        new ToggleJoint(0.5),
+        new ToggleJoint(),
         new RunIntake(defaultIntakePower).withTimeout(10),
         drive.getAutonomousCommandFromTrajectory(trajectoryForwardContinue),
         new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch()))

@@ -37,7 +37,7 @@ public class RightToEnemyTrenchToShoot extends SequentialCommandGroup {
         new InstantCommand(drive::resetOdometry, drive),
         new InstantCommand(drive::zeroEncoder, drive),
         drive.getAutonomousCommandFromTrajectory(trajectoryForward),
-        new ToggleJoint(0.5),
+        new ToggleJoint(),
         new RunIntake(defaultIntakePower),
         drive.getAutonomousCommandFromTrajectory(trajectoryForwardContinue),
         new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch()))
