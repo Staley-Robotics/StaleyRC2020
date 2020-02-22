@@ -40,7 +40,7 @@ public class Magazine extends SubsystemBase {
   /**
    * Constructor.
    */
-  public Magazine() {
+  private Magazine() {
     try {
       topMaster = new WPI_TalonSRX(topMasterPort);
       bottomMaster = new WPI_TalonSRX(bottomMasterPort);

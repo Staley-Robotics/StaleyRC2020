@@ -61,7 +61,7 @@
     lines="81"
     message="Abbreviation in name 'updatePIDConstants' must contain no more than '2' consecutive capital letters."/>
   <suppress files="Shooter.java"
-    lines="152"
+    lines="157"
     message="Abbreviation in name 'surfaceVelocityToRPM' must contain no more than '2' consecutive capital letters."/>
   <suppress files="Shooter.java"
     lines="89"
