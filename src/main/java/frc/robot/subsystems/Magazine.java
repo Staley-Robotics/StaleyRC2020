@@ -16,6 +16,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -28,8 +29,8 @@ public class Magazine extends SubsystemBase {
 
   private DoubleSolenoid pistonHardStop;
   private static Magazine instance;
-  private WPI_TalonSRX topMaster;
-  private WPI_TalonSRX bottomMaster;
+  private VictorSP topMaster;
+  private VictorSP bottomMaster;
   private PistonHardStopState pistonHardStopState;
 
   private enum PistonHardStopState {
@@ -42,8 +43,8 @@ public class Magazine extends SubsystemBase {
    */
   private Magazine() {
     try {
-      topMaster = new WPI_TalonSRX(topMasterPort);
-      bottomMaster = new WPI_TalonSRX(bottomMasterPort);
+      topMaster = new VictorSP(topMasterPort);
+      bottomMaster = new VictorSP(bottomMasterPort);
     } catch (RuntimeException ex) {
       DriverStation
           .reportError("Error Instantiating Magazine Motor Controllers: " + ex.getMessage(), true);
