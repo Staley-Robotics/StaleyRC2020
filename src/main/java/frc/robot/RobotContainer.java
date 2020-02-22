@@ -110,6 +110,9 @@ public class RobotContainer {
     runIntake.whenHeld(new RunIntake(defaultIntakePower))
         .whenHeld(new RunMagazine(defaultMagazinePower));
 
+    JoystickButton runIntakeBackwards = new JoystickButton(altController, Button.kBack.value);
+    runIntakeBackwards.whenHeld(new RunIntake(-defaultIntakePower));
+
     JoystickButton toggleJointPosition = new JoystickButton(altController, Button.kX.value);
     toggleJointPosition.whenPressed(new ToggleJoint(defaultJointPower).withTimeout(1));
 
