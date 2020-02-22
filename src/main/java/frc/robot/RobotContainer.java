@@ -13,6 +13,7 @@ import static frc.robot.Constants.OperatorInputConstants.altControllerPort;
 import static frc.robot.Constants.OperatorInputConstants.driveControllerPort;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -38,6 +39,7 @@ import frc.robot.commands.wof.SpinToCount;
 import frc.robot.enums.XboxController.DpadButton;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Pneumatics;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.WallOfFlesh;
 
 /**
@@ -54,6 +56,7 @@ public class RobotContainer {
   private final DriveTrain drive;
   private final Pneumatics pneumatics;
   private final WallOfFlesh wallOfFlesh;
+  private final Shooter shooter;
 
   private SendableChooser<Command> autoChooser;
 
@@ -66,6 +69,7 @@ public class RobotContainer {
     drive = DriveTrain.getInstance();
     pneumatics = Pneumatics.getInstance();
     wallOfFlesh = WallOfFlesh.getInstance();
+    shooter = Shooter.getInstance();
 
     autoChooser = new SendableChooser<>();
     autoChooser.setDefaultOption("AutoBrettV7", new AutoBrettV7());

@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.intake.ToggleJoint;
+import frc.robot.commands.shooter.ShootBalls;
 import frc.robot.commands.shooter.ShootBallsOpenLoop;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Vision;
@@ -36,6 +38,7 @@ public class RightToEnemyTrenchToShoot extends SequentialCommandGroup {
         new InstantCommand(drive::resetOdometry, drive),
         new InstantCommand(drive::zeroEncoder, drive),
         drive.getAutonomousCommandFromTrajectory(trajectoryForward),
+        new ToggleJoint(0.5),
         new RunIntake(defaultIntakePower),
         drive.getAutonomousCommandFromTrajectory(trajectoryForwardContinue),
         new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch()))

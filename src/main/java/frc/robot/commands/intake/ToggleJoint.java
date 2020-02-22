@@ -17,28 +17,25 @@ public class ToggleJoint extends CommandBase {
     addRequirements(intake);
   }
 
-  /**
-   * If PivotState is down, send negative power. Otherwise, send positive power.
-   */
   @Override
-  public void execute() {
-    if (intake.getPivotState() == PivotState.down) {
-      intake.runJoint(-motorPower);
+  public void initialize() {
+    if (intake.getPivotState() == PivotState.up) {
+      intake.lowerIntake();
     } else {
-      intake.runJoint(motorPower);
+      intake.raiseIntake();
     }
   }
 
+  @Override
+  public void execute() {
+  }
+
   /**
-   * Code runs until timeout, end or if the limitswitch is hit.
+   * Ends the command.
    */
   @Override
   public boolean isFinished() {
-    if (intake.getPivotState() == PivotState.down) {
-      return intake.getLimitSwitch();
-    } else {
-      return false;
-    }
+    return true;
   }
 
   /**

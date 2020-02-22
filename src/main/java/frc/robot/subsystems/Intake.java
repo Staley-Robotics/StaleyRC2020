@@ -7,11 +7,17 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.IntakeConstants.higherPosition;
 import static frc.robot.Constants.IntakeConstants.intakeMotorPort;
 import static frc.robot.Constants.IntakeConstants.jointMotorPort;
-import static frc.robot.Constants.SensorConstants.limitSwitchPort;
+import static frc.robot.Constants.IntakeConstants.kD;
+import static frc.robot.Constants.IntakeConstants.kP;
+import static frc.robot.Constants.IntakeConstants.lowerPosition;
 
-import edu.wpi.first.wpilibj.DigitalInput;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,9 +26,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Intake extends SubsystemBase {
 
   private static Intake instance;
-  private static VictorSP jointMotor;
+  private static WPI_TalonSRX jointMotor;
   private static VictorSP intakeMotor;
-  private DigitalInput limitSwitch;
   private PivotState pivotState;
 
   public enum PivotState {
@@ -32,21 +37,46 @@ public class Intake extends SubsystemBase {
 
   public Intake() {
     try {
-      jointMotor = new VictorSP(jointMotorPort);
-      intakeMotor = new VictorSP(intakeMotorPort);
+      jointMotor = new WPI_TalonSRX(jointMotorPort);
     } catch (RuntimeException ex) {
       DriverStation
           .reportError("Error Instantiating Intake Motor Controllers: " + ex.getMessage(), true);
     }
+    intakeMotor = new VictorSP(intakeMotorPort);
+
+    TalonSRXConfiguration talonConfig = new TalonSRXConfiguration();
+    talonConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.CTRE_MagEncoder_Relative;
+    talonConfig.slot0.kP = kP;
+    talonConfig.neutralDeadband = 0.0;
+    talonConfig.slot0.kI = 0.0;
+    talonConfig.slot0.kD = kD;
+    talonConfig.slot0.integralZone = 400;
+    talonConfig.slot0.closedLoopPeakOutput = 1.0;
+
+    jointMotor.configAllSettings(talonConfig);
+
+    zeroEncoder();
 
     pivotState = PivotState.up;
   }
 
+  /**
+   * Makes Intake a singleton.
+   * @return instance of intake
+   */
   public static Intake getInstance() {
     if (instance == null) {
       instance = new Intake();
     }
     return instance;
+  }
+
+  public void lowerIntake() {
+    jointMotor.set(ControlMode.Position, lowerPosition);
+  }
+
+  public void raiseIntake() {
+    jointMotor.set(ControlMode.Position, higherPosition);
   }
 
   public void runJoint(double power) {
@@ -55,10 +85,6 @@ public class Intake extends SubsystemBase {
 
   public void runIntake(double power) {
     intakeMotor.set(power);
-  }
-
-  public boolean getLimitSwitch() {
-    return limitSwitch.get();
   }
 
   public PivotState getPivotState() {
@@ -76,6 +102,10 @@ public class Intake extends SubsystemBase {
     } else {
       pivotState = PivotState.down;
     }
+  }
+
+  public void zeroEncoder() {
+    jointMotor.setSelectedSensorPosition(0, 0, 10);
   }
 
   @Override

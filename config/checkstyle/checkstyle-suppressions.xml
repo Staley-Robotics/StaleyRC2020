@@ -12,7 +12,7 @@
     lines="33"
     message="Missing a Javadoc comment."/>
   <suppress files="Intake.java"
-    lines="45"
+    lines="38"
     message="Missing a Javadoc comment."/>
   <suppress files="ToggleJoint.java"
     lines="12"
@@ -73,13 +73,13 @@
     lines="16"
     message="Missing a Javadoc comment."/>
   <suppress files="CenteredSixBall.java"
-    lines="23"
+    lines="24"
     message="Missing a Javadoc comment."/>
   <suppress files="LeftSixBall.java"
-    lines="23"
+    lines="24"
     message="Missing a Javadoc comment."/>
   <suppress files="RightToEnemyTrenchToShoot.java"
-    lines="23"
+    lines="24"
     message="Missing a Javadoc comment."/>
   <suppress files="ShootThenMoveOff.java"
     lines="19"

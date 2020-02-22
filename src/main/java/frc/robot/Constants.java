@@ -71,14 +71,6 @@ public final class Constants {
     public static final double rotateDeadzone = 0.1;
   }
 
-  public static final class MagazineConstants {
-
-    public static final int topMasterPort = 00;
-    public static final int bottomMasterPort = 00;
-    public static final int pistonHardStopForwardChannel = 00;
-    public static final int pistonHardStopReverseChannel = 00;
-  }
-
   public static final class IntakeConstants {
 
     public static final int jointMotorPort = 0;
@@ -86,6 +78,20 @@ public final class Constants {
 
     public static final double defaultIntakePower = 0.2;
     public static final double defaultJointPower = 0.2;
+
+    public static final int lowerPosition = -200;
+    public static final int higherPosition = 0;
+
+    public static final double kP = 0.03;
+    public static final double kD = 0.00;
+  }
+
+  public static final class MagazineConstants {
+
+    public static final int topMasterPort = 00;
+    public static final int bottomMasterPort = 00;
+    public static final int pistonHardStopForwardChannel = 00;
+    public static final int pistonHardStopReverseChannel = 00;
   }
 
   public static final class OperatorInputConstants {
