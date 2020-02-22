@@ -40,12 +40,13 @@ public class Shooter extends SubsystemBase {
   /*These thresholds are used by commands to decide how close the flywhell's velocity needs to be to
   its setpoint before a ball is fed.
    */
-  public final double accurateShootVelocityThreshhol = 0.95;
+  public final double accurateShootVelocityThreshhold = 0.95;
   public final double fastShootVelocityThreshold = 0.8;
 
   //target height and shooter height in meters
   public final double targetHeight = 5;
   public final double shooterHeight = 4;
+  private double targetSpeed;
 
   public Shooter() {
     try {
@@ -64,6 +65,7 @@ public class Shooter extends SubsystemBase {
     PIDController = rightShooterNeo.getPIDController();
     PIDController.setFeedbackDevice(shooterEncoder);
 
+    targetSpeed = 0;
     updatePIDConstants();
     stop();
   }
@@ -97,7 +99,12 @@ public class Shooter extends SubsystemBase {
    * @param surfaceVelocity the speed that the surface of the ball goes in meters per second.
    */
   public void setFlyWheelSpeed(double surfaceVelocity) {
-    PIDController.setReference(surfaceVelocityToRPM(surfaceVelocity), ControlType.kVelocity);
+    targetSpeed = surfaceVelocityToRPM(surfaceVelocity);
+    PIDController.setReference(targetSpeed, ControlType.kVelocity);
+  }
+
+  public double getTargetFlywheelSpeed() {
+    return targetSpeed;
   }
 
   /**
