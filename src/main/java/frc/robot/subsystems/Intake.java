@@ -35,7 +35,7 @@ public class Intake extends SubsystemBase {
     down
   }
 
-  public Intake() {
+  private Intake() {
     try {
       jointMotor = new WPI_TalonSRX(jointMotorPort);
     } catch (RuntimeException ex) {
