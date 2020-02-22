@@ -17,28 +17,26 @@ import frc.robot.subsystems.Vision;
  */
 public class RightToEnemyTrenchToShoot extends LowGearAuto {
 
-  private DriveTrain drive;
   private Vision vision;
 
   public RightToEnemyTrenchToShoot() {
-    drive = DriveTrain.getInstance();
     vision = Vision.getInstance();
 
     Trajectory trajectoryForward = TrajectoryGenerator.generateTrajectory(
-        drive.getPoseListFromPathWeaverJson("ForwardToTrench"),
-        drive.getTrajectoryConfig(false));
+        driveTrain.getPoseListFromPathWeaverJson("ForwardToTrench"),
+        driveTrain.getTrajectoryConfig(false));
 
     Trajectory trajectoryForwardContinue = TrajectoryGenerator.generateTrajectory(
-        drive.getPoseListFromPathWeaverJson("ReverseOutOfTrench"),
-        drive.getTrajectoryConfig(true));
+        driveTrain.getPoseListFromPathWeaverJson("ReverseOutOfTrench"),
+        driveTrain.getTrajectoryConfig(true));
 
     addCommands(
-        new InstantCommand(drive::resetOdometry, drive),
-        new InstantCommand(drive::zeroEncoder, drive),
-        drive.getAutonomousCommandFromTrajectory(trajectoryForward),
+        new InstantCommand(driveTrain::resetOdometry, driveTrain),
+        new InstantCommand(driveTrain::zeroEncoder, driveTrain),
+        driveTrain.getAutonomousCommandFromTrajectory(trajectoryForward),
         new ToggleJoint(0.5),
         new RunIntake(defaultIntakePower),
-        drive.getAutonomousCommandFromTrajectory(trajectoryForwardContinue),
+        driveTrain.getAutonomousCommandFromTrajectory(trajectoryForwardContinue),
         new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch()))
     );
   }

@@ -204,26 +204,14 @@ public class DriveTrain extends SubsystemBase {
       drive.arcadeDrive(0, rotate);
     }
     if (isLowGearOptimal()) {
-      shiftLow();
+      if (shifterState == ShifterState.high) {
+        shiftLow();
+      }
     } else {
-      shiftHigh();
+      if (shifterState == ShifterState.low) {
+        shiftHigh();
+      }
     }
-  }
-
-  private boolean isLowGearOptimal() {
-    if ((getLeftEncoderMetersPerSecondVelocity() + getRightEncoderMetersPerSecondVelocity()) / 2
-        < shiftPointMetersPerSecond) {
-      return true;
-    }
-    return false;
-  }
-
-  public double getLeftEncoderMetersPerSecondVelocity() {
-    return stepsPerDecisecToMetersPerSec(getLeftEncoderVelocity());
-  }
-
-  public double getRightEncoderMetersPerSecondVelocity() {
-    return stepsPerDecisecToMetersPerSec(getRightEncoderVelocity());
   }
 
   /**
@@ -299,6 +287,14 @@ public class DriveTrain extends SubsystemBase {
 
   public int getRightEncoderVelocity() {
     return rightMaster.getSelectedSensorVelocity();
+  }
+
+  public double getLeftEncoderMetersPerSecondVelocity() {
+    return stepsPerDecisecToMetersPerSec(getLeftEncoderVelocity());
+  }
+
+  public double getRightEncoderMetersPerSecondVelocity() {
+    return stepsPerDecisecToMetersPerSec(getRightEncoderVelocity());
   }
 
   /**
@@ -473,5 +469,13 @@ public class DriveTrain extends SubsystemBase {
     } else {
       throw new IllegalStateException("bruh");
     }
+  }
+
+  private boolean isLowGearOptimal() {
+    if ((getLeftEncoderMetersPerSecondVelocity() + getRightEncoderMetersPerSecondVelocity()) / 2
+        < shiftPointMetersPerSecond) {
+      return true;
+    }
+    return false;
   }
 }

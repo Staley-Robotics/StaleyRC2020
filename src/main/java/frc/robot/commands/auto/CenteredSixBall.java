@@ -4,13 +4,10 @@ import static frc.robot.Constants.IntakeConstants.defaultIntakePower;
 
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.ToggleJoint;
 import frc.robot.commands.shooter.ShootBallsOpenLoop;
-import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Vision;
 
 /**
@@ -19,30 +16,27 @@ import frc.robot.subsystems.Vision;
  */
 public class CenteredSixBall extends LowGearAuto {
 
-  private DriveTrain drive;
   private Vision vision;
 
   public CenteredSixBall() {
-
-    drive = DriveTrain.getInstance();
     vision = Vision.getInstance();
 
     Trajectory trajectoryForward = TrajectoryGenerator.generateTrajectory(
-        drive.getPoseListFromPathWeaverJson("ShootAndTurn"),
-        drive.getTrajectoryConfig(false));
+        driveTrain.getPoseListFromPathWeaverJson("ShootAndTurn"),
+        driveTrain.getTrajectoryConfig(false));
 
     Trajectory trajectoryForwardContinue = TrajectoryGenerator.generateTrajectory(
-        drive.getPoseListFromPathWeaverJson("GoingForwards"),
-        drive.getTrajectoryConfig(false));
+        driveTrain.getPoseListFromPathWeaverJson("GoingForwards"),
+        driveTrain.getTrajectoryConfig(false));
 
     addCommands(
-        new InstantCommand(drive::resetOdometry, drive),
-        new InstantCommand(drive::zeroEncoder, drive),
+        new InstantCommand(driveTrain::resetOdometry, driveTrain),
+        new InstantCommand(driveTrain::zeroEncoder, driveTrain),
         new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch())),
-        drive.getAutonomousCommandFromTrajectory(trajectoryForward),
+        driveTrain.getAutonomousCommandFromTrajectory(trajectoryForward),
         new ToggleJoint(0.5),
         new RunIntake(defaultIntakePower).withTimeout(10),
-        drive.getAutonomousCommandFromTrajectory(trajectoryForwardContinue),
+        driveTrain.getAutonomousCommandFromTrajectory(trajectoryForwardContinue),
         new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch()))
     );
   }

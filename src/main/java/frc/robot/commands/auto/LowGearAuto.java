@@ -8,7 +8,7 @@ import frc.robot.subsystems.DriveTrain;
  */
 public abstract class LowGearAuto extends SequentialCommandGroup {
 
-  private DriveTrain driveTrain;
+  protected DriveTrain driveTrain;
 
   public LowGearAuto() {
     driveTrain = DriveTrain.getInstance();
