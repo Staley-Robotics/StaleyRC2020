@@ -21,6 +21,12 @@ public class ToggleJoint extends CommandBase {
     } else {
       intake.raiseIntake();
     }
+
+    if (intake.getPivotState() == PivotState.up) {
+      intake.setPivotState(PivotState.down);
+    } else if (intake.getPivotState() == PivotState.down) {
+      intake.setPivotState(PivotState.up);
+    }
   }
 
   @Override
@@ -33,17 +39,5 @@ public class ToggleJoint extends CommandBase {
   @Override
   public boolean isFinished() {
     return true;
-  }
-
-  /**
-   * Whenever end is called, set PivotState to the opposite state and stop motors from moving.
-   */
-  @Override
-  public void end(boolean interrupted) {
-    if (intake.getPivotState() == PivotState.up) {
-      intake.setPivotState(intake.getPivotState());
-    } else if (intake.getPivotState() == PivotState.down) {
-      intake.setPivotState(intake.getPivotState());
-    }
   }
 }

@@ -88,16 +88,12 @@ public class Intake extends SubsystemBase {
   }
 
   /**
-   * Sets the state of the Pivot opposite to what it currently is.
+   * Sets the state of the Pivot to current state.
    *
    * @param currentState the state of the Pivot.
    */
   public void setPivotState(PivotState currentState) {
-    if (currentState == PivotState.down) {
-      pivotState = PivotState.up;
-    } else {
-      pivotState = PivotState.down;
-    }
+    pivotState = currentState;
   }
 
   public void zeroEncoder() {

@@ -8,7 +8,7 @@
   - Drivetrain
 
 ### Intake
-This can fold inside and outside of the frame using a motor. The mecanum wheels spin the ball towards the middle and then 2 inch Colson wheels **(Check)** suck it into the middle.
+This can fold inside and outside of the frame using a motor. The mecanum wheels spin the ball towards the middle and then 2 inch Colson wheels suck it into the middle.
    - Motors
      - 2 775 
    - Speed Controllers
@@ -116,7 +116,7 @@ Wheel and motor are extended up by a piston. Then it can reach the WOF and spin 
         teleop drive method
         - Parameters (forwardPower, reversePower, turnPower)
         - Parameters (rightTrigger, leftTrigger, leftStickXAxis) (implementation for teleop)
-      - tankDrive
+      - tankDrive()
         other drive method. 
         - Parameters (leftPower, rightPower)
       - stopDrive()
