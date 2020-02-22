@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.ToggleJoint;
 import frc.robot.commands.shooter.ShootBallsOpenLoop;
+import frc.robot.commands.vision.VisionYawAlign;
 import frc.robot.subsystems.Vision;
 
 /**
@@ -32,11 +33,13 @@ public class CenteredSixBall extends LowGearAuto {
     addCommands(
         new InstantCommand(driveTrain::resetOdometry, driveTrain),
         new InstantCommand(driveTrain::zeroEncoder, driveTrain),
+        new VisionYawAlign(),
         new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch())),
         driveTrain.getAutonomousCommandFromTrajectory(trajectoryForward),
         new ToggleJoint(),
         new RunIntake(defaultIntakePower).withTimeout(10),
         driveTrain.getAutonomousCommandFromTrajectory(trajectoryForwardContinue),
+        new VisionYawAlign(),
         new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch()))
     );
   }
