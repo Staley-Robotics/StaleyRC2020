@@ -3,7 +3,6 @@ package frc.robot.commands.auto;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.shooter.ShootBallsOpenLoop;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Vision;
@@ -11,7 +10,7 @@ import frc.robot.subsystems.Vision;
 /**
  * Shoots stored balls, then moves off the auto line.
  */
-public class ShootThenMoveOff extends SequentialCommandGroup {
+public class ShootThenMoveOff extends LowGearAuto {
 
   private DriveTrain drive;
   private Vision vision;
@@ -21,7 +20,6 @@ public class ShootThenMoveOff extends SequentialCommandGroup {
     drive = DriveTrain.getInstance();
     vision = Vision.getInstance();
 
-    // TODO: Check with Ethan if this should be reversed.
     Trajectory forwardPastAutoLine = TrajectoryGenerator.generateTrajectory(
         drive.getPoseListFromPathWeaverJson("Forward"),
         drive.getTrajectoryConfig(true));

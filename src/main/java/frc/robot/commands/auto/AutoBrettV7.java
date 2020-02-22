@@ -3,13 +3,12 @@ package frc.robot.commands.auto;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.DriveTrain;
 
 /**
  * Moves past Auto line.
  */
-public class AutoBrettV7 extends SequentialCommandGroup {
+public class AutoBrettV7 extends LowGearAuto {
 
   private DriveTrain drive;
 

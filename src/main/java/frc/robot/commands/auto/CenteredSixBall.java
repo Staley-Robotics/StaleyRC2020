@@ -4,6 +4,7 @@ import static frc.robot.Constants.IntakeConstants.defaultIntakePower;
 
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.intake.RunIntake;
@@ -16,7 +17,7 @@ import frc.robot.subsystems.Vision;
  * Immediately shoots pre-loaded balls. Moves to friendly trench to gather 3 balls. Turns and moves
  * back to face the generator and then shoots the 3 collected balls.
  */
-public class CenteredSixBall extends SequentialCommandGroup {
+public class CenteredSixBall extends LowGearAuto {
 
   private DriveTrain drive;
   private Vision vision;

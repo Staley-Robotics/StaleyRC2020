@@ -5,7 +5,6 @@ import static frc.robot.Constants.IntakeConstants.defaultIntakePower;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.ToggleJoint;
 import frc.robot.commands.shooter.ShootBallsOpenLoop;
@@ -16,7 +15,7 @@ import frc.robot.subsystems.Vision;
  * Assumes someone else took our spot. Shoots 3 balls while off centered. Moves to trench to gather
  * 3 more balls. Turns and moves back to face generator and shoots collected balls.
  */
-public class LeftSixBall extends SequentialCommandGroup {
+public class LeftSixBall extends LowGearAuto {
 
   private DriveTrain drive;
   private Vision vision;

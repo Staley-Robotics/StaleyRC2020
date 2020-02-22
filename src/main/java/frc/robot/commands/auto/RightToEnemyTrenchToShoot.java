@@ -5,7 +5,6 @@ import static frc.robot.Constants.IntakeConstants.defaultIntakePower;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.ToggleJoint;
 import frc.robot.commands.shooter.ShootBallsOpenLoop;
@@ -16,7 +15,7 @@ import frc.robot.subsystems.Vision;
  * Starts at the bottom, in line with the enemy's trench. Get 2 balls from enemy trench and then
  * turn to shoot into generator.
  */
-public class RightToEnemyTrenchToShoot extends SequentialCommandGroup {
+public class RightToEnemyTrenchToShoot extends LowGearAuto {
 
   private DriveTrain drive;
   private Vision vision;

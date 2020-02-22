@@ -23,6 +23,7 @@ import static frc.robot.Constants.DriveConstants.rMotorMasterPort;
 import static frc.robot.Constants.DriveConstants.ramseteB;
 import static frc.robot.Constants.DriveConstants.ramseteZ;
 import static frc.robot.Constants.DriveConstants.rotateDeadzone;
+import static frc.robot.Constants.DriveConstants.shiftPointMetersPerSecond;
 import static frc.robot.Constants.DriveConstants.wheelCircumferenceMeters;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -202,6 +203,27 @@ public class DriveTrain extends SubsystemBase {
     } else {
       drive.arcadeDrive(0, rotate);
     }
+    if (isLowGearOptimal()) {
+      shiftLow();
+    } else {
+      shiftHigh();
+    }
+  }
+
+  private boolean isLowGearOptimal() {
+    if ((getLeftEncoderMetersPerSecondVelocity() + getRightEncoderMetersPerSecondVelocity()) / 2
+        < shiftPointMetersPerSecond) {
+      return true;
+    }
+    return false;
+  }
+
+  public double getLeftEncoderMetersPerSecondVelocity() {
+    return stepsPerDecisecToMetersPerSec(getLeftEncoderVelocity());
+  }
+
+  public double getRightEncoderMetersPerSecondVelocity() {
+    return stepsPerDecisecToMetersPerSec(getRightEncoderVelocity());
   }
 
   /**

@@ -70,21 +70,21 @@
     lines="39"
     message="Missing a Javadoc comment."/>
   <suppress files="AutoBrettV7.java"
-    lines="16"
+    lines="15"
     message="Missing a Javadoc comment."/>
   <suppress files="CenteredSixBall.java"
-    lines="24"
+    lines="25"
     message="Missing a Javadoc comment."/>
   <suppress files="LeftSixBall.java"
-    lines="24"
+    lines="23"
     message="Missing a Javadoc comment."/>
   <suppress files="RightToEnemyTrenchToShoot.java"
-    lines="24"
+    lines="23"
     message="Missing a Javadoc comment."/>
   <suppress files="ShootThenMoveOff.java"
-    lines="19"
+    lines="18"
     message="Missing a Javadoc comment."/>
   <suppress files="WallOfFlesh"
-    lines="71"
+    lines="72"
     message="Abbreviation in name 'runWOFSpinner' must contain no more than '2' consecutive capital letters."/>
 </suppressions>

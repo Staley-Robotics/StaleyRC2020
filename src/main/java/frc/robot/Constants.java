@@ -69,6 +69,7 @@ public final class Constants {
     public static final double turnRateToleranceDegPerS = 5;
 
     public static final double rotateDeadzone = 0.1;
+    public static final double shiftPointMetersPerSecond = 1.5;
   }
 
   public static final class IntakeConstants {
