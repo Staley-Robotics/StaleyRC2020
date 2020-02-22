@@ -12,6 +12,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.WallOfFleshConstants;
@@ -26,6 +27,7 @@ public class WallOfFlesh extends SubsystemBase {
   private static ColorMatcher colorMatcher;
   private static Color[] Colors;
   private static WallOfFlesh instance;
+  private String colorTarget;
 
   private static WPI_TalonSRX WOFMotor;
   private DoubleSolenoid wofPiston;
@@ -47,6 +49,7 @@ public class WallOfFlesh extends SubsystemBase {
           .reportError("Error Instantiating WOF Motor Controllers: " + ex.getMessage(), true);
     }
     wofPiston = new DoubleSolenoid(0, 7);
+    colorTarget = "";
   }
 
   /**
@@ -59,6 +62,18 @@ public class WallOfFlesh extends SubsystemBase {
       instance = new WallOfFlesh();
     }
     return instance;
+  }
+
+  public void targetRecieved(char target) {
+    if (target == 'B') {
+      this.colorTarget = "Blue";
+    } else if (target == 'G') {
+      this.colorTarget = "Green";
+    } else if (target == 'R') {
+      this.colorTarget = "Red";
+    } else if (target == 'Y') {
+      this.colorTarget = "Yellow";
+    }
   }
 
   public Color[] getColors() {
@@ -100,5 +115,16 @@ public class WallOfFlesh extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    readDriveStationMessage();
+    SmartDashboard.putString("Color Target", colorTarget);
+  }
+
+  public void readDriveStationMessage() {
+    String gameData = DriverStation.getInstance().getGameSpecificMessage();
+    if (gameData.length() > 0) {
+      targetRecieved(gameData.charAt(0));
+    } else {
+      //Code for no data received yet
+    }
   }
 }

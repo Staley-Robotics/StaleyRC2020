@@ -45,9 +45,14 @@
     lines="17"
     message="Missing a Javadoc comment."/>
   <suppress files="WallOfFlesh.java"
-    lines="61"
+    lines="67"
     message="Abbreviation in name 'runWOFSpinner' must contain no more than '2' consecutive capital letters."/>
-
+  <suppress files="WallOfFlesh.java"
+    lines="122"
+    message="Missing a Javadoc comment."/>
+  <suppress files="WallOfFlesh.java"
+    lines="67"
+    message="Missing a Javadoc comment."/>
   <suppress files="Shooter.java"
     lines="36"
     message="Abbreviation in name 'PIDController' must contain no more than '2' consecutive capital letters."/>
@@ -85,6 +90,6 @@
     lines="16"
     message="Missing a Javadoc comment."/>
   <suppress files="WallOfFlesh"
-    lines="72"
+    lines="87"
     message="Abbreviation in name 'runWOFSpinner' must contain no more than '2' consecutive capital letters."/>
 </suppressions>
