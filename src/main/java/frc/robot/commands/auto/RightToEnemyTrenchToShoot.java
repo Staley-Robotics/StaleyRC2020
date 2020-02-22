@@ -31,9 +31,9 @@ public class RightToEnemyTrenchToShoot extends LowGearAuto {
         driveTrain.getTrajectoryConfig(true));
 
     addCommands(
-        new InstantCommand(drive::resetOdometry, driveTrain),
-        new InstantCommand(drive::zeroEncoder, driveTrain),
-        drive.getAutonomousCommandFromTrajectory(trajectoryForward),
+        new InstantCommand(driveTrain::resetOdometry, driveTrain),
+        new InstantCommand(driveTrain::zeroEncoder, driveTrain),
+        driveTrain.getAutonomousCommandFromTrajectory(trajectoryForward),
         new ToggleJoint(),
         new RunIntake(defaultIntakePower),
         driveTrain.getAutonomousCommandFromTrajectory(trajectoryForwardContinue),

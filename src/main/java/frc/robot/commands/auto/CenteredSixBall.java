@@ -33,7 +33,7 @@ public class CenteredSixBall extends LowGearAuto {
         new InstantCommand(driveTrain::resetOdometry, driveTrain),
         new InstantCommand(driveTrain::zeroEncoder, driveTrain),
         new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch())),
-        drive.getAutonomousCommandFromTrajectory(trajectoryForward),
+        driveTrain.getAutonomousCommandFromTrajectory(trajectoryForward),
         new ToggleJoint(),
         new RunIntake(defaultIntakePower).withTimeout(10),
         driveTrain.getAutonomousCommandFromTrajectory(trajectoryForwardContinue),

@@ -34,7 +34,7 @@ public class LeftSixBall extends LowGearAuto {
         new InstantCommand(driveTrain::resetOdometry, driveTrain),
         new InstantCommand(driveTrain::zeroEncoder, driveTrain),
         new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch())),
-        drive.getAutonomousCommandFromTrajectory(trajectoryForward),
+        driveTrain.getAutonomousCommandFromTrajectory(trajectoryForward),
         new ToggleJoint(),
         new RunIntake(defaultIntakePower),
         driveTrain.getAutonomousCommandFromTrajectory(trajectoryForwardContinue),
