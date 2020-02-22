@@ -103,7 +103,7 @@ public class Shooter extends SubsystemBase {
     PIDController.setReference(targetSpeed, ControlType.kVelocity);
   }
 
-  public double getFlywheelTargetSpeed() {
+  public double getTargetFlywheelSpeed() {
     return targetSpeed;
   }
 

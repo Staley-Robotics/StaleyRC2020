@@ -33,10 +33,11 @@ public class ShootBallsClosedLoop extends CommandBase {
 
   @Override
   public void execute() {
-    if (shooter.getFlyWheelSpeed() > (shooter.getFlywheelTargetSpeed() * (1 - (1
-        - percentSpeedRequired)))
-        || shooter.getFlyWheelSpeed() < shooter.getFlywheelTargetSpeed() * (1 + (1
-        - percentSpeedRequired))) {
+    double flyWheelSpeed = shooter.getFlyWheelSpeed();
+    double targetSpeed = shooter.getTargetFlywheelSpeed();
+
+    double percentage = flyWheelSpeed / targetSpeed;
+    if (Math.abs(1 - percentage) <= Math.abs(1 - percentSpeedRequired)) {
       magazine.runMagazine(0.5);
     }
   }
