@@ -26,15 +26,12 @@ public class ToggleJoint extends CommandBase {
     }
   }
 
-  /**
-   * If PivotState is down, send negative power. Otherwise, send positive power.
-   */
   @Override
   public void execute() {
   }
 
   /**
-   * Code runs until timeout, end or if the limitswitch is hit.
+   * Ends the command.
    */
   @Override
   public boolean isFinished() {
