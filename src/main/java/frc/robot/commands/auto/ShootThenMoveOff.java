@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.shooter.ShootBalls;
+import frc.robot.commands.shooter.ShootBallsOpenLoop;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Vision;
 
@@ -21,6 +21,7 @@ public class ShootThenMoveOff extends SequentialCommandGroup {
     drive = DriveTrain.getInstance();
     vision = Vision.getInstance();
 
+    // TODO: Check with Ethan if this should be reversed.
     Trajectory forwardPastAutoLine = TrajectoryGenerator.generateTrajectory(
         drive.getPoseListFromPathWeaverJson("Forward"),
         drive.getTrajectoryConfig(true));
@@ -28,7 +29,7 @@ public class ShootThenMoveOff extends SequentialCommandGroup {
     addCommands(
         new InstantCommand(drive::resetOdometry, drive),
         new InstantCommand(drive::zeroEncoder, drive),
-        new ShootBalls(vision.calculateDistance(vision.getPitch())),
+        new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch())),
         drive.getAutonomousCommandFromTrajectory(forwardPastAutoLine)
     );
   }

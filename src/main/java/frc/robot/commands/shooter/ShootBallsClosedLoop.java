@@ -4,22 +4,25 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Magazine;
 import frc.robot.subsystems.Shooter;
 
-public class ShootBalls extends CommandBase {
+public class ShootBallsClosedLoop extends CommandBase {
 
   private Shooter shooter;
   private Magazine magazine;
   private double distance;
+  private double percentSpeedRequired;
 
   /**
-   * Shoots balls at speed necessary for distance. Make sure to pass in a time to make this work
+   * Shoots balls with closed feedback loop at speed necessary for distance. Make sure to pass in a
+   * time to make this work
    *
    * @param distance distance to base shot off of.
    */
-  public ShootBalls(double distance) {
+  public ShootBallsClosedLoop(double distance, double percentSpeedRequired) {
     shooter = Shooter.getInstance();
     magazine = Magazine.getInstance();
     addRequirements(shooter, magazine);
     this.distance = distance;
+    this.percentSpeedRequired = percentSpeedRequired;
   }
 
   @Override
@@ -30,7 +33,13 @@ public class ShootBalls extends CommandBase {
 
   @Override
   public void execute() {
-    magazine.runMagazine(0.5);
+    double flyWheelSpeed = shooter.getFlyWheelSpeed();
+    double targetSpeed = shooter.getTargetFlywheelSpeed();
+
+    double percentage = flyWheelSpeed / targetSpeed;
+    if (Math.abs(1 - percentage) <= Math.abs(1 - percentSpeedRequired)) {
+      magazine.runMagazine(0.5);
+    }
   }
 
   @Override

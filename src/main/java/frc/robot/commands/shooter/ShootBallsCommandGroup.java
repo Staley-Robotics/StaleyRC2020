@@ -22,9 +22,9 @@ public class ShootBallsCommandGroup extends SequentialCommandGroup {
 
     addCommands(
         new VisionYawAlign(),
-        new RunMagazineBackwards(0.5).withTimeout(0.0001),
+        new RunMagazineBackwards(0.5).withTimeout(0.005),
         new InstantCommand(magazine::retractHardStop, magazine),
-        new ShootBalls(vision.calculateDistance(vision.getPitch())).withTimeout(5)
+        new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch())).withTimeout(5)
     );
   }
 }

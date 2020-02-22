@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.ToggleJoint;
 import frc.robot.commands.shooter.ShootBalls;
+import frc.robot.commands.shooter.ShootBallsOpenLoop;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Vision;
 
@@ -37,12 +38,12 @@ public class CenteredSixBall extends SequentialCommandGroup {
     addCommands(
         new InstantCommand(drive::resetOdometry, drive),
         new InstantCommand(drive::zeroEncoder, drive),
-        new ShootBalls(vision.calculateDistance(vision.getPitch())),
+        new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch())),
         drive.getAutonomousCommandFromTrajectory(trajectoryForward),
         new ToggleJoint(0.5),
         new RunIntake(defaultIntakePower).withTimeout(10),
         drive.getAutonomousCommandFromTrajectory(trajectoryForwardContinue),
-        new ShootBalls(vision.calculateDistance(vision.getPitch()))
+        new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch()))
     );
   }
 }

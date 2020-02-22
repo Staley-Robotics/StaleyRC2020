@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.ToggleJoint;
 import frc.robot.commands.shooter.ShootBalls;
+import frc.robot.commands.shooter.ShootBallsOpenLoop;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Vision;
 
@@ -26,12 +27,12 @@ public class RightToEnemyTrenchToShoot extends SequentialCommandGroup {
     vision = Vision.getInstance();
 
     Trajectory trajectoryForward = TrajectoryGenerator.generateTrajectory(
-        drive.getPoseListFromPathWeaverJson("SpotJackedStart"),
+        drive.getPoseListFromPathWeaverJson("ForwardToTrench"),
         drive.getTrajectoryConfig(false));
 
     Trajectory trajectoryForwardContinue = TrajectoryGenerator.generateTrajectory(
-        drive.getPoseListFromPathWeaverJson("SpotJackedEnd"),
-        drive.getTrajectoryConfig(false));
+        drive.getPoseListFromPathWeaverJson("ReverseOutOfTrench"),
+        drive.getTrajectoryConfig(true));
 
     addCommands(
         new InstantCommand(drive::resetOdometry, drive),
@@ -40,7 +41,7 @@ public class RightToEnemyTrenchToShoot extends SequentialCommandGroup {
         new ToggleJoint(0.5),
         new RunIntake(defaultIntakePower),
         drive.getAutonomousCommandFromTrajectory(trajectoryForwardContinue),
-        new ShootBalls(vision.calculateDistance(vision.getPitch()))
+        new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch()))
     );
   }
 }
