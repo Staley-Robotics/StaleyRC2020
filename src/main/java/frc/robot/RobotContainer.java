@@ -114,7 +114,7 @@ public class RobotContainer {
     runIntakeBackwards.whenHeld(new RunIntake(-defaultIntakePower));
 
     JoystickButton toggleJointPosition = new JoystickButton(altController, Button.kX.value);
-    toggleJointPosition.whenPressed(new ToggleJoint(defaultJointPower).withTimeout(1));
+    toggleJointPosition.whenPressed(new ToggleJoint());
 
     JoystickButton toggleCompressor = new JoystickButton(altController, Button.kY.value);
     toggleCompressor.whenPressed(pneumatics::compressorToggle, pneumatics);
