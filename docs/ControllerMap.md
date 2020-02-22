@@ -18,6 +18,8 @@
 
 **Right Trigger**: While the right trigger is held the winch raises the robot.
 
+**Back**: While the back button is held the intake runs backwards.
+
 ###DPad Controls:
 
 **Up**: Up on the DPad raises the WOF spinner.

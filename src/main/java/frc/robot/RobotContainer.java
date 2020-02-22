@@ -9,6 +9,7 @@ package frc.robot;
 
 import static frc.robot.Constants.IntakeConstants.defaultIntakePower;
 import static frc.robot.Constants.IntakeConstants.defaultJointPower;
+import static frc.robot.Constants.MagazineConstants.defaultMagazinePower;
 import static frc.robot.Constants.OperatorInputConstants.altControllerPort;
 import static frc.robot.Constants.OperatorInputConstants.driveControllerPort;
 
@@ -29,6 +30,7 @@ import frc.robot.commands.auto.RightToEnemyTrenchToShoot;
 import frc.robot.commands.auto.ShootThenMoveOff;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.ToggleJoint;
+import frc.robot.commands.magazine.RunMagazine;
 import frc.robot.commands.mast.RunMast;
 import frc.robot.commands.shooter.ShootBallsCommandGroup;
 import frc.robot.commands.vision.VisionYawAlign;
@@ -105,10 +107,14 @@ public class RobotContainer {
     /* Alt Controller */
 
     JoystickButton runIntake = new JoystickButton(altController, Button.kA.value);
-    runIntake.whenHeld(new RunIntake(defaultIntakePower));
+    runIntake.whenHeld(new RunIntake(defaultIntakePower))
+        .whenHeld(new RunMagazine(defaultMagazinePower));
+
+    JoystickButton runIntakeBackwards = new JoystickButton(altController, Button.kBack.value);
+    runIntakeBackwards.whenHeld(new RunIntake(-defaultIntakePower));
 
     JoystickButton toggleJointPosition = new JoystickButton(altController, Button.kX.value);
-    toggleJointPosition.whenPressed(new ToggleJoint(defaultJointPower).withTimeout(1));
+    toggleJointPosition.whenPressed(new ToggleJoint());
 
     JoystickButton toggleCompressor = new JoystickButton(altController, Button.kY.value);
     toggleCompressor.whenPressed(pneumatics::compressorToggle, pneumatics);

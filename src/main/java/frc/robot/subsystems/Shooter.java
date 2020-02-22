@@ -48,7 +48,7 @@ public class Shooter extends SubsystemBase {
   public final double shooterHeight = 4;
   private double targetSpeed;
 
-  public Shooter() {
+  private Shooter() {
     try {
       leftShooterNeo = new CANSparkMax(leftShooterNeoPort, MotorType.kBrushless);
       rightShooterNeo = new CANSparkMax(rightShooterNeoPort, MotorType.kBrushless);
@@ -86,6 +86,11 @@ public class Shooter extends SubsystemBase {
     PIDController.setFF(shooterF);
   }
 
+  /**
+   * Makes shooter a singleton.
+   *
+   * @return the instance of magazine
+   */
   public static Shooter getInstance() {
     if (instance == null) {
       instance = new Shooter();

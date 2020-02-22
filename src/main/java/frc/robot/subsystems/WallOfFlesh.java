@@ -33,7 +33,7 @@ public class WallOfFlesh extends SubsystemBase {
   /**
    * Constructor.
    */
-  public WallOfFlesh() {
+  private WallOfFlesh() {
     colorMatcher = new ColorMatcher();
     colorMatcher.get_color();
     Colors = new Color[]{ColorMatcher.kGreenTarget,

@@ -88,7 +88,7 @@ public class DriveTrain extends SubsystemBase {
     high
   }
 
-  public DriveTrain() {
+  private DriveTrain() {
     try {
       rightMaster = new WPI_TalonSRX(rMotorMasterPort);
       rightFollower1 = new WPI_VictorSPX(rMotorFollower1Port);

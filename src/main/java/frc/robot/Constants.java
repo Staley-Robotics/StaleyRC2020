@@ -93,6 +93,12 @@ public final class Constants {
     public static final int bottomMasterPort = 00;
     public static final int pistonHardStopForwardChannel = 00;
     public static final int pistonHardStopReverseChannel = 00;
+    public static final double defaultMagazinePower = 0.2;
+  }
+
+  public static final class MastConstants {
+
+    public static final int mastMotorPort = 00;
   }
 
   public static final class OperatorInputConstants {
@@ -101,18 +107,14 @@ public final class Constants {
     public static final int altControllerPort = 1;
   }
 
+  public static final class PneumaticConstants {
+
+    public static final int compressorPort = 0;
+  }
+
   public static final class SensorConstants {
 
     public static final int limitSwitchPort = 0;
-  }
-
-  public static final class WallOfFleshConstants {
-
-    public static final int wallOfFleshMotorPort = 00;
-    public static final double spinnerRadius = 50000;
-    public static final double spinnerPower = 0.3;
-    public static final double wallOfFleshSpinnerCircumference = 3;
-    public static final double wallOfFleshCircumference = 100;
   }
 
   public static final class ShooterConstants {
@@ -128,13 +130,12 @@ public final class Constants {
     public static double shooterF = 0.00017;
   }
 
-  public static final class MastConstants {
+  public static final class WallOfFleshConstants {
 
-    public static final int mastMotorPort = 00;
-  }
-
-  public static final class PneumaticConstants {
-
-    public static final int compressorPort = 0;
+    public static final int wallOfFleshMotorPort = 00;
+    public static final double spinnerRadius = 50000;
+    public static final double spinnerPower = 0.3;
+    public static final double wallOfFleshSpinnerCircumference = 3;
+    public static final double wallOfFleshCircumference = 100;
   }
 }

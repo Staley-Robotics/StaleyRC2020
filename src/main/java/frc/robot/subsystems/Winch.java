@@ -27,7 +27,7 @@ public class Winch extends SubsystemBase {
   /**
    * Winch for climbing.
    */
-  public Winch() {
+  private Winch() {
     try {
       leftWinch = new VictorSP(lMotorFollower1Port);
       rightWinch = new VictorSP(lMotorFollower2Port);

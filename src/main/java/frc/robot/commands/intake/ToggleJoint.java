@@ -7,11 +7,8 @@ import frc.robot.subsystems.Intake.PivotState;
 public class ToggleJoint extends CommandBase {
 
   private Intake intake;
-  private double motorPower;
 
-  public ToggleJoint(double power) {
-    motorPower = power;
-
+  public ToggleJoint() {
     intake = Intake.getInstance();
 
     addRequirements(intake);
