@@ -29,7 +29,7 @@ public class TurnToAngle extends PIDCommand {
         // Set reference to target
         targetAngleDegrees,
         // Pipe output to turn robot
-        output -> driveTrain.worldOfTanksDrive(0, 0, output),
+        output -> DriveTrain.getInstance.worldOfTanksDrive(0, 0, output),
         // Require the drive
         driveTrain);
 
