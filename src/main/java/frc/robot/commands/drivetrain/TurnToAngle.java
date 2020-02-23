@@ -19,19 +19,18 @@ public class TurnToAngle extends PIDCommand {
    * Turns to robot to the specified angle.
    *
    * @param targetAngleDegrees The angle to turn to
-   * @param driveTrain         The drive subsystem to use
    */
-  public TurnToAngle(double targetAngleDegrees, DriveTrain driveTrain) {
+  public TurnToAngle(double targetAngleDegrees) {
     super(
         new PIDController(turnP, turnI, turnD),
         // Close loop on heading
-        driveTrain::getHeading,
+        DriveTrain.getInstance()::getHeading,
         // Set reference to target
         targetAngleDegrees,
         // Pipe output to turn robot
-        output -> DriveTrain.getInstance.worldOfTanksDrive(0, 0, output),
+        output -> DriveTrain.getInstance().worldOfTanksDrive(0, 0, output),
         // Require the drive
-        driveTrain);
+        DriveTrain.getInstance());
 
     // Set the controller to be continuous (because it is an angle controller)
     getController().enableContinuousInput(-180, 180);
