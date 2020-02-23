@@ -74,6 +74,9 @@
   <suppress files="SpinToCount.java"
     lines="17"
     message="Missing a Javadoc comment."/>
+  <suppress files="SpinToColor.java"
+    lines="22"
+    message="Missing a Javadoc comment."/>
   <suppress files="WallOfFlesh.java"
     lines="52"
     message="Missing a Javadoc comment."/>
