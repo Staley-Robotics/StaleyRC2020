@@ -25,7 +25,7 @@ public class VisionYawAlign extends SequentialCommandGroup {
     angleToTurn = Math.IEEEremainder(vision.getYaw() + driveTrain.getHeading(), 360) * -1;
 
     addCommands(
-        new TurnToAngle(angleToTurn, driveTrain)
+        new TurnToAngle(angleToTurn)
     );
   }
 }
