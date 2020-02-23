@@ -8,7 +8,6 @@
 package frc.robot.subsystems;
 
 import static frc.robot.Constants.WallOfFleshConstants.wallOfFleshCircumference;
-import static frc.robot.Constants.WallOfFleshConstants.wallOfFleshMotorPort;
 import static frc.robot.Constants.WallOfFleshConstants.wallOfFleshSolenoidPorts;
 import static frc.robot.Constants.WallOfFleshConstants.wallOfFleshSpinnerCircumference;
 

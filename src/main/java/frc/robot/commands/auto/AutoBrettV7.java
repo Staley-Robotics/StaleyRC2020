@@ -12,7 +12,7 @@ public class AutoBrettV7 extends LowGearAuto {
   public AutoBrettV7() {
     Trajectory forwardPastAutoLine = TrajectoryGenerator.generateTrajectory(
         driveTrain.getPoseListFromPathWeaverJson("Forward"),
-        driveTrain.getTrajectoryConfig(false));
+        driveTrain.getTrajectoryConfig(true));
 
     addCommands(
         new InstantCommand(driveTrain::resetOdometry, driveTrain),
