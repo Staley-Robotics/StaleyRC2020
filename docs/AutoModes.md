@@ -1,7 +1,7 @@
 #Auto Modes
 The five different autos, points scored, and their steps.
 
-*5 points are added to all, as the auto line is crossed*
+**5 points are added to all, as the auto line is crossed**
 
 ##AutoBrettV7 
 
@@ -12,6 +12,8 @@ AutoBrett only moves off the Auto line.
 1. Drive forward   2.2 meters.
 
 ##Centered Six Ball 
+
+*6 ball auto*
 
 **Outer 29 Points**
 
@@ -33,17 +35,19 @@ This auto shoots all its stored balls, then drives to the trench run and picks u
 
 5. Drives forward another 3.8 meters picking up 3 balls from trench.
 
-6. Turns a sharp right turn back around to the Power Port.
+6. Takes a sharp right turn back around to face the Power Port.
 
 7. Drives forward 2.5 meters and shoots 3 balls.
 
-##Left Six Ball 
+##Left Six Ball
+
+*6 ball auto*
 
 **Outer 29 Points**
 
 **Inner 41 Points**
 
-This auto shoots a total of 6 balls. First, it shoots its stored balls, picks up more from the trench run, and shoots those. The difference between this auto and the previous one, is the starting position. This auto starts more left on the line, for if someone took our spot.
+The same as Center Six Ball, but with a different starting location. This auto starts more left on the line, for if someone took our spot.
 
 1. Shoots the three stored balls.
 
@@ -60,6 +64,8 @@ This auto shoots a total of 6 balls. First, it shoots its stored balls, picks up
 7. Drives 4 meters forward, and then shoots 3 balls.
 
 ##Right To Enemy Trench To Shoot 
+
+*5 ball auto*
 
 **Outer 25 Points**
 
@@ -78,11 +84,14 @@ This auto starts directly across from the enemy trench. It starts out by rushing
 5. Turns around and shoots 5 balls.
 
 ##Shoot Then Move Off 
+
+*3 ball auto*
+
 **Outer 17 Points**
 
 **Inner 23 Points**
 
-This auto shoots all three stored balls, then moves off teh auto line.
+This auto shoots all three stored balls, then moves off the auto line.
 
 1. Shoots all three stored balls.
 
