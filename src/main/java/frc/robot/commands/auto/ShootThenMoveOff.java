@@ -26,7 +26,7 @@ public class ShootThenMoveOff extends LowGearAuto {
         new InstantCommand(driveTrain::resetOdometry, driveTrain),
         new InstantCommand(driveTrain::zeroEncoder, driveTrain),
         new VisionYawAlign(),
-        new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch())),
+        new ShootBallsOpenLoop(vision.calculateDistance()),
         driveTrain.getAutonomousCommandFromTrajectory(a_b_MovePastLine)
     );
   }

@@ -72,14 +72,14 @@
     lines="51"
     message="Missing a Javadoc comment."/>
   <suppress files="Shooter.java"
-    lines="81"
+    lines="77"
     message="Abbreviation in name 'updatePIDConstants' must contain no more than '2' consecutive capital letters."/>
   <suppress files="Shooter.java"
-    lines="157"
-    message="Abbreviation in name 'surfaceVelocityToRPM' must contain no more than '2' consecutive capital letters."/>
-  <suppress files="Shooter.java"
-    lines="89"
+    lines="85"
     message="Missing a Javadoc comment."/>
+  <suppress files="Shooter.java"
+    lines="148"
+    message="Abbreviation in name 'surfaceVelocityToRPM' must contain no more than '2' consecutive capital letters."/>
   <suppress files="Pneumatics.java"
     lines="39"
     message="Missing a Javadoc comment."/>
@@ -137,4 +137,13 @@
   <suppress files="StealThenShoot.java"
     lines="29"
     message="Local variable name 'b_c_ToGenerator' must match pattern"/>
+  <suppress files="Magazine.java"
+    lines="40"
+    message="Missing a Javadoc comment."/>
+  <suppress files="Magazine.java"
+    lines="54"
+    message="Missing a Javadoc comment."/>
+  <suppress files="Vision.java"
+    lines="28"
+    message="Missing a Javadoc comment."/>
 </suppressions>

@@ -37,7 +37,7 @@ public class StealThenShoot extends LowGearAuto {
             .alongWith(new ToggleJoint(), new RunIntake(defaultIntakePower).withTimeout(4)),
         driveTrain.getAutonomousCommandFromTrajectory(b_c_ToGenerator),
         new VisionYawAlign(),
-        new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch()))
+        new ShootBallsOpenLoop(vision.calculateDistance())
     );
   }
 }

@@ -34,13 +34,13 @@ public class CentSixBall extends LowGearAuto {
         new InstantCommand(driveTrain::resetOdometry, driveTrain),
         new InstantCommand(driveTrain::zeroEncoder, driveTrain),
         new VisionYawAlign(),
-        new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch()))
+        new ShootBallsOpenLoop(vision.calculateDistance())
             .alongWith(new ToggleJoint()),
         driveTrain.getAutonomousCommandFromTrajectory(a_b_ShootThenTrenchIntake)
             .alongWith(new RunIntake(defaultIntakePower).withTimeout(4)),
         driveTrain.getAutonomousCommandFromTrajectory(b_c_TurnMoveForwardAndShoot),
         new VisionYawAlign(),
-        new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch()))
+        new ShootBallsOpenLoop(vision.calculateDistance())
     );
   }
 }
