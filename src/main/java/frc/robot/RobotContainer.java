@@ -39,9 +39,11 @@ import frc.robot.commands.wof.SpinToCount;
 import frc.robot.enums.XboxController.DpadButton;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Magazine;
 import frc.robot.subsystems.Mast;
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.WallOfFlesh;
 import frc.robot.subsystems.Winch;
 
@@ -57,12 +59,14 @@ public class RobotContainer {
   private XboxController altController;
 
   private final DriveTrain drive;
-  private final Pneumatics pneumatics;
-  private final WallOfFlesh wallOfFlesh;
-  private final Shooter shooter;
-  private final Winch winch;
-  private final Mast mast;
   private final Intake intake;
+  private final Magazine magazine;
+  private final Mast mast;
+  private final Pneumatics pneumatics;
+  private final Shooter shooter;
+  private final Vision vision;
+  private final WallOfFlesh wallOfFlesh;
+  private final Winch winch;
 
   private SendableChooser<Command> autoChooser;
 
@@ -73,12 +77,14 @@ public class RobotContainer {
   public RobotContainer() {
 
     drive = DriveTrain.getInstance();
-    pneumatics = Pneumatics.getInstance();
-    wallOfFlesh = WallOfFlesh.getInstance();
-    shooter = Shooter.getInstance();
-    winch = Winch.getInstance();
-    mast = Mast.getInstance();
     intake = Intake.getInstance();
+    magazine = Magazine.getInstance();
+    mast = Mast.getInstance();
+    pneumatics = Pneumatics.getInstance();
+    shooter = Shooter.getInstance();
+    vision = Vision.getInstance();
+    wallOfFlesh = WallOfFlesh.getInstance();
+    winch = Winch.getInstance();
 
     autoChooser = new SendableChooser<>();
     autoChooser.setDefaultOption("AutoBrettV7", new AutoBrettV7());
