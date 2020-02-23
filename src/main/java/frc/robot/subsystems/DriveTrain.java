@@ -477,27 +477,16 @@ public class DriveTrain extends SubsystemBase {
   // so we don't shift when turning
   // Or, we can automatically shift to high gear when turning
   private boolean isLowGearOptimal() {
-    if (Math.abs(
-        (getLeftEncoderMetersPerSecondVelocity() + getRightEncoderMetersPerSecondVelocity()) / 2)
-        < shiftPointMetersPerSecond) {
-      return true;
-    }
-    return false;
-  }
-
-  private boolean lowGearOptimalTurnLogic() {
-    if (Math.abs(
-        (getLeftEncoderMetersPerSecondVelocity() + getRightEncoderMetersPerSecondVelocity()) / 2)
-        < shiftPointMetersPerSecond) {
-      return true;
-    }
-    // Might not work chief
-    if (Math.abs(getLeftEncoderMetersPerSecondVelocity() / getRightEncoderMetersPerSecondVelocity())
-        > 0.2
-        ||
-        Math.abs(getRightEncoderMetersPerSecondVelocity() / getLeftEncoderMetersPerSecondVelocity())
-            > 0.2) {
+    if (Math
+        .abs(getLeftEncoderMetersPerSecondVelocity() / getRightEncoderMetersPerSecondVelocity() - 1)
+        > (0.2)) {
       return false;
+    }
+
+    if (Math.abs(
+        (getLeftEncoderMetersPerSecondVelocity() + getRightEncoderMetersPerSecondVelocity()) / 2)
+        < shiftPointMetersPerSecond) {
+      return true;
     }
     return false;
   }

@@ -30,10 +30,10 @@ public class Intake extends SubsystemBase {
   private static Intake instance;
   private static WPI_TalonSRX jointMotor;
   private static VictorSP intakeMotor;
-  private PivotState pivotState;
+  private JointState jointState;
   private DigitalInput limitSwitch;
 
-  public enum PivotState {
+  public enum JointState {
     up,
     down
   }
@@ -61,13 +61,13 @@ public class Intake extends SubsystemBase {
     talonConfig.slot0.kI = 0.0;
     talonConfig.slot0.kD = kD;
     talonConfig.slot0.integralZone = 400;
-    talonConfig.slot0.closedLoopPeakOutput = 0.2;
+    talonConfig.slot0.closedLoopPeakOutput = 0.5;
 
     jointMotor.configAllSettings(talonConfig);
 
     zeroEncoder();
 
-    pivotState = PivotState.up;
+    jointState = JointState.up;
   }
 
   /**
@@ -84,18 +84,20 @@ public class Intake extends SubsystemBase {
 
   public void lowerIntake() {
     jointMotor.set(ControlMode.Position, lowerPosition);
+    jointState = JointState.down;
   }
 
   public void raiseIntake() {
     jointMotor.set(ControlMode.Position, higherPosition);
+    jointState = JointState.up;
   }
 
   public void runIntake(double power) {
     intakeMotor.set(power);
   }
 
-  public PivotState getPivotState() {
-    return pivotState;
+  public JointState getJointState() {
+    return jointState;
   }
 
   /**
@@ -103,8 +105,8 @@ public class Intake extends SubsystemBase {
    *
    * @param currentState the state of the Pivot.
    */
-  public void setPivotState(PivotState currentState) {
-    pivotState = currentState;
+  public void setJointState(JointState currentState) {
+    jointState = currentState;
   }
 
   public boolean getLimitSwitch() {
@@ -117,6 +119,6 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putString("Joint State: ", pivotState.toString());
+    SmartDashboard.putString("Joint State: ", jointState.toString());
   }
 }

@@ -23,23 +23,10 @@ public class Mast extends SubsystemBase {
 
   private VictorSP mastMotor;
 
-  /**
-   * Constructor.
-   */
   private Mast() {
-    try {
-      mastMotor = new VictorSP(mastMotorPort);
-    } catch (RuntimeException ex) {
-      DriverStation
-          .reportError("Error Instantiating Mast Motor Controllers: " + ex.getMessage(), true);
-    }
+    mastMotor = new VictorSP(mastMotorPort);
   }
 
-  /**
-   * Makes Mast a singleton.
-   *
-   * @return mast instance
-   */
   public static Mast getInstance() {
     if (instance == null) {
       instance = new Mast();

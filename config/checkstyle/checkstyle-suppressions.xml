@@ -48,7 +48,7 @@
     lines="14"
     message="Abbreviation in name 'WOF' must contain no more than '2' consecutive capital letters."/>
   <suppress files="SpinToCount.java"
-    lines="17"
+    lines="14"
     message="Missing a Javadoc comment."/>
   <suppress files="WallOfFlesh.java"
     lines="83"
@@ -81,7 +81,13 @@
     lines="148"
     message="Abbreviation in name 'surfaceVelocityToRPM' must contain no more than '2' consecutive capital letters."/>
   <suppress files="Pneumatics.java"
-    lines="39"
+    lines="33"
+    message="Missing a Javadoc comment."/>
+  <suppress files="Pneumatics.java"
+    lines="8"
+    message="Missing a Javadoc comment."/>
+  <suppress files="Pneumatics.java"
+    lines="18"
     message="Missing a Javadoc comment."/>
   <suppress files="AutoBrettV7.java"
     lines="15"
@@ -145,5 +151,11 @@
     message="Missing a Javadoc comment."/>
   <suppress files="Vision.java"
     lines="28"
+    message="Missing a Javadoc comment."/>
+  <suppress files="Mast.java"
+    lines="25"
+    message="Missing a Javadoc comment."/>
+  <suppress files="Mast.java"
+    lines="30"
     message="Missing a Javadoc comment."/>
 </suppressions>
