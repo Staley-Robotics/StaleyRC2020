@@ -39,11 +39,6 @@ public class Winch extends SubsystemBase {
     rightWinch.setInverted(true);
   }
 
-  /**
-   * Makes Winch a singleton.
-   *
-   * @return Winch instance
-   */
   public static Winch getInstance() {
     if (instance == null) {
       instance = new Winch();

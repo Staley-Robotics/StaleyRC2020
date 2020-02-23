@@ -104,4 +104,7 @@
   <suppress files="WallOfFlesh.java"
     lines="84"
     message="Abbreviation in name 'runWOFSpinner' must contain no more than '2' consecutive capital letters."/>
+  <suppress files="Winch.java"
+    lines="42"
+    message="Missing a Javadoc comment."/>
 </suppressions>
