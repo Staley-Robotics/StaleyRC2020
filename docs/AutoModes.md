@@ -91,7 +91,7 @@ This auto starts directly across from the enemy trench. It starts out by rushing
 
 **Inner 23 Points**
 
-This auto shoots all three stored balls, then moves off the auto line.
+This auto shoots all three stored balls, then moves off the auto line in reverse.
 
 1. Shoots all three stored balls.
 
