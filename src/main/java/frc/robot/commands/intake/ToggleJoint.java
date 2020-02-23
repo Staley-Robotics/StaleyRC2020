@@ -18,13 +18,9 @@ public class ToggleJoint extends CommandBase {
   public void initialize() {
     if (intake.getPivotState() == PivotState.up) {
       intake.lowerIntake();
-    } else {
-      intake.raiseIntake();
-    }
-
-    if (intake.getPivotState() == PivotState.up) {
       intake.setPivotState(PivotState.down);
-    } else if (intake.getPivotState() == PivotState.down) {
+    } else if (!intake.getLimitSwitch()) {
+      intake.raiseIntake();
       intake.setPivotState(PivotState.up);
     }
   }

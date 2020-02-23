@@ -12,12 +12,14 @@ import static frc.robot.Constants.IntakeConstants.intakeMotorPort;
 import static frc.robot.Constants.IntakeConstants.jointMotorPort;
 import static frc.robot.Constants.IntakeConstants.kD;
 import static frc.robot.Constants.IntakeConstants.kP;
+import static frc.robot.Constants.IntakeConstants.limitSwitchPort;
 import static frc.robot.Constants.IntakeConstants.lowerPosition;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -29,6 +31,7 @@ public class Intake extends SubsystemBase {
   private static WPI_TalonSRX jointMotor;
   private static VictorSP intakeMotor;
   private PivotState pivotState;
+  private DigitalInput limitSwitch;
 
   public enum PivotState {
     up,
@@ -43,6 +46,13 @@ public class Intake extends SubsystemBase {
           .reportError("Error Instantiating Intake Motor Controllers: " + ex.getMessage(), true);
     }
     intakeMotor = new VictorSP(intakeMotorPort);
+
+    try {
+      limitSwitch = new DigitalInput(limitSwitchPort);
+    } catch (RuntimeException ex) {
+      DriverStation
+          .reportError("Oh boy, limitswitch machine broke: " + ex.getMessage(), true);
+    }
 
     TalonSRXConfiguration talonConfig = new TalonSRXConfiguration();
     talonConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.CTRE_MagEncoder_Relative;
@@ -62,6 +72,7 @@ public class Intake extends SubsystemBase {
 
   /**
    * Makes Intake a singleton.
+   *
    * @return instance of intake
    */
   public static Intake getInstance() {
@@ -94,6 +105,10 @@ public class Intake extends SubsystemBase {
    */
   public void setPivotState(PivotState currentState) {
     pivotState = currentState;
+  }
+
+  public boolean getLimitSwitch(){
+    return limitSwitch.get();
   }
 
   public void zeroEncoder() {

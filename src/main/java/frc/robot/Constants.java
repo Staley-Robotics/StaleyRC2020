@@ -83,6 +83,8 @@ public final class Constants {
     public static final int lowerPosition = -200;
     public static final int higherPosition = 0;
 
+    public static final int limitSwitchPort = 01;
+
     public static final double kP = 0.03;
     public static final double kD = 0.00;
   }
