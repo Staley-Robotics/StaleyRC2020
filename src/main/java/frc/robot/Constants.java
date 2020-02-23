@@ -141,5 +141,6 @@ public final class Constants {
     public static final double spinnerPower = 0.3;
     public static final double wallOfFleshSpinnerCircumference = 3;
     public static final double wallOfFleshCircumference = 100;
+    public static final int[] wallOfFleshSolenoidPorts = {0, 7};
   }
 }

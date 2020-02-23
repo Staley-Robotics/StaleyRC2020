@@ -92,7 +92,16 @@
   <suppress files="ShootThenMoveOff.java"
     lines="17"
     message="Missing a Javadoc comment."/>
-  <suppress files="WallOfFlesh"
-    lines="87"
+  <suppress files="WallOfFlesh.java"
+    lines="57"
+    message="Missing a Javadoc comment."/>
+  <suppress files="WallOfFlesh.java"
+    lines="64"
+    message="Missing a Javadoc comment."/>
+  <suppress files="WallOfFlesh.java"
+    lines="129"
+    message="Missing a Javadoc comment."/>
+  <suppress files="WallOfFlesh.java"
+    lines="84"
     message="Abbreviation in name 'runWOFSpinner' must contain no more than '2' consecutive capital letters."/>
 </suppressions>

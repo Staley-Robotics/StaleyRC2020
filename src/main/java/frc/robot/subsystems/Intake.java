@@ -107,7 +107,7 @@ public class Intake extends SubsystemBase {
     pivotState = currentState;
   }
 
-  public boolean getLimitSwitch(){
+  public boolean getLimitSwitch() {
     return limitSwitch.get();
   }
 
