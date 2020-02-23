@@ -39,7 +39,7 @@ public class CenteredSixBall extends LowGearAuto {
             shooterOpenLoopThreshold),
         driveTrain.getAutonomousCommandFromTrajectory(trajectoryForward),
         new ToggleJoint(),
-        new RunIntake(defaultIntakePower).withTimeout(10),
+        new RunIntake(defaultIntakePower).withTimeout(6),
         driveTrain.getAutonomousCommandFromTrajectory(trajectoryForwardContinue),
         new VisionYawAlign(),
         new ShootBallsClosedLoop(vision.calculateDistance(vision.getPitch()),

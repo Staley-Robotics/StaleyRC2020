@@ -61,9 +61,9 @@ public final class Constants {
     public static final double ramseteB = 2;
     public static final double ramseteZ = 0.7;
 
-    public static final double turnP = 0.5;
-    public static final double turnI = 0.5;
-    public static final double turnD = 0.5;
+    public static final double turnP = 0.1;
+    public static final double turnI = 0;
+    public static final double turnD = 0;
 
     public static final double turnToleranceDeg = 0.5;
     public static final double turnRateToleranceDegPerS = 5;
@@ -104,6 +104,7 @@ public final class Constants {
   public static final class MastConstants {
 
     public static final int mastMotorPort = 00;
+    public static final double mastDefaultMotorPower = 0.5;
   }
 
   public static final class OperatorInputConstants {
@@ -146,5 +147,6 @@ public final class Constants {
     public static final double spinnerPower = 0.3;
     public static final double wallOfFleshSpinnerCircumference = 3;
     public static final double wallOfFleshCircumference = 100;
+    public static final double goalSpinCount = 0.5;
   }
 }

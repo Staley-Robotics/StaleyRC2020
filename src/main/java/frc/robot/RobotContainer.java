@@ -9,9 +9,10 @@ package frc.robot;
 
 import static frc.robot.Constants.IntakeConstants.defaultIntakePower;
 import static frc.robot.Constants.MagazineConstants.defaultMagazinePower;
+import static frc.robot.Constants.MastConstants.mastDefaultMotorPower;
 import static frc.robot.Constants.OperatorInputConstants.altControllerPort;
 import static frc.robot.Constants.OperatorInputConstants.driveControllerPort;
-import static frc.robot.Constants.ShooterConstants.shooterTightClosedLoopThreshold;
+import static frc.robot.Constants.WallOfFleshConstants.goalSpinCount;
 import static frc.robot.Constants.WinchConstants.winchDefaultMotorPower;
 
 import edu.wpi.first.wpilibj.GenericHID;
@@ -30,15 +31,15 @@ import frc.robot.commands.auto.LeftSixBall;
 import frc.robot.commands.auto.RightToEnemyTrenchToShoot;
 import frc.robot.commands.auto.ShootThenMoveOff;
 import frc.robot.commands.intake.RunIntake;
-import frc.robot.commands.intake.ToggleJoint;
 import frc.robot.commands.magazine.RunMagazine;
-import frc.robot.commands.mast.RunMast;
 import frc.robot.commands.shooter.ShootBallsCommandGroup;
 import frc.robot.commands.vision.VisionYawAlign;
 import frc.robot.commands.wof.SpinToColor;
 import frc.robot.commands.wof.SpinToCount;
 import frc.robot.enums.XboxController.DpadButton;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Mast;
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.WallOfFlesh;
@@ -60,6 +61,8 @@ public class RobotContainer {
   private final WallOfFlesh wallOfFlesh;
   private final Shooter shooter;
   private final Winch winch;
+  private final Mast mast;
+  private final Intake intake;
 
   private SendableChooser<Command> autoChooser;
 
@@ -74,6 +77,8 @@ public class RobotContainer {
     wallOfFlesh = WallOfFlesh.getInstance();
     shooter = Shooter.getInstance();
     winch = Winch.getInstance();
+    mast = Mast.getInstance();
+    intake = Intake.getInstance();
 
     autoChooser = new SendableChooser<>();
     autoChooser.setDefaultOption("AutoBrettV7", new AutoBrettV7());
@@ -117,7 +122,7 @@ public class RobotContainer {
     runIntakeBackwards.whenHeld(new RunIntake(-defaultIntakePower));
 
     JoystickButton toggleJointPosition = new JoystickButton(altController, Button.kX.value);
-    toggleJointPosition.whenPressed(new ToggleJoint());
+    toggleJointPosition.whenPressed(intake::toggleIntake);
 
     JoystickButton toggleCompressor = new JoystickButton(altController, Button.kY.value);
     toggleCompressor.whenPressed(pneumatics::compressorToggle, pneumatics);
@@ -132,16 +137,16 @@ public class RobotContainer {
     wofDown.whenPressed(wallOfFlesh::lowerWof, wallOfFlesh);
 
     JoystickButton wofSpinNumber = new JoystickButton(altController, DpadButton.kDpadLeft.value);
-    wofSpinNumber.whenPressed(new SpinToCount(3.5));
+    wofSpinNumber.whenPressed(new SpinToCount(goalSpinCount));
 
     JoystickButton wofSpinColor = new JoystickButton(altController, DpadButton.kDpadRight.value);
     wofSpinColor.whenPressed(new SpinToColor(Color.kBlue));
 
     JoystickButton mastUp = new JoystickButton(altController, Button.kBumperLeft.value);
-    mastUp.whileHeld(new RunMast(0.5));
+    mastUp.whileHeld(() -> mast.runMast(mastDefaultMotorPower), mast);
 
     JoystickButton mastDown = new JoystickButton(altController, Button.kBumperRight.value);
-    mastDown.whileHeld(new RunMast(-0.5));
+    mastUp.whileHeld(() -> mast.runMast(-mastDefaultMotorPower), mast);
 
     JoystickButton winchExtend = new JoystickButton(altController, Axis.kRightTrigger.value);
     winchExtend.whileHeld(() -> winch.runWinch(winchDefaultMotorPower), winch);
@@ -149,8 +154,8 @@ public class RobotContainer {
     JoystickButton winchRetract = new JoystickButton(altController, Axis.kLeftTrigger.value);
     winchRetract.whileHeld(() -> winch.runWinch(-winchDefaultMotorPower), winch);
 
-    JoystickButton togglePiston = new JoystickButton(driveController, Button.kX.value);
-    togglePiston.whenPressed(drive::toggleShift, drive);
+    JoystickButton shiftButton = new JoystickButton(driveController, Button.kX.value);
+    shiftButton.whenPressed(drive::toggleShift, drive);
 
     JoystickButton lineUpShot = new JoystickButton(driveController, Button.kB.value);
     lineUpShot.whenPressed(new VisionYawAlign());

@@ -62,6 +62,7 @@ public class Intake extends SubsystemBase {
 
   /**
    * Makes Intake a singleton.
+   *
    * @return instance of intake
    */
   public static Intake getInstance() {
@@ -72,11 +73,24 @@ public class Intake extends SubsystemBase {
   }
 
   public void lowerIntake() {
+    pivotState = PivotState.down;
     jointMotor.set(ControlMode.Position, lowerPosition);
   }
 
   public void raiseIntake() {
+    pivotState = PivotState.up;
     jointMotor.set(ControlMode.Position, higherPosition);
+  }
+
+  /**
+   * Toggles pivot arm's PID setpoint between high/low.
+   */
+  public void toggleIntake() {
+    if (pivotState == PivotState.up) {
+      lowerIntake();
+    } else if (pivotState == PivotState.down) {
+      raiseIntake();
+    }
   }
 
   public void runIntake(double power) {

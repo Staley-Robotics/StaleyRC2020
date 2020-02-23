@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 /**
- * Moves past Auto line.
+ * Moves off of auto line.
  */
 public class AutoBrettV7 extends LowGearAuto {
 

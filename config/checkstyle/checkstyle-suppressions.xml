@@ -57,7 +57,7 @@
     lines="19"
     message="Missing a Javadoc comment."/>
   <suppress files="ToggleJoint.java"
-    lines="11"
+    lines="10"
     message="Missing a Javadoc comment."/>
   <suppress files="TestAuto.java"
     lines="10"
