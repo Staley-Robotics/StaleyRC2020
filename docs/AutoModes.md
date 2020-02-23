@@ -3,6 +3,10 @@ The five different autos, points scored, and their steps.
 
 **5 points are added to all, as the auto line is crossed**
 
+**Outer is the opening at the top of the Power port**
+
+**Inner is the smaller opening at the back of Outer.**
+
 ##AutoBrettV7 
 
 **5 Points**
@@ -13,15 +17,11 @@ AutoBrett only moves off the Auto line.
 
 ##Centered Six Ball 
 
-*6 ball auto*
+**6 ball auto**
 
 **Outer 29 Points**
 
-Outer is the opening at the top of the Power port
-
 **Inner 41 Points**
-
-Inner is the smaller opening at the back of Outer.
 
 This auto shoots all its stored balls, then drives to the trench run and picks up three more. After picking up the balls it returns, and shoots them.
 
@@ -41,7 +41,7 @@ This auto shoots all its stored balls, then drives to the trench run and picks u
 
 ##Left Six Ball
 
-*6 ball auto*
+**6 ball auto**
 
 **Outer 29 Points**
 
@@ -65,7 +65,7 @@ The same as Center Six Ball, but with a different starting location. This auto s
 
 ##Right To Enemy Trench To Shoot 
 
-*5 ball auto*
+**5 ball auto**
 
 **Outer 25 Points**
 
@@ -85,7 +85,7 @@ This auto starts directly across from the enemy trench. It starts out by rushing
 
 ##Shoot Then Move Off 
 
-*3 ball auto*
+**3 ball auto**
 
 **Outer 17 Points**
 
