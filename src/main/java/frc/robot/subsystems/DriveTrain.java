@@ -337,6 +337,9 @@ public class DriveTrain extends SubsystemBase {
     return metersToSteps(metersPerSec) * .1d;
   }
 
+  /**
+   * Zeros drive encoders.
+   */
   public void zeroEncoder() {
     rightMaster.setSelectedSensorPosition(0);
     leftMaster.setSelectedSensorPosition(0);
@@ -461,13 +464,16 @@ public class DriveTrain extends SubsystemBase {
     return shifterState;
   }
 
+  /**
+   * Toggles drive shift.
+   */
   public void toggleShift() {
     if (shifterState == ShifterState.high) {
       shiftLow();
     } else if (shifterState == ShifterState.low) {
       shiftHigh();
     } else {
-      throw new IllegalStateException("bruh");
+      throw new IllegalStateException("it's okay");
     }
   }
 
