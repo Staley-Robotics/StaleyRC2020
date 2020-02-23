@@ -110,6 +110,8 @@ public final class Constants {
   public static final class PneumaticConstants {
 
     public static final int compressorPort = 0;
+
+    public static final int[] shifterPorts = {0, 7};
   }
 
   public static final class SensorConstants {

@@ -7,6 +7,9 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.WallOfFleshConstants.wallOfFleshCircumference;
+import static frc.robot.Constants.WallOfFleshConstants.wallOfFleshSpinnerCircumference;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -64,7 +67,7 @@ public class WallOfFlesh extends SubsystemBase {
     return instance;
   }
 
-  public void targetRecieved(char target) {
+  public void targetReceived(char target) {
     if (target == 'B') {
       this.colorTarget = "Blue";
     } else if (target == 'G') {
@@ -101,9 +104,19 @@ public class WallOfFlesh extends SubsystemBase {
   }
 
   /**
+   * Converts the number of revolutions to a distance.
+   *
+   * @param count Number of revolutions on the WoF.
+   * @return Converted value.
+   */
+  public double revolutionsToDistance(double count) {
+    return count * wallOfFleshCircumference / wallOfFleshSpinnerCircumference;
+  }
+
+  /**
    * Spins the WOF spinner distance in meters.
    *
-   * @param distance distance in meters
+   * @param distance distance in meters.
    */
   public void spinDistance(double distance) {
     int goalEncoderTick = (int) ((distance / (2 * Math.PI * WallOfFleshConstants.spinnerRadius))
@@ -122,7 +135,7 @@ public class WallOfFlesh extends SubsystemBase {
   public void readDriveStationMessage() {
     String gameData = DriverStation.getInstance().getGameSpecificMessage();
     if (gameData.length() > 0) {
-      targetRecieved(gameData.charAt(0));
+      targetReceived(gameData.charAt(0));
     } else {
       //Code for no data received yet
     }

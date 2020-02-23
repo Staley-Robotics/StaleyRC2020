@@ -25,6 +25,7 @@ import static frc.robot.Constants.DriveConstants.ramseteZ;
 import static frc.robot.Constants.DriveConstants.rotateDeadzone;
 import static frc.robot.Constants.DriveConstants.shiftPointMetersPerSecond;
 import static frc.robot.Constants.DriveConstants.wheelCircumferenceMeters;
+import static frc.robot.Constants.PneumaticConstants.shifterPorts;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
@@ -142,7 +143,7 @@ public class DriveTrain extends SubsystemBase {
 
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
 
-    shifter = new DoubleSolenoid(0, 7);
+    shifter = new DoubleSolenoid(shifterPorts[0], shifterPorts[1]);
 
     shifterState = ShifterState.high;
 
@@ -160,7 +161,7 @@ public class DriveTrain extends SubsystemBase {
     SmartDashboard.putNumber("LeftEncoder(m): ", stepsToMeters(getLeftEncoderPosition()));
     SmartDashboard.putNumber("RightEncoder(m): ", stepsToMeters(getRightEncoderPosition()));
 
-    SmartDashboard.putNumber("Heading: ", getHeading());
+    SmartDashboard.putNumber("Yaw (-180 to 180): ", getHeading());
 
     SmartDashboard.putString("Piston State", getShifterState().toString());
   }
@@ -188,8 +189,9 @@ public class DriveTrain extends SubsystemBase {
     backward = backward * speedModifier;
     forward = forward * speedModifier;
 
-    // Deadzones for rotate.
-    if (rotate > rotateDeadzone || rotate < rotateDeadzone) {
+    // Logic for deadzones
+    // rotate > rotateDeadZone || rotate < rotateDeadZone
+    if (Math.abs(rotate) > rotateDeadzone) {
       rotate = -rotate * turnSpeedModifier;
     } else {
       rotate = 0;
@@ -471,10 +473,31 @@ public class DriveTrain extends SubsystemBase {
     }
   }
 
+  // There are 2 more options to test here. Creating a shifting threshold,
+  // so we don't shift when turning
+  // Or, we can automatically shift to high gear when turning
   private boolean isLowGearOptimal() {
-    if ((getLeftEncoderMetersPerSecondVelocity() + getRightEncoderMetersPerSecondVelocity()) / 2
+    if (Math.abs(
+        (getLeftEncoderMetersPerSecondVelocity() + getRightEncoderMetersPerSecondVelocity()) / 2)
         < shiftPointMetersPerSecond) {
       return true;
+    }
+    return false;
+  }
+
+  private boolean lowGearOptimalTurnLogic() {
+    if (Math.abs(
+        (getLeftEncoderMetersPerSecondVelocity() + getRightEncoderMetersPerSecondVelocity()) / 2)
+        < shiftPointMetersPerSecond) {
+      return true;
+    }
+    // Might not work chief
+    if (Math.abs(getLeftEncoderMetersPerSecondVelocity() / getRightEncoderMetersPerSecondVelocity())
+        > 0.2
+        ||
+        Math.abs(getRightEncoderMetersPerSecondVelocity() / getLeftEncoderMetersPerSecondVelocity())
+            > 0.2) {
+      return false;
     }
     return false;
   }

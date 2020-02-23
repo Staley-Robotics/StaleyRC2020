@@ -23,8 +23,7 @@ public class SpinToCount extends CommandBase {
 
   @Override
   public void execute() {
-    wallOfFlesh
-        .spinDistance(spinCount * wallOfFleshCircumference / wallOfFleshSpinnerCircumference);
+    wallOfFlesh.spinDistance(wallOfFlesh.revolutionsToDistance(spinCount));
   }
 
   @Override

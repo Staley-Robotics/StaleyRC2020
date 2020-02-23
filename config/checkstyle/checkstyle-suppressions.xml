@@ -48,10 +48,13 @@
     lines="67"
     message="Abbreviation in name 'runWOFSpinner' must contain no more than '2' consecutive capital letters."/>
   <suppress files="WallOfFlesh.java"
-    lines="122"
+    lines="90"
+    message="Abbreviation in name 'runWOFSpinner' must contain no more than '2' consecutive capital letters."/>
+  <suppress files="WallOfFlesh.java"
+    lines="135"
     message="Missing a Javadoc comment."/>
   <suppress files="WallOfFlesh.java"
-    lines="67"
+    lines="70"
     message="Missing a Javadoc comment."/>
   <suppress files="Shooter.java"
     lines="36"

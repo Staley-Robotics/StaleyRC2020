@@ -21,6 +21,7 @@ public class SpinToColor extends CommandBase {
 
   /**
    * Constructor.
+   *
    * @param color color to spin to
    */
   public SpinToColor(Color color) {
@@ -34,7 +35,6 @@ public class SpinToColor extends CommandBase {
 
   @Override
   public void execute() {
-    //while not reading color that would make the field's sensor read what we want run motor
     for (int i = 0; i < colors.length; i++) {
       if (wallOfFlesh.getCurrentColor().equals(colors[i])) {
         //avoids index out of bounds error
