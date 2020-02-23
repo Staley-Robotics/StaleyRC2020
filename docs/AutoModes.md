@@ -1,6 +1,8 @@
 #Auto Modes
 The five different autos, points scored, and their steps.
 
+*5 points are added to all, as the auto line is crossed*
+
 ##AutoBrettV7 
 
 **5 Points**
@@ -10,8 +12,6 @@ AutoBrett only moves off the Auto line.
 1. Drive forward   2.2 meters.
 
 ##Centered Six Ball 
-
-*5 points are added, as the auto line is crossed*
 
 **Outer 29 Points**
 
@@ -39,11 +39,11 @@ This auto shoots all its stored balls, then drives to the trench run and picks u
 
 ##Left Six Ball 
 
-**Inner 24 Points**
+**Outer 29 Points**
 
-**Outer 36 Points**
+**Inner 41 Points**
 
-This auto shoots its balls, picks up more from the trench run, and shoots those. The difference between this auto and the previous one, is the starting position. This auto starts more left on the line, for if someone took our spot.
+This auto shoots a total of 6 balls. First, it shoots its stored balls, picks up more from the trench run, and shoots those. The difference between this auto and the previous one, is the starting position. This auto starts more left on the line, for if someone took our spot.
 
 1. Shoots the three stored balls.
 
@@ -61,9 +61,9 @@ This auto shoots its balls, picks up more from the trench run, and shoots those.
 
 ##Right To Enemy Trench To Shoot 
 
-**Outer 20 Points**
+**Outer 25 Points**
 
-**Inner 30 Points**
+**Inner 35 Points**
 
 This auto starts directly across from the enemy trench. It starts out by rushing forward and stealing the two balls at the end of the enemy trench. Then the robot returns and shoots all five balls. 
 
@@ -78,9 +78,9 @@ This auto starts directly across from the enemy trench. It starts out by rushing
 5. Turns around and shoots 5 balls.
 
 ##Shoot Then Move Off 
-**Outer 12 Points**
+**Outer 17 Points**
 
-**Inner 18 Points**
+**Inner 23 Points**
 
 This auto shoots all three stored balls, then moves off teh auto line.
 
