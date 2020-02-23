@@ -381,7 +381,7 @@ public class DriveTrain extends SubsystemBase {
    * @param isReversed Determines if the bot goes backwards or forwards during a trajectory.
    * @return Trajectory Configuration.
    */
-  public TrajectoryConfig getTrajectoryConfig(boolean isReversed) {
+  public TrajectoryConfig createTrajectoryConfig(boolean isReversed) {
     return new TrajectoryConfig(maxVelocityMetersPerSecond, maxAccelerationMetersPerSecondSquared)
         .setKinematics(kinematics)
         .setStartVelocity(0)

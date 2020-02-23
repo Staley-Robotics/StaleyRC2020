@@ -10,14 +10,14 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 public class AutoBrettV7 extends LowGearAuto {
 
   public AutoBrettV7() {
-    Trajectory forwardPastAutoLine = TrajectoryGenerator.generateTrajectory(
+    Trajectory a_b_MovePastAutoLine = TrajectoryGenerator.generateTrajectory(
         driveTrain.getPoseListFromPathWeaverJson("Forward"),
-        driveTrain.getTrajectoryConfig(true));
+        driveTrain.createTrajectoryConfig(true));
 
     addCommands(
         new InstantCommand(driveTrain::resetOdometry, driveTrain),
         new InstantCommand(driveTrain::zeroEncoder, driveTrain),
-        driveTrain.getAutonomousCommandFromTrajectory(forwardPastAutoLine)
+        driveTrain.getAutonomousCommandFromTrajectory(a_b_MovePastAutoLine)
     );
   }
 }

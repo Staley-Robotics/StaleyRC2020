@@ -118,6 +118,10 @@ public class WallOfFlesh extends SubsystemBase {
     WOFMotor.set(ControlMode.Position, WOFMotor.getSelectedSensorPosition() + goalEncoderTick);
   }
 
+  public Color getColorTarget() {
+    return colorTarget;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

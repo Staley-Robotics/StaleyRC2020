@@ -22,23 +22,23 @@ public class CentSixBall extends LowGearAuto {
   public CentSixBall() {
     vision = Vision.getInstance();
 
-    Trajectory trajectoryForward = TrajectoryGenerator.generateTrajectory(
+    Trajectory a_b_ShootThenTrenchIntake = TrajectoryGenerator.generateTrajectory(
         driveTrain.getPoseListFromPathWeaverJson("ShootAndTurn"),
-        driveTrain.getTrajectoryConfig(false));
+        driveTrain.createTrajectoryConfig(false));
 
-    Trajectory trajectoryForwardContinue = TrajectoryGenerator.generateTrajectory(
+    Trajectory b_c_TurnMoveForwardAndShoot = TrajectoryGenerator.generateTrajectory(
         driveTrain.getPoseListFromPathWeaverJson("GoingForwards"),
-        driveTrain.getTrajectoryConfig(false));
+        driveTrain.createTrajectoryConfig(false));
 
     addCommands(
         new InstantCommand(driveTrain::resetOdometry, driveTrain),
         new InstantCommand(driveTrain::zeroEncoder, driveTrain),
         new VisionYawAlign(),
-        new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch())),
-        driveTrain.getAutonomousCommandFromTrajectory(trajectoryForward),
-        new ToggleJoint(),
-        new RunIntake(defaultIntakePower).withTimeout(10),
-        driveTrain.getAutonomousCommandFromTrajectory(trajectoryForwardContinue),
+        new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch()))
+            .alongWith(new ToggleJoint()),
+        driveTrain.getAutonomousCommandFromTrajectory(a_b_ShootThenTrenchIntake)
+            .alongWith(new RunIntake(defaultIntakePower).withTimeout(4)),
+        driveTrain.getAutonomousCommandFromTrajectory(b_c_TurnMoveForwardAndShoot),
         new VisionYawAlign(),
         new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch()))
     );

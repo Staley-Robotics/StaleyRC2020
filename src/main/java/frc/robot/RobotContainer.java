@@ -18,15 +18,14 @@ import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auto.AutoBrettV7;
 import frc.robot.commands.auto.CentSixBall;
 import frc.robot.commands.auto.LeftSixBall;
-import frc.robot.commands.auto.StealThenShoot;
 import frc.robot.commands.auto.ShootThenMoveOff;
+import frc.robot.commands.auto.StealThenShoot;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.ToggleJoint;
 import frc.robot.commands.magazine.RunMagazine;
@@ -131,7 +130,7 @@ public class RobotContainer {
     wofSpinNumber.whenPressed(new SpinToCount(3.5));
 
     JoystickButton wofSpinColor = new JoystickButton(altController, DpadButton.kDpadRight.value);
-    wofSpinColor.whenPressed(new SpinToColor(Color.kBlue));
+    wofSpinColor.whenPressed(new SpinToColor(wallOfFlesh.getColorTarget()));
 
     JoystickButton mastUp = new JoystickButton(altController, Button.kBumperLeft.value);
     mastUp.whileHeld(new RunMast(0.5));
