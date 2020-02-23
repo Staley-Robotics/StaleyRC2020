@@ -12,30 +12,32 @@ import frc.robot.commands.vision.VisionYawAlign;
 import frc.robot.subsystems.Vision;
 
 /**
- * Starts at the bottom, in line with the enemy's trench. Get 2 balls from enemy trench and then
- * turn to shoot into generator.
+ * Immediately shoots pre-loaded balls. Moves to friendly trench to gather 3 balls. Turns and moves
+ * back to face the generator and then shoots the 3 collected balls.
  */
-public class RightToEnemyTrenchToShoot extends LowGearAuto {
+public class CentSixBall extends LowGearAuto {
 
   private Vision vision;
 
-  public RightToEnemyTrenchToShoot() {
+  public CentSixBall() {
     vision = Vision.getInstance();
 
     Trajectory trajectoryForward = TrajectoryGenerator.generateTrajectory(
-        driveTrain.getPoseListFromPathWeaverJson("ForwardToTrench"),
+        driveTrain.getPoseListFromPathWeaverJson("ShootAndTurn"),
         driveTrain.getTrajectoryConfig(false));
 
     Trajectory trajectoryForwardContinue = TrajectoryGenerator.generateTrajectory(
-        driveTrain.getPoseListFromPathWeaverJson("ReverseOutOfTrench"),
-        driveTrain.getTrajectoryConfig(true));
+        driveTrain.getPoseListFromPathWeaverJson("GoingForwards"),
+        driveTrain.getTrajectoryConfig(false));
 
     addCommands(
         new InstantCommand(driveTrain::resetOdometry, driveTrain),
         new InstantCommand(driveTrain::zeroEncoder, driveTrain),
+        new VisionYawAlign(),
+        new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch())),
         driveTrain.getAutonomousCommandFromTrajectory(trajectoryForward),
         new ToggleJoint(),
-        new RunIntake(defaultIntakePower),
+        new RunIntake(defaultIntakePower).withTimeout(10),
         driveTrain.getAutonomousCommandFromTrajectory(trajectoryForwardContinue),
         new VisionYawAlign(),
         new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch()))

@@ -8,7 +8,6 @@
 package frc.robot;
 
 import static frc.robot.Constants.IntakeConstants.defaultIntakePower;
-import static frc.robot.Constants.IntakeConstants.defaultJointPower;
 import static frc.robot.Constants.MagazineConstants.defaultMagazinePower;
 import static frc.robot.Constants.OperatorInputConstants.altControllerPort;
 import static frc.robot.Constants.OperatorInputConstants.driveControllerPort;
@@ -24,9 +23,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auto.AutoBrettV7;
-import frc.robot.commands.auto.CenteredSixBall;
+import frc.robot.commands.auto.CentSixBall;
 import frc.robot.commands.auto.LeftSixBall;
-import frc.robot.commands.auto.RightToEnemyTrenchToShoot;
+import frc.robot.commands.auto.StealThenShoot;
 import frc.robot.commands.auto.ShootThenMoveOff;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.ToggleJoint;
@@ -74,10 +73,10 @@ public class RobotContainer {
 
     autoChooser = new SendableChooser<>();
     autoChooser.setDefaultOption("AutoBrettV7", new AutoBrettV7());
-    autoChooser.addOption("Center Six Ball", new CenteredSixBall());
+    autoChooser.addOption("Center Six Ball", new CentSixBall());
     autoChooser.addOption("Shoot Then Move", new ShootThenMoveOff());
     autoChooser.addOption("Spot Jacked", new LeftSixBall());
-    autoChooser.addOption("Yoink", new RightToEnemyTrenchToShoot());
+    autoChooser.addOption("Yoink", new StealThenShoot());
 
     SmartDashboard.putData("Auto", autoChooser);
 
