@@ -11,11 +11,17 @@ AutoBrett only moves off the Auto line.
 
 ##Centered Six Ball 
 
-**Inner 24 Points**
+*5 points are added, as the auto line is crossed*
 
-**Outer 36 Points**
+**Outer 29 Points**
 
-This auto shoots all it's stored balls, then drives to the trench run and picks up three more. After picking up the balls it returns, and shoots them.
+Outer is the opening at the top of the Power port
+
+**Inner 41 Points**
+
+Inner is the smaller opening at the back of Outer.
+
+This auto shoots all its stored balls, then drives to the trench run and picks up three more. After picking up the balls it returns, and shoots them.
 
 1. Shoot three stored balls.
 
@@ -25,11 +31,11 @@ This auto shoots all it's stored balls, then drives to the trench run and picks 
 
 4. Lowers and runs the intake.
 
-5. Drives forward another 3.8 meters picking up balls.
+5. Drives forward another 3.8 meters picking up 3 balls from trench.
 
 6. Turns a sharp right turn back around to the Power Port.
 
-7. Drives forward 2.5 meters and shoots.
+7. Drives forward 2.5 meters and shoots 3 balls.
 
 ##Left Six Ball 
 
@@ -47,17 +53,17 @@ This auto shoots its balls, picks up more from the trench run, and shoots those.
 
 4. Lowers and runs intake.
 
-5. Drives 2.3 meters forward, while picking up balls.
+5. Drives 2.3 meters forward, while picking up balls in trench.
 
 6. Makes a sharp right turn to face power port.
 
-7. Drives 4 meters forward, and then shoots.
+7. Drives 4 meters forward, and then shoots 3 balls.
 
 ##Right To Enemy Trench To Shoot 
 
-**Inner 20 Points**
+**Outer 20 Points**
 
-**Outer 30 Points**
+**Inner 30 Points**
 
 This auto starts directly across from the enemy trench. It starts out by rushing forward and stealing the two balls at the end of the enemy trench. Then the robot returns and shoots all five balls. 
 
@@ -65,16 +71,16 @@ This auto starts directly across from the enemy trench. It starts out by rushing
 
 2. Lowers and runs intake.
 
-3. Picks up balls.
+3. Picks up 2 balls.
 
 4. Drives in reverse out of the trench.
 
-5. Turns around and shoots.
+5. Turns around and shoots 5 balls.
 
 ##Shoot Then Move Off 
-**Inner 18 Points**
-
 **Outer 12 Points**
+
+**Inner 18 Points**
 
 This auto shoots all three stored balls, then moves off teh auto line.
 
