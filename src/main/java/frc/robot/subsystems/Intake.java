@@ -61,7 +61,7 @@ public class Intake extends SubsystemBase {
     talonConfig.slot0.kI = 0.0;
     talonConfig.slot0.kD = kD;
     talonConfig.slot0.integralZone = 400;
-    talonConfig.slot0.closedLoopPeakOutput = 1.0;
+    talonConfig.slot0.closedLoopPeakOutput = 0.2;
 
     jointMotor.configAllSettings(talonConfig);
 
