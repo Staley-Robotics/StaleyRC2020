@@ -1,6 +1,8 @@
 package frc.robot.commands.shooter;
 
 import static frc.robot.Constants.MagazineConstants.defaultMagazinePower;
+import static frc.robot.Constants.ShooterConstants.shooterClosedLoopThreshold;
+import static frc.robot.Constants.ShooterConstants.shooterOpenLoopThreshold;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -17,16 +19,29 @@ public class ShootBallsCommandGroup extends SequentialCommandGroup {
   /**
    * Performs all the necessary steps for shooting a ball.
    */
-  public ShootBallsCommandGroup() {
+  public ShootBallsCommandGroup(boolean closedLoop) {
+    setup(closedLoop);
+  }
 
+  private void setup(boolean closedLoop) {
     magazine = Magazine.getInstance();
     vision = Vision.getInstance();
-
-    addCommands(
-        new VisionYawAlign(),
-        new RunMagazine(-defaultMagazinePower).withTimeout(0.005),
-        new InstantCommand(magazine::retractHardStop, magazine),
-        new ShootBallsOpenLoop(vision.calculateDistance()).withTimeout(5)
-    );
+    if (closedLoop) {
+      addCommands(
+          new VisionYawAlign(),
+          new RunMagazine(-defaultMagazinePower).withTimeout(0.005),
+          new InstantCommand(magazine::retractHardStop, magazine),
+          new ShootBallsClosedLoop(vision.calculateDistance(),
+              shooterClosedLoopThreshold).withTimeout(5)
+      );
+    } else {
+      addCommands(
+          new VisionYawAlign(),
+          new RunMagazine(-defaultMagazinePower).withTimeout(0.005),
+          new InstantCommand(magazine::retractHardStop, magazine),
+          new ShootBallsClosedLoop(vision.calculateDistance(),
+              shooterOpenLoopThreshold).withTimeout(5)
+      );
+    }
   }
 }

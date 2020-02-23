@@ -7,8 +7,8 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.DriveConstants.lMotorFollower1Port;
-import static frc.robot.Constants.DriveConstants.lMotorFollower2Port;
+import static frc.robot.Constants.WinchConstants.winchMotor1;
+import static frc.robot.Constants.WinchConstants.winchMotor2;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.VictorSP;
@@ -29,8 +29,8 @@ public class Winch extends SubsystemBase {
    */
   private Winch() {
     try {
-      leftWinch = new VictorSP(lMotorFollower1Port);
-      rightWinch = new VictorSP(lMotorFollower2Port);
+      leftWinch = new VictorSP(winchMotor1);
+      rightWinch = new VictorSP(winchMotor2);
     } catch (RuntimeException ex) {
       DriverStation
           .reportError("Error Instantiating Winch Motor Controllers: " + ex.getMessage(), true);

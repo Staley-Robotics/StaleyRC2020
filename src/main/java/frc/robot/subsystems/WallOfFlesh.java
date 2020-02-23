@@ -129,6 +129,9 @@ public class WallOfFlesh extends SubsystemBase {
     SmartDashboard.putString("Color Target", colorTarget.toString());
   }
 
+  /**
+   * Reads the color we're supposed to spend to from driver station.
+   */
   public void readDriveStationMessage() {
     String gameData = DriverStation.getInstance().getGameSpecificMessage();
     if (gameData.length() > 0) {

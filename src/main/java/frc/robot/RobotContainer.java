@@ -9,8 +9,11 @@ package frc.robot;
 
 import static frc.robot.Constants.IntakeConstants.defaultIntakePower;
 import static frc.robot.Constants.MagazineConstants.defaultMagazinePower;
+import static frc.robot.Constants.MastConstants.mastDefaultMotorPower;
 import static frc.robot.Constants.OperatorInputConstants.altControllerPort;
 import static frc.robot.Constants.OperatorInputConstants.driveControllerPort;
+import static frc.robot.Constants.WallOfFleshConstants.goalSpinCount;
+import static frc.robot.Constants.WinchConstants.winchDefaultMotorPower;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -27,19 +30,21 @@ import frc.robot.commands.auto.LeftSixBall;
 import frc.robot.commands.auto.ShootThenMoveOff;
 import frc.robot.commands.auto.StealThenShoot;
 import frc.robot.commands.intake.RunIntake;
-import frc.robot.commands.intake.ToggleJoint;
 import frc.robot.commands.magazine.RunMagazine;
-import frc.robot.commands.mast.RunMast;
 import frc.robot.commands.shooter.ShootBallsCommandGroup;
 import frc.robot.commands.vision.VisionYawAlign;
-import frc.robot.commands.winch.RunWinch;
 import frc.robot.commands.wof.SpinToColor;
 import frc.robot.commands.wof.SpinToCount;
 import frc.robot.enums.XboxController.DpadButton;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Magazine;
+import frc.robot.subsystems.Mast;
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.WallOfFlesh;
+import frc.robot.subsystems.Winch;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -53,9 +58,14 @@ public class RobotContainer {
   private XboxController altController;
 
   private final DriveTrain drive;
+  private final Intake intake;
+  private final Magazine magazine;
+  private final Mast mast;
   private final Pneumatics pneumatics;
-  private final WallOfFlesh wallOfFlesh;
   private final Shooter shooter;
+  private final Vision vision;
+  private final WallOfFlesh wallOfFlesh;
+  private final Winch winch;
 
   private SendableChooser<Command> autoChooser;
 
@@ -66,9 +76,14 @@ public class RobotContainer {
   public RobotContainer() {
 
     drive = DriveTrain.getInstance();
+    intake = Intake.getInstance();
+    magazine = Magazine.getInstance();
+    mast = Mast.getInstance();
     pneumatics = Pneumatics.getInstance();
-    wallOfFlesh = WallOfFlesh.getInstance();
     shooter = Shooter.getInstance();
+    vision = Vision.getInstance();
+    wallOfFlesh = WallOfFlesh.getInstance();
+    winch = Winch.getInstance();
 
     autoChooser = new SendableChooser<>();
     autoChooser.setDefaultOption("AutoBrettV7", new AutoBrettV7());
@@ -112,13 +127,13 @@ public class RobotContainer {
     runIntakeBackwards.whenHeld(new RunIntake(-defaultIntakePower));
 
     JoystickButton toggleJointPosition = new JoystickButton(altController, Button.kX.value);
-    toggleJointPosition.whenPressed(new ToggleJoint());
+    toggleJointPosition.whenPressed(intake::toggleIntake);
 
     JoystickButton toggleCompressor = new JoystickButton(altController, Button.kY.value);
     toggleCompressor.whenPressed(pneumatics::compressorToggle, pneumatics);
 
     JoystickButton shoot = new JoystickButton(altController, Button.kB.value);
-    shoot.whenPressed(new ShootBallsCommandGroup());
+    shoot.whenPressed(new ShootBallsCommandGroup(true));
 
     JoystickButton wofUp = new JoystickButton(altController, DpadButton.kDpadUp.value);
     wofUp.whenPressed(wallOfFlesh::raiseWof, wallOfFlesh);
@@ -127,25 +142,25 @@ public class RobotContainer {
     wofDown.whenPressed(wallOfFlesh::lowerWof, wallOfFlesh);
 
     JoystickButton wofSpinNumber = new JoystickButton(altController, DpadButton.kDpadLeft.value);
-    wofSpinNumber.whenPressed(new SpinToCount(3.5));
+    wofSpinNumber.whenPressed(new SpinToCount(goalSpinCount));
 
     JoystickButton wofSpinColor = new JoystickButton(altController, DpadButton.kDpadRight.value);
     wofSpinColor.whenPressed(new SpinToColor(wallOfFlesh.getColorTarget()));
 
     JoystickButton mastUp = new JoystickButton(altController, Button.kBumperLeft.value);
-    mastUp.whileHeld(new RunMast(0.5));
+    mastUp.whileHeld(() -> mast.runMast(mastDefaultMotorPower), mast);
 
     JoystickButton mastDown = new JoystickButton(altController, Button.kBumperRight.value);
-    mastDown.whileHeld(new RunMast(-0.5));
+    mastUp.whileHeld(() -> mast.runMast(-mastDefaultMotorPower), mast);
 
     JoystickButton winchExtend = new JoystickButton(altController, Axis.kRightTrigger.value);
-    winchExtend.whileHeld(new RunWinch(0.5));
+    winchExtend.whileHeld(() -> winch.runWinch(winchDefaultMotorPower), winch);
 
     JoystickButton winchRetract = new JoystickButton(altController, Axis.kLeftTrigger.value);
-    winchRetract.whileHeld(new RunWinch(-0.5));
+    winchRetract.whileHeld(() -> winch.runWinch(-winchDefaultMotorPower), winch);
 
-    JoystickButton togglePiston = new JoystickButton(driveController, Button.kX.value);
-    togglePiston.whenPressed(drive::toggleShift, drive);
+    JoystickButton shiftButton = new JoystickButton(driveController, Button.kX.value);
+    shiftButton.whenPressed(drive::toggleShift, drive);
 
     JoystickButton lineUpShot = new JoystickButton(driveController, Button.kB.value);
     lineUpShot.whenPressed(new VisionYawAlign());

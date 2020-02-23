@@ -19,11 +19,6 @@ public class SpinToColor extends CommandBase {
 
   private Color findColor;
 
-  /**
-   * Constructor.
-   *
-   * @param color color to spin to
-   */
   public SpinToColor(Color color) {
     wallOfFlesh = WallOfFlesh.getInstance();
     addRequirements(wallOfFlesh);

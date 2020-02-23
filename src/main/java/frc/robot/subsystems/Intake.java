@@ -83,13 +83,26 @@ public class Intake extends SubsystemBase {
   }
 
   public void lowerIntake() {
+    jointState = JointState.down;
     jointMotor.set(ControlMode.Position, lowerPosition);
     jointState = JointState.down;
   }
 
   public void raiseIntake() {
+    jointState = JointState.up;
     jointMotor.set(ControlMode.Position, higherPosition);
     jointState = JointState.up;
+  }
+
+  /**
+   * Toggles pivot arm's PID set point between high/low.
+   */
+  public void toggleIntake() {
+    if (jointState == JointState.up) {
+      lowerIntake();
+    } else if (jointState == JointState.down) {
+      raiseIntake();
+    }
   }
 
   public void runIntake(double power) {

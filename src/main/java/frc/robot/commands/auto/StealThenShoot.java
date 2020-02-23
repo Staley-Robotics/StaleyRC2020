@@ -1,13 +1,14 @@
 package frc.robot.commands.auto;
 
 import static frc.robot.Constants.IntakeConstants.defaultIntakePower;
+import static frc.robot.Constants.ShooterConstants.shooterOpenLoopThreshold;
 
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.ToggleJoint;
-import frc.robot.commands.shooter.ShootBallsOpenLoop;
+import frc.robot.commands.shooter.ShootBallsClosedLoop;
 import frc.robot.commands.vision.VisionYawAlign;
 import frc.robot.subsystems.Vision;
 
@@ -37,7 +38,8 @@ public class StealThenShoot extends LowGearAuto {
             .alongWith(new ToggleJoint(), new RunIntake(defaultIntakePower).withTimeout(4)),
         driveTrain.getAutonomousCommandFromTrajectory(b_c_ToGenerator),
         new VisionYawAlign(),
-        new ShootBallsOpenLoop(vision.calculateDistance())
+        new ShootBallsClosedLoop(vision.calculateDistance(),
+            shooterOpenLoopThreshold)
     );
   }
 }
