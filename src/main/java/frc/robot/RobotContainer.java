@@ -8,10 +8,11 @@
 package frc.robot;
 
 import static frc.robot.Constants.IntakeConstants.defaultIntakePower;
-import static frc.robot.Constants.IntakeConstants.defaultJointPower;
 import static frc.robot.Constants.MagazineConstants.defaultMagazinePower;
 import static frc.robot.Constants.OperatorInputConstants.altControllerPort;
 import static frc.robot.Constants.OperatorInputConstants.driveControllerPort;
+import static frc.robot.Constants.ShooterConstants.shooterTightClosedLoopThreshold;
+import static frc.robot.Constants.WinchConstants.winchDefaultMotorPower;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -34,7 +35,6 @@ import frc.robot.commands.magazine.RunMagazine;
 import frc.robot.commands.mast.RunMast;
 import frc.robot.commands.shooter.ShootBallsCommandGroup;
 import frc.robot.commands.vision.VisionYawAlign;
-import frc.robot.commands.winch.RunWinch;
 import frc.robot.commands.wof.SpinToColor;
 import frc.robot.commands.wof.SpinToCount;
 import frc.robot.enums.XboxController.DpadButton;
@@ -42,6 +42,7 @@ import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.WallOfFlesh;
+import frc.robot.subsystems.Winch;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -58,6 +59,7 @@ public class RobotContainer {
   private final Pneumatics pneumatics;
   private final WallOfFlesh wallOfFlesh;
   private final Shooter shooter;
+  private final Winch winch;
 
   private SendableChooser<Command> autoChooser;
 
@@ -71,6 +73,7 @@ public class RobotContainer {
     pneumatics = Pneumatics.getInstance();
     wallOfFlesh = WallOfFlesh.getInstance();
     shooter = Shooter.getInstance();
+    winch = Winch.getInstance();
 
     autoChooser = new SendableChooser<>();
     autoChooser.setDefaultOption("AutoBrettV7", new AutoBrettV7());
@@ -120,7 +123,7 @@ public class RobotContainer {
     toggleCompressor.whenPressed(pneumatics::compressorToggle, pneumatics);
 
     JoystickButton shoot = new JoystickButton(altController, Button.kB.value);
-    shoot.whenPressed(new ShootBallsCommandGroup());
+    shoot.whenPressed(new ShootBallsCommandGroup(true));
 
     JoystickButton wofUp = new JoystickButton(altController, DpadButton.kDpadUp.value);
     wofUp.whenPressed(wallOfFlesh::raiseWof, wallOfFlesh);
@@ -141,10 +144,10 @@ public class RobotContainer {
     mastDown.whileHeld(new RunMast(-0.5));
 
     JoystickButton winchExtend = new JoystickButton(altController, Axis.kRightTrigger.value);
-    winchExtend.whileHeld(new RunWinch(0.5));
+    winchExtend.whileHeld(() -> winch.runWinch(winchDefaultMotorPower), winch);
 
     JoystickButton winchRetract = new JoystickButton(altController, Axis.kLeftTrigger.value);
-    winchRetract.whileHeld(new RunWinch(-0.5));
+    winchRetract.whileHeld(() -> winch.runWinch(-winchDefaultMotorPower), winch);
 
     JoystickButton togglePiston = new JoystickButton(driveController, Button.kX.value);
     togglePiston.whenPressed(drive::toggleShift, drive);

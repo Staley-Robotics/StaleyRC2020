@@ -1,9 +1,11 @@
 package frc.robot.commands.auto;
 
+import static frc.robot.Constants.ShooterConstants.shooterOpenLoopThreshold;
+
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.commands.shooter.ShootBallsOpenLoop;
+import frc.robot.commands.shooter.ShootBallsClosedLoop;
 import frc.robot.commands.vision.VisionYawAlign;
 import frc.robot.subsystems.Vision;
 
@@ -26,7 +28,8 @@ public class ShootThenMoveOff extends LowGearAuto {
         new InstantCommand(driveTrain::resetOdometry, driveTrain),
         new InstantCommand(driveTrain::zeroEncoder, driveTrain),
         new VisionYawAlign(),
-        new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch())),
+        new ShootBallsClosedLoop(vision.calculateDistance(vision.getPitch()),
+            shooterOpenLoopThreshold),
         driveTrain.getAutonomousCommandFromTrajectory(forwardPastAutoLine)
     );
   }

@@ -32,9 +32,6 @@ public class WallOfFlesh extends SubsystemBase {
   private static WPI_TalonSRX WOFMotor;
   private DoubleSolenoid wofPiston;
 
-  /**
-   * Constructor.
-   */
   private WallOfFlesh() {
     colorMatcher = new ColorMatcher();
     colorMatcher.get_color();
@@ -52,11 +49,6 @@ public class WallOfFlesh extends SubsystemBase {
     colorTarget = "";
   }
 
-  /**
-   * Makes WOF a singleton.
-   *
-   * @return WOF instance.
-   */
   public static WallOfFlesh getInstance() {
     if (instance == null) {
       instance = new WallOfFlesh();
@@ -119,6 +111,9 @@ public class WallOfFlesh extends SubsystemBase {
     SmartDashboard.putString("Color Target", colorTarget);
   }
 
+  /**
+   * Reads the color we're supposed to spend to from driver station.
+   */
   public void readDriveStationMessage() {
     String gameData = DriverStation.getInstance().getGameSpecificMessage();
     if (gameData.length() > 0) {
