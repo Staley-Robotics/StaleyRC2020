@@ -8,7 +8,6 @@
 package frc.robot;
 
 import static frc.robot.Constants.IntakeConstants.defaultIntakePower;
-import static frc.robot.Constants.IntakeConstants.defaultJointPower;
 import static frc.robot.Constants.MagazineConstants.defaultMagazinePower;
 import static frc.robot.Constants.OperatorInputConstants.altControllerPort;
 import static frc.robot.Constants.OperatorInputConstants.driveControllerPort;
@@ -19,15 +18,14 @@ import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auto.AutoBrettV7;
-import frc.robot.commands.auto.CenteredSixBall;
+import frc.robot.commands.auto.CentSixBall;
 import frc.robot.commands.auto.LeftSixBall;
-import frc.robot.commands.auto.RightToEnemyTrenchToShoot;
 import frc.robot.commands.auto.ShootThenMoveOff;
+import frc.robot.commands.auto.StealThenShoot;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.ToggleJoint;
 import frc.robot.commands.magazine.RunMagazine;
@@ -74,10 +72,10 @@ public class RobotContainer {
 
     autoChooser = new SendableChooser<>();
     autoChooser.setDefaultOption("AutoBrettV7", new AutoBrettV7());
-    autoChooser.addOption("Center Six Ball", new CenteredSixBall());
+    autoChooser.addOption("Center Six Ball", new CentSixBall());
     autoChooser.addOption("Shoot Then Move", new ShootThenMoveOff());
     autoChooser.addOption("Spot Jacked", new LeftSixBall());
-    autoChooser.addOption("Yoink", new RightToEnemyTrenchToShoot());
+    autoChooser.addOption("Yoink", new StealThenShoot());
 
     SmartDashboard.putData("Auto", autoChooser);
 
@@ -132,7 +130,7 @@ public class RobotContainer {
     wofSpinNumber.whenPressed(new SpinToCount(3.5));
 
     JoystickButton wofSpinColor = new JoystickButton(altController, DpadButton.kDpadRight.value);
-    wofSpinColor.whenPressed(new SpinToColor(Color.kBlue));
+    wofSpinColor.whenPressed(new SpinToColor(wallOfFlesh.getColorTarget()));
 
     JoystickButton mastUp = new JoystickButton(altController, Button.kBumperLeft.value);
     mastUp.whileHeld(new RunMast(0.5));

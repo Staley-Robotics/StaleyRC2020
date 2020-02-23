@@ -26,7 +26,7 @@ public class ShootBallsCommandGroup extends SequentialCommandGroup {
         new VisionYawAlign(),
         new RunMagazine(-defaultMagazinePower).withTimeout(0.005),
         new InstantCommand(magazine::retractHardStop, magazine),
-        new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch())).withTimeout(5)
+        new ShootBallsOpenLoop(vision.calculateDistance()).withTimeout(5)
     );
   }
 }

@@ -1,8 +1,5 @@
 package frc.robot.commands.wof;
 
-import static frc.robot.Constants.WallOfFleshConstants.wallOfFleshCircumference;
-import static frc.robot.Constants.WallOfFleshConstants.wallOfFleshSpinnerCircumference;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.WallOfFlesh;
 
@@ -22,14 +19,13 @@ public class SpinToCount extends CommandBase {
   }
 
   @Override
-  public void execute() {
-    wallOfFlesh
-        .spinDistance(spinCount * wallOfFleshCircumference / wallOfFleshSpinnerCircumference);
+  public void initialize() {
+    wallOfFlesh.spinDistance(wallOfFlesh.revolutionsToDistance(spinCount));
   }
 
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 
   @Override

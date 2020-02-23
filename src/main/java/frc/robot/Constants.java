@@ -83,6 +83,8 @@ public final class Constants {
     public static final int lowerPosition = -200;
     public static final int higherPosition = 0;
 
+    public static final int limitSwitchPort = 01;
+
     public static final double kP = 0.03;
     public static final double kD = 0.00;
   }
@@ -110,6 +112,8 @@ public final class Constants {
   public static final class PneumaticConstants {
 
     public static final int compressorPort = 0;
+
+    public static final int[] shifterPorts = {0, 7};
   }
 
   public static final class SensorConstants {
@@ -122,6 +126,9 @@ public final class Constants {
     public static final int leftShooterNeoPort = 2;
     public static final int rightShooterNeoPort = 3;
     public static final double flyWheelRadius = 2;
+
+    public static final double targetHeight = 5;
+    public static final double shooterHeight = 4;
 
     //temporary values
     public static double shooterP = 0.0011;
@@ -137,5 +144,6 @@ public final class Constants {
     public static final double spinnerPower = 0.3;
     public static final double wallOfFleshSpinnerCircumference = 3;
     public static final double wallOfFleshCircumference = 100;
+    public static final int[] wallOfFleshSolenoidPorts = {0, 7};
   }
 }

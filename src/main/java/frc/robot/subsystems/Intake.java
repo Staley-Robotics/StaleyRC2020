@@ -12,12 +12,14 @@ import static frc.robot.Constants.IntakeConstants.intakeMotorPort;
 import static frc.robot.Constants.IntakeConstants.jointMotorPort;
 import static frc.robot.Constants.IntakeConstants.kD;
 import static frc.robot.Constants.IntakeConstants.kP;
+import static frc.robot.Constants.IntakeConstants.limitSwitchPort;
 import static frc.robot.Constants.IntakeConstants.lowerPosition;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,9 +30,10 @@ public class Intake extends SubsystemBase {
   private static Intake instance;
   private static WPI_TalonSRX jointMotor;
   private static VictorSP intakeMotor;
-  private PivotState pivotState;
+  private JointState jointState;
+  private DigitalInput limitSwitch;
 
-  public enum PivotState {
+  public enum JointState {
     up,
     down
   }
@@ -44,6 +47,13 @@ public class Intake extends SubsystemBase {
     }
     intakeMotor = new VictorSP(intakeMotorPort);
 
+    try {
+      limitSwitch = new DigitalInput(limitSwitchPort);
+    } catch (RuntimeException ex) {
+      DriverStation
+          .reportError("Oh boy, limitswitch machine broke: " + ex.getMessage(), true);
+    }
+
     TalonSRXConfiguration talonConfig = new TalonSRXConfiguration();
     talonConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.CTRE_MagEncoder_Relative;
     talonConfig.slot0.kP = kP;
@@ -51,17 +61,18 @@ public class Intake extends SubsystemBase {
     talonConfig.slot0.kI = 0.0;
     talonConfig.slot0.kD = kD;
     talonConfig.slot0.integralZone = 400;
-    talonConfig.slot0.closedLoopPeakOutput = 1.0;
+    talonConfig.slot0.closedLoopPeakOutput = 0.5;
 
     jointMotor.configAllSettings(talonConfig);
 
     zeroEncoder();
 
-    pivotState = PivotState.up;
+    jointState = JointState.up;
   }
 
   /**
    * Makes Intake a singleton.
+   *
    * @return instance of intake
    */
   public static Intake getInstance() {
@@ -73,18 +84,20 @@ public class Intake extends SubsystemBase {
 
   public void lowerIntake() {
     jointMotor.set(ControlMode.Position, lowerPosition);
+    jointState = JointState.down;
   }
 
   public void raiseIntake() {
     jointMotor.set(ControlMode.Position, higherPosition);
+    jointState = JointState.up;
   }
 
   public void runIntake(double power) {
     intakeMotor.set(power);
   }
 
-  public PivotState getPivotState() {
-    return pivotState;
+  public JointState getJointState() {
+    return jointState;
   }
 
   /**
@@ -92,8 +105,12 @@ public class Intake extends SubsystemBase {
    *
    * @param currentState the state of the Pivot.
    */
-  public void setPivotState(PivotState currentState) {
-    pivotState = currentState;
+  public void setJointState(JointState currentState) {
+    jointState = currentState;
+  }
+
+  public boolean getLimitSwitch() {
+    return limitSwitch.get();
   }
 
   public void zeroEncoder() {
@@ -102,6 +119,6 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putString("Joint State: ", pivotState.toString());
+    SmartDashboard.putString("Joint State: ", jointState.toString());
   }
 }

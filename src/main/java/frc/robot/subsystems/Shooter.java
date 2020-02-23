@@ -37,15 +37,11 @@ public class Shooter extends SubsystemBase {
 
   private CANEncoder shooterEncoder;
 
-  /*These thresholds are used by commands to decide how close the flywhell's velocity needs to be to
-  its setpoint before a ball is fed.
-   */
-  public final double accurateShootVelocityThreshhold = 0.95;
-  public final double fastShootVelocityThreshold = 0.8;
+  /*These thresholds are used by commands to decide how close the flywheel's velocity
+  needs to be to its setpoint before a ball is fed.*/
 
   //target height and shooter height in meters
-  public final double targetHeight = 5;
-  public final double shooterHeight = 4;
+
   private double targetSpeed;
 
   private Shooter() {
@@ -86,11 +82,6 @@ public class Shooter extends SubsystemBase {
     PIDController.setFF(shooterF);
   }
 
-  /**
-   * Makes shooter a singleton.
-   *
-   * @return the instance of magazine
-   */
   public static Shooter getInstance() {
     if (instance == null) {
       instance = new Shooter();

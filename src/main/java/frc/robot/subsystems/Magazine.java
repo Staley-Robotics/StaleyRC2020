@@ -12,7 +12,6 @@ import static frc.robot.Constants.MagazineConstants.pistonHardStopForwardChannel
 import static frc.robot.Constants.MagazineConstants.pistonHardStopReverseChannel;
 import static frc.robot.Constants.MagazineConstants.topMasterPort;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -38,9 +37,6 @@ public class Magazine extends SubsystemBase {
     retracted
   }
 
-  /**
-   * Constructor.
-   */
   private Magazine() {
     try {
       topMaster = new VictorSP(topMasterPort);
@@ -55,11 +51,6 @@ public class Magazine extends SubsystemBase {
     extendHardStop();
   }
 
-  /**
-   * Makes Magazine a singleton.
-   *
-   * @return Magazine instance
-   */
   public static Magazine getInstance() {
     if (instance == null) {
       instance = new Magazine();

@@ -2,7 +2,7 @@ package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Intake.PivotState;
+import frc.robot.subsystems.Intake.JointState;
 
 public class ToggleJoint extends CommandBase {
 
@@ -16,16 +16,12 @@ public class ToggleJoint extends CommandBase {
 
   @Override
   public void initialize() {
-    if (intake.getPivotState() == PivotState.up) {
+    if (intake.getJointState() == JointState.up) {
       intake.lowerIntake();
-    } else {
+      intake.setJointState(JointState.down);
+    } else if (!intake.getLimitSwitch()) {
       intake.raiseIntake();
-    }
-
-    if (intake.getPivotState() == PivotState.up) {
-      intake.setPivotState(PivotState.down);
-    } else if (intake.getPivotState() == PivotState.down) {
-      intake.setPivotState(PivotState.up);
+      intake.setJointState(JointState.up);
     }
   }
 

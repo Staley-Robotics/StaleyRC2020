@@ -15,7 +15,7 @@ AutoBrett only moves off the Auto line.
 
 1. Drive forward   2.2 meters.
 
-##Centered Six Ball 
+##Cent Six Ball 
 
 **6 ball auto**
 
@@ -83,7 +83,7 @@ This auto starts directly across from the enemy trench. It starts out by rushing
 
 5. Turns around and shoots 5 balls.
 
-##Shoot Then Move Off 
+##Steal Then Shoot
 
 **3 ball auto**
 

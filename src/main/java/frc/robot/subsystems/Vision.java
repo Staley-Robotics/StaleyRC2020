@@ -25,11 +25,6 @@ public class Vision extends SubsystemBase {
     table = inst.getTable("chameleon-vision/Microsoft LifeCam HD-3000");
   }
 
-  /**
-   * Makes Vision a singleton.
-   *
-   * @return Vision
-   */
   public static Vision getInstance() {
     if (instance == null) {
       instance = new Vision();
@@ -42,7 +37,7 @@ public class Vision extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("Tape Detected", tapeDetected());
     if (tapeDetected()) {
-      SmartDashboard.putNumber("Distance", calculateDistance(getPitch()));
+      SmartDashboard.putNumber("Distance", calculateDistance());
     }
 
   }
@@ -74,9 +69,9 @@ public class Vision extends SubsystemBase {
    *
    * @return Calculated Distance.
    */
-  public double calculateDistance(double pitch) {
+  public double calculateDistance() {
     return (bottomOfTargetHeight - fixedCameraHeight) / (Math
-        .tan(Math.toRadians(pitch + fixedCameraAngle)));
+        .tan(Math.toRadians(getPitch() + fixedCameraAngle)));
   }
 
   /**

@@ -18,16 +18,16 @@ public class ShootThenMoveOff extends LowGearAuto {
 
     vision = Vision.getInstance();
 
-    Trajectory forwardPastAutoLine = TrajectoryGenerator.generateTrajectory(
+    Trajectory a_b_MovePastLine = TrajectoryGenerator.generateTrajectory(
         driveTrain.getPoseListFromPathWeaverJson("Forward"),
-        driveTrain.getTrajectoryConfig(true));
+        driveTrain.createTrajectoryConfig(true));
 
     addCommands(
         new InstantCommand(driveTrain::resetOdometry, driveTrain),
         new InstantCommand(driveTrain::zeroEncoder, driveTrain),
         new VisionYawAlign(),
-        new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch())),
-        driveTrain.getAutonomousCommandFromTrajectory(forwardPastAutoLine)
+        new ShootBallsOpenLoop(vision.calculateDistance()),
+        driveTrain.getAutonomousCommandFromTrajectory(a_b_MovePastLine)
     );
   }
 }

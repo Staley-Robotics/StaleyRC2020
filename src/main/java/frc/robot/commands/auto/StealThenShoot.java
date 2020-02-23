@@ -15,30 +15,29 @@ import frc.robot.subsystems.Vision;
  * Starts at the bottom, in line with the enemy's trench. Get 2 balls from enemy trench and then
  * turn to shoot into generator.
  */
-public class RightToEnemyTrenchToShoot extends LowGearAuto {
+public class StealThenShoot extends LowGearAuto {
 
   private Vision vision;
 
-  public RightToEnemyTrenchToShoot() {
+  public StealThenShoot() {
     vision = Vision.getInstance();
 
-    Trajectory trajectoryForward = TrajectoryGenerator.generateTrajectory(
+    Trajectory a_b_ToEnemyTrench = TrajectoryGenerator.generateTrajectory(
         driveTrain.getPoseListFromPathWeaverJson("ForwardToTrench"),
-        driveTrain.getTrajectoryConfig(false));
+        driveTrain.createTrajectoryConfig(false));
 
-    Trajectory trajectoryForwardContinue = TrajectoryGenerator.generateTrajectory(
+    Trajectory b_c_ToGenerator = TrajectoryGenerator.generateTrajectory(
         driveTrain.getPoseListFromPathWeaverJson("ReverseOutOfTrench"),
-        driveTrain.getTrajectoryConfig(true));
+        driveTrain.createTrajectoryConfig(true));
 
     addCommands(
         new InstantCommand(driveTrain::resetOdometry, driveTrain),
         new InstantCommand(driveTrain::zeroEncoder, driveTrain),
-        driveTrain.getAutonomousCommandFromTrajectory(trajectoryForward),
-        new ToggleJoint(),
-        new RunIntake(defaultIntakePower),
-        driveTrain.getAutonomousCommandFromTrajectory(trajectoryForwardContinue),
+        driveTrain.getAutonomousCommandFromTrajectory(a_b_ToEnemyTrench)
+            .alongWith(new ToggleJoint(), new RunIntake(defaultIntakePower).withTimeout(4)),
+        driveTrain.getAutonomousCommandFromTrajectory(b_c_ToGenerator),
         new VisionYawAlign(),
-        new ShootBallsOpenLoop(vision.calculateDistance(vision.getPitch()))
+        new ShootBallsOpenLoop(vision.calculateDistance())
     );
   }
 }
