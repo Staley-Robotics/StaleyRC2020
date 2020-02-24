@@ -14,7 +14,6 @@ import static frc.robot.Constants.MagazineConstants.topMasterPort;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -38,13 +37,8 @@ public class Magazine extends SubsystemBase {
   }
 
   private Magazine() {
-    try {
-      topMaster = new VictorSP(topMasterPort);
-      bottomMaster = new VictorSP(bottomMasterPort);
-    } catch (RuntimeException ex) {
-      DriverStation
-          .reportError("Error Instantiating Magazine Motor Controllers: " + ex.getMessage(), true);
-    }
+    topMaster = new VictorSP(topMasterPort);
+    bottomMaster = new VictorSP(bottomMasterPort);
     topMaster.setInverted(false);
     bottomMaster.setInverted(true);
     pistonHardStop = new DoubleSolenoid(pistonHardStopForwardChannel, pistonHardStopReverseChannel);

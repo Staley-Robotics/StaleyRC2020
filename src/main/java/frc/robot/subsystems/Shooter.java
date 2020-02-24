@@ -22,6 +22,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ControlType;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -66,9 +67,18 @@ public class Shooter extends SubsystemBase {
     stop();
   }
 
+  public static Shooter getInstance() {
+    if (instance == null) {
+      instance = new Shooter();
+    }
+    return instance;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Fly wheel surface speed", getFlyWheelSpeed());
+    setFlyWheelSpeed(SmartDashboard.getNumber("Set flywheel speed", getTargetFlywheelSpeed()));
   }
 
   /**
@@ -82,23 +92,6 @@ public class Shooter extends SubsystemBase {
     PIDController.setFF(shooterF);
   }
 
-  public static Shooter getInstance() {
-    if (instance == null) {
-      instance = new Shooter();
-    }
-    return instance;
-  }
-
-  /**
-   * Sets the PID target from surface velocity.
-   *
-   * @param surfaceVelocity the speed that the surface of the ball goes in meters per second.
-   */
-  public void setFlyWheelSpeed(double surfaceVelocity) {
-    targetSpeed = surfaceVelocityToRPM(surfaceVelocity);
-    PIDController.setReference(targetSpeed, ControlType.kVelocity);
-  }
-
   public double getTargetFlywheelSpeed() {
     return targetSpeed;
   }
@@ -110,6 +103,16 @@ public class Shooter extends SubsystemBase {
    */
   public double getFlyWheelSpeed() {
     return rpmToSurfaceVelocity(rightShooterNeo.getEncoder().getVelocity());
+  }
+
+  /**
+   * Sets the PID target from surface velocity.
+   *
+   * @param surfaceVelocity the speed that the surface of the ball goes in meters per second.
+   */
+  public void setFlyWheelSpeed(double surfaceVelocity) {
+    targetSpeed = surfaceVelocityToRPM(surfaceVelocity);
+    PIDController.setReference(targetSpeed, ControlType.kVelocity);
   }
 
   /**
@@ -127,6 +130,10 @@ public class Shooter extends SubsystemBase {
   public double calculateSurfaceVelocity(double distance) {
     //Lots of commented math I don't want to copy
     return 2;
+  }
+
+  public void testSetPoint(double distance, double shooterSurfaceVelocity) {
+    setFlyWheelSpeed(shooterSurfaceVelocity);
   }
 
   /**
