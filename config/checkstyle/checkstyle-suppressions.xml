@@ -108,7 +108,7 @@
     lines="85"
     message="Missing a Javadoc comment."/>
   <suppress files="Shooter.java"
-    lines="155"
+    lines="151"
     message="Abbreviation in name 'surfaceVelocityToRPM' must contain no more than '2' consecutive capital letters."/>
   <suppress files="ShootThenMoveOff.java"
     lines="0"

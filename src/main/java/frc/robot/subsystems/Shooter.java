@@ -132,10 +132,6 @@ public class Shooter extends SubsystemBase {
     return 2;
   }
 
-  public void testSetPoint(double distance, double shooterSurfaceVelocity) {
-    setFlyWheelSpeed(shooterSurfaceVelocity);
-  }
-
   /**
    * Calculates surface velocity from RPM.
    *
