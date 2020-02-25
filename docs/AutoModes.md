@@ -1,5 +1,5 @@
 #Auto Modes
-The five different autos, points scored, and their steps.
+The six different autos, points scored, and their steps.
 
 **5 points are added to all, as the auto line is crossed**
 
@@ -13,9 +13,9 @@ The five different autos, points scored, and their steps.
 
 AutoBrett only moves off the Auto line.
 
-1. Drive forward   2.2 meters.
+1. Drive forward 2.2 meters moving away from the nearest driver station.
 
-##Cent Six Ball 
+##CentSixBall 
 
 **6 ball auto**
 
@@ -39,7 +39,7 @@ This auto shoots all its stored balls, then drives to the trench run and picks u
 
 7. Drives forward 2.5 meters and shoots 3 balls.
 
-##Left Six Ball
+##LeftSixBall
 
 **6 ball auto**
 
@@ -63,7 +63,13 @@ The same as Center Six Ball, but with a different starting location. This auto s
 
 7. Drives 4 meters forward, and then shoots 3 balls.
 
-##Right To Enemy Trench To Shoot 
+##LowGearAuto
+
+**Required for autos that start in low gear**
+
+This auto places the bot in low gear for autos that need to start in low gear.
+
+##ShootThenMoveOff 
 
 **5 ball auto**
 
@@ -83,7 +89,7 @@ This auto starts directly across from the enemy trench. It starts out by rushing
 
 5. Turns around and shoots 5 balls.
 
-##Steal Then Shoot
+##StealThenShoot
 
 **3 ball auto**
 
