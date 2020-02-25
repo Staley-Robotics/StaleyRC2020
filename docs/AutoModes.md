@@ -69,7 +69,21 @@ The same as Center Six Ball, but with a different starting location. This auto s
 
 This auto places the bot in low gear for autos that need to start in low gear.
 
-##ShootThenMoveOff 
+##ShootThenMoveOff
+
+**3 ball auto**
+
+**Outer 17 Points**
+
+**Inner 23 Points**
+
+This auto shoots all three stored balls, then moves off the auto line in reverse.
+
+1. Shoots all three stored balls.
+
+2. Drives forward off the line.
+
+##StealThenShoot 
 
 **5 ball auto**
 
@@ -89,17 +103,4 @@ This auto starts directly across from the enemy trench. It starts out by rushing
 
 5. Turns around and shoots 5 balls.
 
-##StealThenShoot
-
-**3 ball auto**
-
-**Outer 17 Points**
-
-**Inner 23 Points**
-
-This auto shoots all three stored balls, then moves off the auto line in reverse.
-
-1. Shoots all three stored balls.
-
-2. Drives forward off the line.
 
