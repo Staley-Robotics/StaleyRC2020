@@ -10,6 +10,10 @@ package frc.robot.subsystems;
 import static frc.robot.Constants.ShooterConstants.flyWheelRadius;
 import static frc.robot.Constants.ShooterConstants.leftShooterNeoPort;
 import static frc.robot.Constants.ShooterConstants.rightShooterNeoPort;
+import static frc.robot.Constants.ShooterConstants.shooterD;
+import static frc.robot.Constants.ShooterConstants.shooterF;
+import static frc.robot.Constants.ShooterConstants.shooterI;
+import static frc.robot.Constants.ShooterConstants.shooterP;
 
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
@@ -26,18 +30,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class Shooter extends SubsystemBase {
 
-  public double getTargetSpeed() {
-    return targetSpeed;
-  }
-
-  public void runShooter(double triggerAxis) {
-    rightShooterNeo.set(triggerAxis);
-  }
-
-  public enum ShooterState{
-    zooming,
-    not
-  }
   private static Shooter instance;
   private CANSparkMax leftShooterNeo;
   private CANSparkMax rightShooterNeo;
@@ -50,27 +42,27 @@ public class Shooter extends SubsystemBase {
   needs to be to its setpoint before a ball is fed.*/
 
   //target height and shooter height in meters
-
   private double targetSpeed;
 
-  private ShooterState shooterState;
   private Shooter() {
-    shooterState = ShooterState.not;
     try {
-      leftShooterNeo = new CANSparkMax(leftShooterNeoPort, MotorType.kBrushless);
+      //leftShooterNeo = new CANSparkMax(leftShooterNeoPort, MotorType.kBrushless);
       rightShooterNeo = new CANSparkMax(rightShooterNeoPort, MotorType.kBrushless);
     } catch (RuntimeException ex) {
       DriverStation
           .reportError("Error Instantiating Shooter Motor Controllers: " + ex.getMessage(), true);
     }
-    leftShooterNeo.follow(rightShooterNeo, true);
+    //leftShooterNeo.follow(rightShooterNeo, true);
 
-    leftShooterNeo.setIdleMode(IdleMode.kCoast);
+    //leftShooterNeo.setIdleMode(IdleMode.kCoast);
     rightShooterNeo.setIdleMode(IdleMode.kCoast);
 
     shooterEncoder = rightShooterNeo.getEncoder();
+    PIDController = rightShooterNeo.getPIDController();
+    PIDController.setFeedbackDevice(shooterEncoder);
 
     targetSpeed = 0;
+    updatePIDConstants();
     stop();
   }
 
@@ -84,17 +76,23 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if(shooterState==ShooterState.zooming && targetSpeed!=0){
-      if(getFlyWheelSpeedMetersPerSecond() < targetSpeed){
-        rightShooterNeo.set(1);
-      }
-    }
     SmartDashboard.putNumber("Fly wheel surface speed", getFlyWheelSpeedMetersPerSecond());
-    setFlyWheelSpeed(SmartDashboard.getNumber("Set flywheel speed", getTargetFlywheelSpeed()));
+    SmartDashboard.putNumber("target", getTargetFlywheelSpeedMetersPerSecond());
   }
 
-  public double getTargetFlywheelSpeed() {
-    return targetSpeed;
+  /**
+   * Updates the constants for the PID using constants.
+   */
+  public void updatePIDConstants() {
+    PIDController.setOutputRange(0, 1);
+    PIDController.setP(shooterP);
+    PIDController.setI(shooterI);
+    PIDController.setD(shooterD);
+    PIDController.setFF(shooterF);
+  }
+
+  public double getTargetFlywheelSpeedMetersPerSecond() {
+    return rpmToSurfaceVelocity(targetSpeed);
   }
 
   /**
@@ -113,15 +111,14 @@ public class Shooter extends SubsystemBase {
    */
   public void setFlyWheelSpeed(double surfaceVelocity) {
     targetSpeed = surfaceVelocityToRPM(surfaceVelocity);
-    shooterState = ShooterState.zooming;
+    PIDController.setReference(surfaceVelocityToRPM(surfaceVelocity), ControlType.kVelocity);
   }
 
   /**
    * Sets the PID target to zero, letting it coast to a stop.
    */
   public void stop() {
-    shooterState = ShooterState.not;
-    targetSpeed = 0;
+    PIDController.setReference(0, ControlType.kDutyCycle);
   }
 
   /**
@@ -152,5 +149,13 @@ public class Shooter extends SubsystemBase {
    */
   private double surfaceVelocityToRPM(double surfaceVelocity) {
     return surfaceVelocity * 60 / (flyWheelRadius * 2 * Math.PI);
+  }
+
+  public void runShooter(double triggerAxis) {
+    rightShooterNeo.set(triggerAxis);
+  }
+
+  public double getTargetSpeed() {
+    return targetSpeed;
   }
 }
