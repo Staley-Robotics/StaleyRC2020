@@ -145,7 +145,7 @@ public final class Constants {
     public static final double shooterHeight = 4;
 
     //temporary values
-    public static double shooterP = 0.0004;//0.00065
+    public static double shooterP = 0.00035;//0.0004
     public static double shooterI = 0;
     //TODO: maybe make this 4
     public static double shooterD = 0.001;

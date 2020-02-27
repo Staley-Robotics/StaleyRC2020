@@ -151,7 +151,7 @@ public class RobotContainer {
     //wofSpinColor.whenPressed(new SpinToColor(wallOfFlesh.getColorTarget()));
 
     DPadButton setShooterSpeed = new DPadButton(altController, Direction.Right);
-    setShooterSpeed.whenHeld(new ShootSpeedTest(25)); // max is 28
+    setShooterSpeed.whenHeld(new ShootSpeedTest(20)); // max is 28
 
     JoystickButton mastUp = new JoystickButton(altController, Button.kBumperLeft.value);
     mastUp.whileHeld(() -> mast.runMast(mastDefaultMotorPower), mast);
