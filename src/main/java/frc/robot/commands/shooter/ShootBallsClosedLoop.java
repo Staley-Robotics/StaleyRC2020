@@ -29,13 +29,14 @@ public class ShootBallsClosedLoop extends CommandBase {
 
   @Override
   public void initialize() {
-    shooter.setFlyWheelSpeed(shooter.calculateSurfaceVelocity(distance));
+//    shooter.setFlyWheelSpeed(shooter.calculateSurfaceVelocity(distance));
   }
 
   @Override
   public void execute() {
-    double flyWheelSpeed = shooter.getFlyWheelSpeed();
-    double targetSpeed = shooter.getTargetFlywheelSpeed();
+    double flyWheelSpeed = shooter.getFlyWheelSpeedMetersPerSecond();
+    //TODO: check this
+    double targetSpeed = shooter.getTargetSpeed();
 
     double percentage = flyWheelSpeed / targetSpeed;
     if (Math.abs(1 - percentage) <= Math.abs(1 - percentSpeedRequired)) {

@@ -10,10 +10,6 @@ package frc.robot.subsystems;
 import static frc.robot.Constants.ShooterConstants.flyWheelRadius;
 import static frc.robot.Constants.ShooterConstants.leftShooterNeoPort;
 import static frc.robot.Constants.ShooterConstants.rightShooterNeoPort;
-import static frc.robot.Constants.ShooterConstants.shooterD;
-import static frc.robot.Constants.ShooterConstants.shooterF;
-import static frc.robot.Constants.ShooterConstants.shooterI;
-import static frc.robot.Constants.ShooterConstants.shooterP;
 
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
@@ -30,6 +26,18 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class Shooter extends SubsystemBase {
 
+  public double getTargetSpeed() {
+    return targetSpeed;
+  }
+
+  public void runShooter(double triggerAxis) {
+    rightShooterNeo.set(triggerAxis);
+  }
+
+  public enum ShooterState{
+    zooming,
+    not
+  }
   private static Shooter instance;
   private CANSparkMax leftShooterNeo;
   private CANSparkMax rightShooterNeo;
@@ -45,7 +53,9 @@ public class Shooter extends SubsystemBase {
 
   private double targetSpeed;
 
+  private ShooterState shooterState;
   private Shooter() {
+    shooterState = ShooterState.not;
     try {
       leftShooterNeo = new CANSparkMax(leftShooterNeoPort, MotorType.kBrushless);
       rightShooterNeo = new CANSparkMax(rightShooterNeoPort, MotorType.kBrushless);
@@ -59,11 +69,8 @@ public class Shooter extends SubsystemBase {
     rightShooterNeo.setIdleMode(IdleMode.kCoast);
 
     shooterEncoder = rightShooterNeo.getEncoder();
-    PIDController = rightShooterNeo.getPIDController();
-    PIDController.setFeedbackDevice(shooterEncoder);
 
     targetSpeed = 0;
-    updatePIDConstants();
     stop();
   }
 
@@ -77,19 +84,13 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Fly wheel surface speed", getFlyWheelSpeed());
+    if(shooterState==ShooterState.zooming && targetSpeed!=0){
+      if(getFlyWheelSpeedMetersPerSecond() < targetSpeed){
+        rightShooterNeo.set(1);
+      }
+    }
+    SmartDashboard.putNumber("Fly wheel surface speed", getFlyWheelSpeedMetersPerSecond());
     setFlyWheelSpeed(SmartDashboard.getNumber("Set flywheel speed", getTargetFlywheelSpeed()));
-  }
-
-  /**
-   * Updates the constants for the PID using constants.
-   */
-  public void updatePIDConstants() {
-    PIDController.setOutputRange(0, 1);
-    PIDController.setP(shooterP);
-    PIDController.setI(shooterI);
-    PIDController.setD(shooterD);
-    PIDController.setFF(shooterF);
   }
 
   public double getTargetFlywheelSpeed() {
@@ -101,7 +102,7 @@ public class Shooter extends SubsystemBase {
    *
    * @return calculated surface velocity.
    */
-  public double getFlyWheelSpeed() {
+  public double getFlyWheelSpeedMetersPerSecond() {
     return rpmToSurfaceVelocity(rightShooterNeo.getEncoder().getVelocity());
   }
 
@@ -112,14 +113,15 @@ public class Shooter extends SubsystemBase {
    */
   public void setFlyWheelSpeed(double surfaceVelocity) {
     targetSpeed = surfaceVelocityToRPM(surfaceVelocity);
-    PIDController.setReference(targetSpeed, ControlType.kVelocity);
+    shooterState = ShooterState.zooming;
   }
 
   /**
    * Sets the PID target to zero, letting it coast to a stop.
    */
   public void stop() {
-    PIDController.setReference(0, ControlType.kDutyCycle);
+    shooterState = ShooterState.not;
+    targetSpeed = 0;
   }
 
   /**

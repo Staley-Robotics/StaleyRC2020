@@ -24,6 +24,8 @@ import static frc.robot.Constants.DriveConstants.ramseteB;
 import static frc.robot.Constants.DriveConstants.ramseteZ;
 import static frc.robot.Constants.DriveConstants.rotateDeadzone;
 import static frc.robot.Constants.DriveConstants.shiftPointMetersPerSecond;
+import static frc.robot.Constants.DriveConstants.speedModifier;
+import static frc.robot.Constants.DriveConstants.turnSpeedModifier;
 import static frc.robot.Constants.DriveConstants.wheelCircumferenceMeters;
 import static frc.robot.Constants.PneumaticConstants.shifterPorts;
 
@@ -94,7 +96,6 @@ public class DriveTrain extends SubsystemBase {
       rightMaster = new WPI_TalonSRX(rMotorMasterPort);
       rightFollower1 = new WPI_VictorSPX(rMotorFollower1Port);
       rightFollower2 = new WPI_VictorSPX(rMotorFollower2Port);
-
       leftMaster = new WPI_TalonSRX(lMotorMasterPort);
       leftFollower1 = new WPI_VictorSPX(lMotorFollower1Port);
       leftFollower2 = new WPI_VictorSPX(lMotorFollower2Port);
@@ -183,8 +184,7 @@ public class DriveTrain extends SubsystemBase {
    * x-axis = rotate power.
    */
   public void worldOfTanksDrive(double forward, double backward, double rotate) {
-    double speedModifier = 1;
-    double turnSpeedModifier = 0.85;
+
 
     backward = backward * speedModifier;
     forward = forward * speedModifier;
@@ -205,6 +205,7 @@ public class DriveTrain extends SubsystemBase {
     } else {
       drive.arcadeDrive(0, rotate);
     }
+    /* autoshift testing
     if (isLowGearOptimal()) {
       if (shifterState == ShifterState.high) {
         shiftLow();
@@ -214,6 +215,7 @@ public class DriveTrain extends SubsystemBase {
         shiftHigh();
       }
     }
+     */
   }
 
   /**
@@ -343,9 +345,10 @@ public class DriveTrain extends SubsystemBase {
    * Zeros drive encoders.
    */
   public void zeroEncoder() {
-    rightMaster.setSelectedSensorPosition(0);
-    leftMaster.setSelectedSensorPosition(0);
-    System.out.println("Encoders have been zeroed");
+    //TODO: UNDO
+    //rightMaster.setSelectedSensorPosition(0);
+    //leftMaster.setSelectedSensorPosition(0);
+    System.out.println("Encoders have not been zeroed");
   }
 
   /* Odometry */
