@@ -39,8 +39,8 @@ public class Magazine extends SubsystemBase {
   private Magazine() {
     topMaster = new VictorSP(topMasterPort);
     bottomMaster = new VictorSP(bottomMasterPort);
-    topMaster.setInverted(true);
-    bottomMaster.setInverted(false);
+    topMaster.setInverted(false);
+    bottomMaster.setInverted(true);
     pistonHardStop = new DoubleSolenoid(pistonHardStopForwardChannel, pistonHardStopReverseChannel);
     extendHardStop();
   }

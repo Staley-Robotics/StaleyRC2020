@@ -130,7 +130,7 @@ public class Shooter extends SubsystemBase {
    */
   public double calculateSurfaceVelocity(double distance) {
     //Lots of commented math I don't want to copy
-    return 2;
+    return 25;
   }
 
   /**

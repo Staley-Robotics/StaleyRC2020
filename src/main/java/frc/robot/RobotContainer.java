@@ -8,6 +8,7 @@
 package frc.robot;
 
 import static frc.robot.Constants.IntakeConstants.defaultIntakePower;
+import static frc.robot.Constants.IntakeConstants.defaultMotorJointPower;
 import static frc.robot.Constants.MagazineConstants.defaultMagazinePower;
 import static frc.robot.Constants.MastConstants.mastDefaultMotorPower;
 import static frc.robot.Constants.OperatorInputConstants.altControllerPort;
@@ -21,10 +22,10 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.intake.RunIntakeJoint;
 import frc.robot.commands.shooter.ShootBallsCommandGroup;
 import frc.robot.commands.shooter.ShootSpeedTest;
 import frc.robot.commands.vision.VisionYawAlign;
@@ -101,6 +102,10 @@ public class RobotContainer {
     shooter.setDefaultCommand(new RunCommand(
         () -> shooter.runShooter(altController.getTriggerAxis(GenericHID.Hand.kRight)), shooter));
 
+    intake.setDefaultCommand(
+        new RunCommand(() -> intake.runIntakeJoint(altController.getY(GenericHID.Hand.kRight)),
+            intake));
+
     configureButtonBindings();
   }
 
@@ -127,8 +132,12 @@ public class RobotContainer {
     JoystickButton runIntakeBackwards = new JoystickButton(altController, Button.kBack.value);
     runIntakeBackwards.whenHeld(new RunIntake(-defaultIntakePower));
 
-    JoystickButton toggleJointPosition = new JoystickButton(altController, Button.kX.value);
-    toggleJointPosition.whenPressed(intake::toggleIntake);
+    JoystickButton runMagazineBackwardTest = new JoystickButton(altController, Button.kStart.value);
+    runMagazineBackwardTest.whileHeld(() -> magazine.runMagazine(-defaultMagazinePower), magazine)
+        .whenReleased(() -> magazine.runMagazine(0));
+    JoystickButton runMagazineForwardTest = new JoystickButton(altController, Button.kX.value);
+    runMagazineForwardTest.whileHeld(() -> magazine.runMagazine(defaultMagazinePower), magazine)
+        .whenReleased(() -> magazine.runMagazine(0));
 
     JoystickButton toggleCompressor = new JoystickButton(altController, Button.kY.value);
     toggleCompressor.whenPressed(pneumatics::compressorToggle, pneumatics);
@@ -159,9 +168,6 @@ public class RobotContainer {
 //    JoystickButton mastDown = new JoystickButton(altController, Button.kBumperRight.value);
 //    mastUp.whileHeld(() -> mast.runMast(-mastDefaultMotorPower), mast);
 
-    JoystickButton runMagazineTest = new JoystickButton(altController, Button.kBumperRight.value);
-    runMagazineTest.whileHeld(() -> magazine.runMagazine(defaultMagazinePower), magazine)
-        .whenReleased(() -> magazine.runMagazine(0));
 
     //JoystickButton winchExtend = new JoystickButton(altController, Axis.kRightTrigger.value);
     //winchExtend.whileHeld(() -> winch.runWinch(winchDefaultMotorPower), winch);

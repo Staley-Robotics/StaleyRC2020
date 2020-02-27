@@ -1,5 +1,9 @@
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.ShooterConstants.cameraHeight;
+import static frc.robot.Constants.ShooterConstants.fixedCameraAngle;
+import static frc.robot.Constants.ShooterConstants.targetHeight;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -14,11 +18,6 @@ public class Vision extends SubsystemBase {
   private static Vision instance;
 
   private final NetworkTable table;
-
-  private final double bottomOfTargetHeight = 78.5;
-  private final double fixedCameraHeight = 8.875;
-  //Angle of the camera above horizontal. Must be accurately measured for distance calculation.
-  private final double fixedCameraAngle = 17;
 
   private Vision() {
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
@@ -70,7 +69,7 @@ public class Vision extends SubsystemBase {
    * @return Calculated Distance.
    */
   public double calculateDistance() {
-    return (bottomOfTargetHeight - fixedCameraHeight) / (Math
+    return (targetHeight - cameraHeight) / (Math
         .tan(Math.toRadians(getPitch() + fixedCameraAngle)));
   }
 

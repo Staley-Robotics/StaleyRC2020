@@ -12,6 +12,7 @@ public class ShootBallsClosedLoop extends CommandBase {
   private Magazine magazine;
   private double distance;
   private double percentSpeedRequired;
+  double goalFlywheelSpeed;
 
   /**
    * Shoots balls with closed feedback loop at speed necessary for distance. Make sure to pass in a
@@ -25,20 +26,22 @@ public class ShootBallsClosedLoop extends CommandBase {
     addRequirements(shooter, magazine);
     this.distance = distance;
     this.percentSpeedRequired = percentSpeedRequired;
+    goalFlywheelSpeed = 0;
+
   }
 
   @Override
   public void initialize() {
 //    shooter.setFlyWheelSpeed(shooter.calculateSurfaceVelocity(distance));
+    goalFlywheelSpeed = shooter.calculateSurfaceVelocity(distance);
   }
 
   @Override
   public void execute() {
-    double flyWheelSpeed = shooter.getFlyWheelSpeedMetersPerSecond();
-    //TODO: check this
-    double targetSpeed = shooter.getTargetSpeed();
 
-    double percentage = flyWheelSpeed / targetSpeed;
+    double flyWheelSpeed = shooter.getFlyWheelSpeedMetersPerSecond();
+
+    double percentage = flyWheelSpeed / goalFlywheelSpeed;
     if (Math.abs(1 - percentage) <= Math.abs(1 - percentSpeedRequired)) {
 
       magazine.retractHardStop();

@@ -84,11 +84,12 @@ public final class Constants {
 
   public static final class IntakeConstants {
 
-    public static final int jointMotorPort = 2;
-    public static final int intakeMotorPort = 3;
+    public static final int jointMotorPort = 0;
+    public static final int intakeMotorPort = 2;
 
-    public static final double defaultIntakePower = 0.2;
-
+    public static final double defaultIntakePower = 0.5;
+    public static final double defaultMotorJointPower = 0.2;
+    public static final double jointDeadzone = 0.15;
     public static final int lowerPosition = -200;
     public static final int higherPosition = 0;
 
@@ -104,7 +105,7 @@ public final class Constants {
     public static final int bottomMasterPort = 0;
     public static final int pistonHardStopForwardChannel = 1;
     public static final int pistonHardStopReverseChannel = 2;
-    public static final double defaultMagazinePower = -0.75;
+    public static final double defaultMagazinePower = 0.75;
   }
 
   public static final class MastConstants {
@@ -141,8 +142,10 @@ public final class Constants {
     public static final double shooterClosedLoopThreshold = 0.95;
     public static final double shooterTightClosedLoopThreshold = 0.98;
 
-    public static final double targetHeight = 5;
-    public static final double shooterHeight = 4;
+    //adjust this at comp
+    public static final double targetHeight = 2.02565;
+    public static final double cameraHeight = 4;
+    public static final double fixedCameraAngle = 19;
 
     //temporary values
     public static double shooterP = 0.00035;//0.0004
