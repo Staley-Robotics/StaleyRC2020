@@ -149,7 +149,7 @@ public final class Constants {
     public static double shooterI = 0;
     //TODO: maybe make this 4
     public static double shooterD = 0.001;
-    public static double shooterF = 0.00015;
+    public static double shooterF = 0.000175;//0.00015
   }
 
   public static final class WallOfFleshConstants {

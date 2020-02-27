@@ -46,15 +46,17 @@ public class Shooter extends SubsystemBase {
 
   private Shooter() {
     try {
-      //leftShooterNeo = new CANSparkMax(leftShooterNeoPort, MotorType.kBrushless);
+      leftShooterNeo = new CANSparkMax(leftShooterNeoPort, MotorType.kBrushless);
       rightShooterNeo = new CANSparkMax(rightShooterNeoPort, MotorType.kBrushless);
     } catch (RuntimeException ex) {
       DriverStation
           .reportError("Error Instantiating Shooter Motor Controllers: " + ex.getMessage(), true);
     }
-    //leftShooterNeo.follow(rightShooterNeo, true);
+    leftShooterNeo.follow(rightShooterNeo, true);
 
-    //leftShooterNeo.setIdleMode(IdleMode.kCoast);
+    leftShooterNeo.setIdleMode(IdleMode.kCoast);
+    rightShooterNeo.setInverted(true);
+    leftShooterNeo.setInverted(false);
     rightShooterNeo.setIdleMode(IdleMode.kCoast);
 
     shooterEncoder = rightShooterNeo.getEncoder();
