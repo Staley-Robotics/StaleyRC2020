@@ -1,6 +1,6 @@
 package frc.robot.enums;
 
-public class XboxController  {
+public class XboxController {
 
   /**
    * Represents a digital dpad button on an XboxController.
@@ -17,7 +17,8 @@ public class XboxController  {
     DpadButton(int value) {
       this.value = value;
     }
-    public int getValue(){
+
+    public int getValue() {
       return value;
     }
   }

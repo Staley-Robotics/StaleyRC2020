@@ -24,6 +24,7 @@ import com.revrobotics.ControlType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.util.ArrayList;
 
 /**
  * Two neos spin a single flywheel shooter at incredibly high speed.
@@ -43,8 +44,29 @@ public class Shooter extends SubsystemBase {
 
   //target height and shooter height in meters
   private double targetSpeed;
+  private ArrayList<Double> shootingTargets;
+
+  private void populateShootingTargets() {
+    /*
+    distance is distance from the target to the camera
+    index 0
+    speed to spin for 0 cm away (0) can't do
+    index 50 speed to spin for 50 cm away
+
+    index 100 speed to spin for 100 cm away
+    get setpoint for varies distances read by distance.
+    then hardcode them in arraylist
+
+    dustin got us with bumper on auto line. probably 11 feet?
+     */
+    shootingTargets.add(20.0); // with front bumper on auto line
+    shootingTargets.add(21.0); // 30 inches behind auto line
+    shootingTargets.add(25.0); // hecka far back
+  }
 
   private Shooter() {
+    shootingTargets = new ArrayList<>();
+    populateShootingTargets();
     try {
       leftShooterNeo = new CANSparkMax(leftShooterNeoPort, MotorType.kBrushless);
       rightShooterNeo = new CANSparkMax(rightShooterNeoPort, MotorType.kBrushless);
@@ -66,6 +88,8 @@ public class Shooter extends SubsystemBase {
     targetSpeed = 0;
     updatePIDConstants();
     stop();
+    SmartDashboard.putNumber("user target",-1);
+
   }
 
   public static Shooter getInstance() {
@@ -80,6 +104,7 @@ public class Shooter extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Fly wheel surface speed", getFlyWheelSpeedMetersPerSecond());
     SmartDashboard.putNumber("target", getTargetFlywheelSpeedMetersPerSecond());
+    SmartDashboard.getNumber("user target", -1);
   }
 
   /**
@@ -112,8 +137,10 @@ public class Shooter extends SubsystemBase {
    * @param surfaceVelocity the speed that the surface of the ball goes in meters per second.
    */
   public void setFlyWheelSpeed(double surfaceVelocity) {
-    targetSpeed = surfaceVelocityToRPM(surfaceVelocity);
-    PIDController.setReference(surfaceVelocityToRPM(surfaceVelocity), ControlType.kVelocity);
+    if (surfaceVelocity != -1) {
+      targetSpeed = surfaceVelocityToRPM(surfaceVelocity);
+      PIDController.setReference(surfaceVelocityToRPM(surfaceVelocity), ControlType.kVelocity);
+    }
   }
 
   /**
@@ -129,8 +156,14 @@ public class Shooter extends SubsystemBase {
    * @param distance distance from the target in inches.
    */
   public double calculateSurfaceVelocity(double distance) {
-    //Lots of commented math I don't want to copy
-    return 25;
+    if (distance == 0) {
+      return 0;
+    }
+    int units = (int) distance;
+    if (units > shootingTargets.size() - 1) {
+      units = shootingTargets.size() - 1;
+    }
+    return shootingTargets.get(units);
   }
 
   /**

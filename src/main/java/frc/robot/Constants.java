@@ -65,7 +65,7 @@ public final class Constants {
     public static final double ramseteB = 2;
     public static final double ramseteZ = 0.7;
 
-    public static final double turnP = 0.1;
+    public static final double turnP = 0.05;
     public static final double turnI = 0;
     public static final double turnD = 0;
 
@@ -77,9 +77,9 @@ public final class Constants {
 
   public static final class WinchConstants {
 
-    public static final int winchMotor1 = 4;
-    public static final int winchMotor2 = 5;
-    public static final double winchDefaultMotorPower = 0.5;
+    public static final int winchMotor1 = 3;
+    public static final int winchMotor2 = 4;
+    public static final double winchDefaultMotorPower = 1;
   }
 
   public static final class IntakeConstants {
@@ -90,12 +90,12 @@ public final class Constants {
     public static final double defaultIntakePower = 0.5;
     public static final double defaultMotorJointPower = 0.2;
     public static final double jointDeadzone = 0.15;
-    public static final int lowerPosition = -200;
+    public static final int lowerPosition = -2300;
     public static final int higherPosition = 0;
 
     public static final int limitSwitchPort = 9;
 
-    public static final double kP = 0.03;
+    public static final double kP = 0.5;//0.03;
     public static final double kD = 0.00;
   }
 
@@ -104,14 +104,16 @@ public final class Constants {
     public static final int topMasterPort = 1;
     public static final int bottomMasterPort = 0;
     public static final int pistonHardStopForwardChannel = 1;
-    public static final int pistonHardStopReverseChannel = 2;
+    public static final int pistonHardStopReverseChannel = 6;
     public static final double defaultMagazinePower = 0.75;
   }
 
   public static final class MastConstants {
 
-    public static final int mastMotorPort = 7;
+    public static final int mastMotorPort = 5;
     public static final double mastDefaultMotorPower = 0.5;
+    public static final double mastDeadzone = 0.05;
+    public static final int releaseSolenoidPort = 0;
   }
 
   public static final class OperatorInputConstants {
@@ -124,7 +126,7 @@ public final class Constants {
 
     public static final int compressorPort = 0;
 
-    public static final int[] shifterPorts = {0, 7};
+    public static final int[] shifterPorts = {3, 4};
   }
 
   public static final class SensorConstants {
@@ -136,6 +138,8 @@ public final class Constants {
 
     public static final int leftShooterNeoPort = 2;
     public static final int rightShooterNeoPort = 3;
+
+
     public static final double flyWheelRadius = 0.0508;
     public static final double shooterOpenLoopThreshold = 0.5;
 
@@ -143,8 +147,8 @@ public final class Constants {
     public static final double shooterTightClosedLoopThreshold = 0.98;
 
     //adjust this at comp
-    public static final double targetHeight = 2.02565;
-    public static final double cameraHeight = 4;
+    public static final double targetHeight = 202.565;
+    public static final double cameraHeight = 65.405;
     public static final double fixedCameraAngle = 19;
 
     public static double shooterP = 0.00035;//0.0004
@@ -155,12 +159,12 @@ public final class Constants {
 
   public static final class WallOfFleshConstants {
 
-    public static final int wallOfFleshMotorPort = 8;
+    public static final int wallOfFleshMotorPort = 2;
     public static final double spinnerRadius = 50000;
     public static final double spinnerPower = 0.3;
     public static final double wallOfFleshSpinnerCircumference = 3;
     public static final double wallOfFleshCircumference = 100;
     public static final double goalSpinCount = 0.5;
-    public static final int[] wallOfFleshSolenoidPorts = {4, 5};
+    public static final int[] wallOfFleshSolenoidPorts = {2, 5};
   }
 }

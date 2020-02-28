@@ -36,15 +36,17 @@ public class Intake extends SubsystemBase {
   private DigitalInput limitSwitch;
 
   public void runIntakeJoint(double motorPower) {
+
     boolean limitSwitchHit = limitSwitch.get();
 
-    if (motorPower < -jointDeadzone && !limitSwitchHit) {
-      jointMotor.set(motorPower);
-    } else if (motorPower > jointDeadzone) {
-      jointMotor.set(motorPower);
+    if (motorPower >= jointDeadzone && !limitSwitchHit) {
+      jointMotor.set(ControlMode.PercentOutput, motorPower);
+    } else if (motorPower <= -jointDeadzone) {
+      jointMotor.set(ControlMode.PercentOutput, motorPower);
     } else {
-      jointMotor.set(0);
+      jointMotor.set(ControlMode.PercentOutput, 0);
     }
+
   }
 
   public enum JointState {
@@ -76,21 +78,17 @@ public class Intake extends SubsystemBase {
     talonConfig.slot0.kI = 0.0;
     talonConfig.slot0.kD = kD;
     talonConfig.slot0.integralZone = 400;
-    talonConfig.slot0.closedLoopPeakOutput = 0.5;
+    talonConfig.slot0.closedLoopPeakOutput = 1;
 
     jointMotor.configAllSettings(talonConfig);
     jointMotor.setNeutralMode(NeutralMode.Brake);
-    jointMotor.setInverted(true);
-    zeroEncoder();
+    jointMotor.setInverted(false);
+    jointMotor.setSensorPhase(true);
+    jointMotor.setSelectedSensorPosition(-4600, 0, 10);
 
     jointState = JointState.up;
   }
 
-  /**
-   * Makes Intake a singleton.
-   *
-   * @return instance of intake
-   */
   public static Intake getInstance() {
     if (instance == null) {
       instance = new Intake();
@@ -101,13 +99,11 @@ public class Intake extends SubsystemBase {
   public void lowerIntake() {
     jointState = JointState.down;
     jointMotor.set(ControlMode.Position, lowerPosition);
-    jointState = JointState.down;
   }
 
   public void raiseIntake() {
     jointState = JointState.up;
     jointMotor.set(ControlMode.Position, higherPosition);
-    jointState = JointState.up;
   }
 
   /**
@@ -146,9 +142,20 @@ public class Intake extends SubsystemBase {
     jointMotor.setSelectedSensorPosition(0, 0, 10);
   }
 
+
   @Override
   public void periodic() {
     SmartDashboard.putString("Joint State: ", jointState.toString());
     SmartDashboard.putBoolean("Intake limit switch: ", limitSwitch.get());
+    SmartDashboard.putNumber("Joint encoder: ", jointMotor.getSelectedSensorPosition());
+    SmartDashboard.putNumber("Joint Power: ", jointMotor.getMotorOutputPercent());
+    checkLimitSwitch();
+  }
+
+  public void checkLimitSwitch() {
+    if (limitSwitch.get()) {
+      //assumes at encoder has negative being go down
+      jointMotor.setSelectedSensorPosition(0, 0, 10);
+    }
   }
 }

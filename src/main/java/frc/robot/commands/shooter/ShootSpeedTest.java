@@ -27,8 +27,9 @@ public class ShootSpeedTest extends CommandBase {
 
   @Override
   public boolean isFinished() {
-return false;
+    return false;
   }
+
   @Override
   public void end(boolean interrupted) {
 

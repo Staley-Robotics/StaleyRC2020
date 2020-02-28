@@ -52,7 +52,7 @@ public class Winch extends SubsystemBase {
   }
 
   public void runWinch(double motorPower) {
-    leftWinch.set(motorPower);
+    //leftWinch.set(motorPower);
     rightWinch.set(motorPower);
   }
 }

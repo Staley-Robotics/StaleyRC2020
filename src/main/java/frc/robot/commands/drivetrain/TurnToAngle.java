@@ -7,6 +7,7 @@ import static frc.robot.Constants.DriveConstants.turnRateToleranceDegPerS;
 import static frc.robot.Constants.DriveConstants.turnToleranceDeg;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.subsystems.DriveTrain;
 
@@ -41,8 +42,22 @@ public class TurnToAngle extends PIDCommand {
   }
 
   @Override
+  public void execute() {
+    System.out.println("Turning to angle");
+    super.execute();
+  }
+
+  @Override
   public boolean isFinished() {
     // End when the controller is at the reference.
+    System.out.println("Is finished: ");
+    System.out.println(getController().atSetpoint());
     return getController().atSetpoint();
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    System.out.println("Interrupted: " + interrupted);
+    super.end(interrupted);
   }
 }

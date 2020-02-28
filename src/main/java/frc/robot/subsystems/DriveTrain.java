@@ -162,8 +162,6 @@ public class DriveTrain extends SubsystemBase {
     SmartDashboard.putNumber("LeftEncoder(m): ", stepsToMeters(getLeftEncoderPosition()));
     SmartDashboard.putNumber("RightEncoder(m): ", stepsToMeters(getRightEncoderPosition()));
 
-    SmartDashboard.putNumber("Yaw (-180 to 180): ", getHeading());
-
     SmartDashboard.putString("Piston State", getShifterState().toString());
   }
 
@@ -184,7 +182,6 @@ public class DriveTrain extends SubsystemBase {
    * x-axis = rotate power.
    */
   public void worldOfTanksDrive(double forward, double backward, double rotate) {
-
 
     backward = backward * speedModifier;
     forward = forward * speedModifier;
@@ -347,7 +344,7 @@ public class DriveTrain extends SubsystemBase {
   public void zeroEncoder() {
     rightMaster.setSelectedSensorPosition(0);
     leftMaster.setSelectedSensorPosition(0);
-    System.out.println("Encoders have not been zeroed");
+    System.out.println("Encoders have been zeroed");
   }
 
   /* Odometry */
