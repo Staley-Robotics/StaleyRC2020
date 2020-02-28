@@ -345,9 +345,8 @@ public class DriveTrain extends SubsystemBase {
    * Zeros drive encoders.
    */
   public void zeroEncoder() {
-    //TODO: UNDO
-    //rightMaster.setSelectedSensorPosition(0);
-    //leftMaster.setSelectedSensorPosition(0);
+    rightMaster.setSelectedSensorPosition(0);
+    leftMaster.setSelectedSensorPosition(0);
     System.out.println("Encoders have not been zeroed");
   }
 

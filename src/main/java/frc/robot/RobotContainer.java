@@ -175,12 +175,7 @@ public class RobotContainer {
     //JoystickButton runMagazine = new JoystickButton(altController, Axis.kRightTrigger.value);
     //runMagazine.whileHeld(() -> magazine.runMagazine(altController.getTriggerAxis(Hand.kRight)));
 
-    //TODO: FIX
-    /*JoystickButton runMagazine = new JoystickButton(altController, Axis.kRightTrigger.value);
-    runMagazine
-        .whileHeld(() -> magazine.runMagazine(altController.getTriggerAxis(GenericHID.Hand.kRight)),
-            magazine);
-      */
+
     JoystickButton winchRetract = new JoystickButton(altController, Axis.kLeftTrigger.value);
     winchRetract.whileHeld(() -> winch.runWinch(-winchDefaultMotorPower), winch);
 

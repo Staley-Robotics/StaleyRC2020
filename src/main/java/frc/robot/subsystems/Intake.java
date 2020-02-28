@@ -36,21 +36,15 @@ public class Intake extends SubsystemBase {
   private DigitalInput limitSwitch;
 
   public void runIntakeJoint(double motorPower) {
+    boolean limitSwitchHit = limitSwitch.get();
 
-//    if (motorPower < 0 && motorPower<-jointDeadzone) {
-////      jointMotor.set(motorPower);
-////    } else if ((!limitSwitch.get()) && motorPower>jointDeadzone) {
-////      jointMotor.set(motorPower);
-////    }
-////    else{
-////      jointMotor.set(0);
-////    }
-////    if (Math.abs(motorPower) > jointDeadzone) {
-////      jointMotor.set(motorPower);
-////    } else {
-////      jointMotor.set(0);
-////    }
-    jointMotor.set(motorPower);
+    if (motorPower < -jointDeadzone && !limitSwitchHit) {
+      jointMotor.set(motorPower);
+    } else if (motorPower > jointDeadzone) {
+      jointMotor.set(motorPower);
+    } else {
+      jointMotor.set(0);
+    }
   }
 
   public enum JointState {
@@ -69,6 +63,7 @@ public class Intake extends SubsystemBase {
 
     try {
       limitSwitch = new DigitalInput(limitSwitchPort);
+      System.out.println("Initialized limit switch");
     } catch (RuntimeException ex) {
       DriverStation
           .reportError("Oh boy, limitswitch machine broke: " + ex.getMessage(), true);
@@ -154,5 +149,6 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putString("Joint State: ", jointState.toString());
+    SmartDashboard.putBoolean("Intake limit switch: ", limitSwitch.get());
   }
 }

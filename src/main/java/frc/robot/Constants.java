@@ -93,7 +93,7 @@ public final class Constants {
     public static final int lowerPosition = -200;
     public static final int higherPosition = 0;
 
-    public static final int limitSwitchPort = 0;
+    public static final int limitSwitchPort = 9;
 
     public static final double kP = 0.03;
     public static final double kD = 0.00;
@@ -147,10 +147,8 @@ public final class Constants {
     public static final double cameraHeight = 4;
     public static final double fixedCameraAngle = 19;
 
-    //temporary values
     public static double shooterP = 0.00035;//0.0004
     public static double shooterI = 0;
-    //TODO: maybe make this 4
     public static double shooterD = 0.001;
     public static double shooterF = 0.000175;//0.00015
   }
