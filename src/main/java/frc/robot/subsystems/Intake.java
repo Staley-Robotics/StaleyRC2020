@@ -36,16 +36,21 @@ public class Intake extends SubsystemBase {
   private DigitalInput limitSwitch;
 
   public void runIntakeJoint(double motorPower) {
-//
+
 //    if (motorPower < 0 && motorPower<-jointDeadzone) {
-//      jointMotor.set(motorPower);
-//    } else if ((!limitSwitch.get()) && motorPower>jointDeadzone) {
-//      jointMotor.set(motorPower);
-//    }
-//    else{
-//      jointMotor.set(0);
-//    }
-    jointMotor.set(0);
+////      jointMotor.set(motorPower);
+////    } else if ((!limitSwitch.get()) && motorPower>jointDeadzone) {
+////      jointMotor.set(motorPower);
+////    }
+////    else{
+////      jointMotor.set(0);
+////    }
+////    if (Math.abs(motorPower) > jointDeadzone) {
+////      jointMotor.set(motorPower);
+////    } else {
+////      jointMotor.set(0);
+////    }
+    jointMotor.set(motorPower);
   }
 
   public enum JointState {

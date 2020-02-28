@@ -28,6 +28,7 @@ import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.RunIntakeJoint;
 import frc.robot.commands.shooter.ShootBallsCommandGroup;
 import frc.robot.commands.shooter.ShootSpeedTest;
+import frc.robot.commands.shooter.TestingShootBallsCommandGroup;
 import frc.robot.commands.vision.VisionYawAlign;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
@@ -143,7 +144,7 @@ public class RobotContainer {
     toggleCompressor.whenPressed(pneumatics::compressorToggle, pneumatics);
 
     JoystickButton shoot = new JoystickButton(altController, Button.kB.value);
-    shoot.whenPressed(new ShootBallsCommandGroup(true));
+    shoot.whenPressed(new TestingShootBallsCommandGroup(true));
 
     DPadButton wofUp = new DPadButton(altController, Direction.Up);
     wofUp.whenPressed(wallOfFlesh::raiseWof, wallOfFlesh);

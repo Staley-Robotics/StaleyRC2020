@@ -40,10 +40,10 @@ public class ShootBallsClosedLoop extends CommandBase {
   public void execute() {
 
     double flyWheelSpeed = shooter.getFlyWheelSpeedMetersPerSecond();
-
+    shooter.setFlyWheelSpeed(goalFlywheelSpeed);
     double percentage = flyWheelSpeed / goalFlywheelSpeed;
     if (Math.abs(1 - percentage) <= Math.abs(1 - percentSpeedRequired)) {
-
+      System.out.println("Running magazine");
       magazine.retractHardStop();
       magazine.runMagazine(defaultMagazinePower);
     }
@@ -58,6 +58,6 @@ public class ShootBallsClosedLoop extends CommandBase {
   public void end(boolean interrupted) {
     shooter.setFlyWheelSpeed(0);
     magazine.runMagazine(0);
-    magazine.extendHardStop();
+    //magazine.extendHardStop();
   }
 }
