@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.IntakeConstants.higherPosition;
 import static frc.robot.Constants.IntakeConstants.intakeMotorPort;
+import static frc.robot.Constants.IntakeConstants.jointDeadzone;
 import static frc.robot.Constants.IntakeConstants.jointMotorPort;
 import static frc.robot.Constants.IntakeConstants.kD;
 import static frc.robot.Constants.IntakeConstants.kP;
@@ -17,6 +18,7 @@ import static frc.robot.Constants.IntakeConstants.lowerPosition;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -32,6 +34,24 @@ public class Intake extends SubsystemBase {
   private static VictorSP intakeMotor;
   private JointState jointState;
   private DigitalInput limitSwitch;
+
+  public void runIntakeJoint(double motorPower) {
+
+//    if (motorPower < 0 && motorPower<-jointDeadzone) {
+////      jointMotor.set(motorPower);
+////    } else if ((!limitSwitch.get()) && motorPower>jointDeadzone) {
+////      jointMotor.set(motorPower);
+////    }
+////    else{
+////      jointMotor.set(0);
+////    }
+////    if (Math.abs(motorPower) > jointDeadzone) {
+////      jointMotor.set(motorPower);
+////    } else {
+////      jointMotor.set(0);
+////    }
+    jointMotor.set(motorPower);
+  }
 
   public enum JointState {
     up,
@@ -64,7 +84,8 @@ public class Intake extends SubsystemBase {
     talonConfig.slot0.closedLoopPeakOutput = 0.5;
 
     jointMotor.configAllSettings(talonConfig);
-
+    jointMotor.setNeutralMode(NeutralMode.Brake);
+    jointMotor.setInverted(true);
     zeroEncoder();
 
     jointState = JointState.up;

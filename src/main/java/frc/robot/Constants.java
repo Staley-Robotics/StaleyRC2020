@@ -24,12 +24,16 @@ public final class Constants {
   public static final class DriveConstants {
 
     public static final int rMotorMasterPort = 1;
-    public static final int rMotorFollower1Port = 9;
-    public static final int rMotorFollower2Port = 10;
+    public static final int rMotorFollower1Port = 6;
+    public static final int rMotorFollower2Port = 9;
 
     public static final int lMotorMasterPort = 4;
-    public static final int lMotorFollower1Port = 6;
+    public static final int lMotorFollower1Port = 10;
     public static final int lMotorFollower2Port = 7;
+
+    public static final double rotateDeadzone = 0.1;
+    public static final double speedModifier = 1;
+    public static final double turnSpeedModifier = -0.85;
 
     public static final double kS = 0.702;
     public static final double kV = 5.3;
@@ -68,27 +72,28 @@ public final class Constants {
     public static final double turnToleranceDeg = 0.5;
     public static final double turnRateToleranceDegPerS = 5;
 
-    public static final double rotateDeadzone = 0.1;
     public static final double shiftPointMetersPerSecond = 1.5;
   }
 
   public static final class WinchConstants {
-    public static final int winchMotor1 = 00;
-    public static final int winchMotor2 = 00;
+
+    public static final int winchMotor1 = 4;
+    public static final int winchMotor2 = 5;
     public static final double winchDefaultMotorPower = 0.5;
   }
 
   public static final class IntakeConstants {
 
     public static final int jointMotorPort = 0;
-    public static final int intakeMotorPort = 1;
+    public static final int intakeMotorPort = 2;
 
-    public static final double defaultIntakePower = 0.2;
-
+    public static final double defaultIntakePower = 0.5;
+    public static final double defaultMotorJointPower = 0.2;
+    public static final double jointDeadzone = 0.15;
     public static final int lowerPosition = -200;
     public static final int higherPosition = 0;
 
-    public static final int limitSwitchPort = 01;
+    public static final int limitSwitchPort = 0;
 
     public static final double kP = 0.03;
     public static final double kD = 0.00;
@@ -96,16 +101,16 @@ public final class Constants {
 
   public static final class MagazineConstants {
 
-    public static final int topMasterPort = 00;
-    public static final int bottomMasterPort = 00;
-    public static final int pistonHardStopForwardChannel = 00;
-    public static final int pistonHardStopReverseChannel = 00;
-    public static final double defaultMagazinePower = 0.2;
+    public static final int topMasterPort = 1;
+    public static final int bottomMasterPort = 0;
+    public static final int pistonHardStopForwardChannel = 1;
+    public static final int pistonHardStopReverseChannel = 2;
+    public static final double defaultMagazinePower = 0.75;
   }
 
   public static final class MastConstants {
 
-    public static final int mastMotorPort = 00;
+    public static final int mastMotorPort = 7;
     public static final double mastDefaultMotorPower = 0.5;
   }
 
@@ -131,30 +136,33 @@ public final class Constants {
 
     public static final int leftShooterNeoPort = 2;
     public static final int rightShooterNeoPort = 3;
-    public static final double flyWheelRadius = 2;
+    public static final double flyWheelRadius = 0.0508;
     public static final double shooterOpenLoopThreshold = 0.5;
 
     public static final double shooterClosedLoopThreshold = 0.95;
     public static final double shooterTightClosedLoopThreshold = 0.98;
 
-    public static final double targetHeight = 5;
-    public static final double shooterHeight = 4;
+    //adjust this at comp
+    public static final double targetHeight = 2.02565;
+    public static final double cameraHeight = 4;
+    public static final double fixedCameraAngle = 19;
 
     //temporary values
-    public static double shooterP = 0.0011;
+    public static double shooterP = 0.00035;//0.0004
     public static double shooterI = 0;
-    public static double shooterD = 4;
-    public static double shooterF = 0.00017;
+    //TODO: maybe make this 4
+    public static double shooterD = 0.001;
+    public static double shooterF = 0.000175;//0.00015
   }
 
   public static final class WallOfFleshConstants {
 
-    public static final int wallOfFleshMotorPort = 00;
+    public static final int wallOfFleshMotorPort = 8;
     public static final double spinnerRadius = 50000;
     public static final double spinnerPower = 0.3;
     public static final double wallOfFleshSpinnerCircumference = 3;
     public static final double wallOfFleshCircumference = 100;
     public static final double goalSpinCount = 0.5;
-    public static final int[] wallOfFleshSolenoidPorts = {0, 7};
+    public static final int[] wallOfFleshSolenoidPorts = {4, 5};
   }
 }

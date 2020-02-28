@@ -71,4 +71,5 @@ public class Magazine extends SubsystemBase {
     topMaster.set(speed);
     bottomMaster.set(speed);
   }
+
 }

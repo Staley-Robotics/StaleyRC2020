@@ -42,7 +42,6 @@ public class Shooter extends SubsystemBase {
   needs to be to its setpoint before a ball is fed.*/
 
   //target height and shooter height in meters
-
   private double targetSpeed;
 
   private Shooter() {
@@ -56,6 +55,8 @@ public class Shooter extends SubsystemBase {
     leftShooterNeo.follow(rightShooterNeo, true);
 
     leftShooterNeo.setIdleMode(IdleMode.kCoast);
+    rightShooterNeo.setInverted(true);
+    leftShooterNeo.setInverted(false);
     rightShooterNeo.setIdleMode(IdleMode.kCoast);
 
     shooterEncoder = rightShooterNeo.getEncoder();
@@ -77,8 +78,8 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Fly wheel surface speed", getFlyWheelSpeed());
-    setFlyWheelSpeed(SmartDashboard.getNumber("Set flywheel speed", getTargetFlywheelSpeed()));
+    SmartDashboard.putNumber("Fly wheel surface speed", getFlyWheelSpeedMetersPerSecond());
+    SmartDashboard.putNumber("target", getTargetFlywheelSpeedMetersPerSecond());
   }
 
   /**
@@ -92,8 +93,8 @@ public class Shooter extends SubsystemBase {
     PIDController.setFF(shooterF);
   }
 
-  public double getTargetFlywheelSpeed() {
-    return targetSpeed;
+  public double getTargetFlywheelSpeedMetersPerSecond() {
+    return rpmToSurfaceVelocity(targetSpeed);
   }
 
   /**
@@ -101,7 +102,7 @@ public class Shooter extends SubsystemBase {
    *
    * @return calculated surface velocity.
    */
-  public double getFlyWheelSpeed() {
+  public double getFlyWheelSpeedMetersPerSecond() {
     return rpmToSurfaceVelocity(rightShooterNeo.getEncoder().getVelocity());
   }
 
@@ -112,7 +113,7 @@ public class Shooter extends SubsystemBase {
    */
   public void setFlyWheelSpeed(double surfaceVelocity) {
     targetSpeed = surfaceVelocityToRPM(surfaceVelocity);
-    PIDController.setReference(targetSpeed, ControlType.kVelocity);
+    PIDController.setReference(surfaceVelocityToRPM(surfaceVelocity), ControlType.kVelocity);
   }
 
   /**
@@ -129,7 +130,7 @@ public class Shooter extends SubsystemBase {
    */
   public double calculateSurfaceVelocity(double distance) {
     //Lots of commented math I don't want to copy
-    return 2;
+    return 25;
   }
 
   /**
@@ -150,5 +151,13 @@ public class Shooter extends SubsystemBase {
    */
   private double surfaceVelocityToRPM(double surfaceVelocity) {
     return surfaceVelocity * 60 / (flyWheelRadius * 2 * Math.PI);
+  }
+
+  public void runShooter(double triggerAxis) {
+    rightShooterNeo.set(triggerAxis);
+  }
+
+  public double getTargetSpeed() {
+    return targetSpeed;
   }
 }
