@@ -24,12 +24,12 @@ public final class Constants {
   public static final class DriveConstants {
 
     public static final int rMotorMasterPort = 1;
-    public static final int rMotorFollower1Port = 6;
-    public static final int rMotorFollower2Port = 9;
+     public static final int rMotorFollower1Port = 6;
+    //public static final int rMotorFollower2Port = 9;
 
     public static final int lMotorMasterPort = 4;
     public static final int lMotorFollower1Port = 10;
-    public static final int lMotorFollower2Port = 7;
+    //public static final int lMotorFollower2Port = 7;
 
     public static final double rotateDeadzone = 0.1;
     public static final double speedModifier = 1;
@@ -77,8 +77,8 @@ public final class Constants {
 
   public static final class WinchConstants {
 
-    public static final int winchMotor1 = 3;
-    public static final int winchMotor2 = 4;
+    public static final int winchMotor1 = 6;
+    public static final int winchMotor2 = 7;
     public static final double winchDefaultMotorPower = 1;
   }
 
@@ -105,7 +105,7 @@ public final class Constants {
     public static final int bottomMasterPort = 0;
     public static final int pistonHardStopForwardChannel = 1;
     public static final int pistonHardStopReverseChannel = 6;
-    public static final double defaultMagazinePower = 0.75;
+    public static final double defaultMagazinePower = 1;
   }
 
   public static final class MastConstants {
@@ -113,7 +113,7 @@ public final class Constants {
     public static final int mastMotorPort = 5;
     public static final double mastDefaultMotorPower = 0.5;
     public static final double mastDeadzone = 0.05;
-    public static final int releaseSolenoidPort = 0;
+    public static final int[] releaseSolenoidPorts = {0, 7};
   }
 
   public static final class OperatorInputConstants {
@@ -143,7 +143,7 @@ public final class Constants {
     public static final double flyWheelRadius = 0.0508;
     public static final double shooterOpenLoopThreshold = 0.5;
 
-    public static final double shooterClosedLoopThreshold = 0.95;
+    public static final double shooterClosedLoopThreshold = 0.985;
     public static final double shooterTightClosedLoopThreshold = 0.98;
 
     //adjust this at comp
@@ -155,16 +155,5 @@ public final class Constants {
     public static double shooterI = 0;
     public static double shooterD = 0.001;
     public static double shooterF = 0.000175;//0.00015
-  }
-
-  public static final class WallOfFleshConstants {
-
-    public static final int wallOfFleshMotorPort = 2;
-    public static final double spinnerRadius = 50000;
-    public static final double spinnerPower = 0.3;
-    public static final double wallOfFleshSpinnerCircumference = 3;
-    public static final double wallOfFleshCircumference = 100;
-    public static final double goalSpinCount = 0.5;
-    public static final int[] wallOfFleshSolenoidPorts = {2, 5};
   }
 }

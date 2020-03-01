@@ -13,20 +13,20 @@ import frc.robot.commands.shooter.ShootBallsClosedLoop;
 import frc.robot.commands.vision.VisionYawAlign;
 import frc.robot.subsystems.Vision;
 
-public class CentSixBall extends LowGearAuto {
+public class LeftSixBall extends LowGearAuto {
 
   private Vision vision;
 
-  public CentSixBall() {
+  public LeftSixBall() {
     vision = Vision.getInstance();
 
     Trajectory a_b_ShootThenTrenchIntake = TrajectoryGenerator.generateTrajectory(
-        driveTrain.getPoseListFromPathWeaverJson("ShootAndTurn"),
+        driveTrain.getPoseListFromPathWeaverJson("SpotJackedStart"),
         driveTrain.createTrajectoryConfig(false)
     );
 
     Trajectory b_c_TurnMoveForwardAndShoot = TrajectoryGenerator.generateTrajectory(
-        driveTrain.getPoseListFromPathWeaverJson("GoingForwards"),
+        driveTrain.getPoseListFromPathWeaverJson("SpotJackedEnd"),
         driveTrain.createTrajectoryConfig(false)
     );
 
@@ -44,3 +44,4 @@ public class CentSixBall extends LowGearAuto {
     );
   }
 }
+

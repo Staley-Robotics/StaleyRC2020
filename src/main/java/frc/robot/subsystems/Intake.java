@@ -7,6 +7,8 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.IntakeConstants.defaultIntakePower;
+import static frc.robot.Constants.IntakeConstants.defaultMotorJointPower;
 import static frc.robot.Constants.IntakeConstants.higherPosition;
 import static frc.robot.Constants.IntakeConstants.intakeMotorPort;
 import static frc.robot.Constants.IntakeConstants.jointDeadzone;
@@ -30,7 +32,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Intake extends SubsystemBase {
 
   private static Intake instance;
-  private static WPI_TalonSRX jointMotor;
+  //private static WPI_TalonSRX jointMotor;
   private static VictorSP intakeMotor;
   private JointState jointState;
   private DigitalInput limitSwitch;
@@ -48,6 +50,12 @@ public class Intake extends SubsystemBase {
     }
 
   }
+
+//  public void forceZeroEncoder() {
+//    while(!limitSwitch.get()){
+//      jointMotor.set(defaultMotorJointPower * 0.1);
+//    }
+//  }
 
   public enum JointState {
     up,
@@ -78,7 +86,7 @@ public class Intake extends SubsystemBase {
     talonConfig.slot0.kI = 0.0;
     talonConfig.slot0.kD = kD;
     talonConfig.slot0.integralZone = 400;
-    talonConfig.slot0.closedLoopPeakOutput = 1;
+    talonConfig.slot0.closedLoopPeakOutput = 0.5;
 
     jointMotor.configAllSettings(talonConfig);
     jointMotor.setNeutralMode(NeutralMode.Brake);

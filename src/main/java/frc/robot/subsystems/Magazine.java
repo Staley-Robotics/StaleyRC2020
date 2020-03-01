@@ -15,6 +15,7 @@ import static frc.robot.Constants.MagazineConstants.topMasterPort;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.VictorSP;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -62,9 +63,20 @@ public class Magazine extends SubsystemBase {
     pistonHardStopState = PistonHardStopState.retracted;
   }
 
+  public void runHardStop(){
+    if(pistonHardStopState == PistonHardStopState.retracted){
+      extendHardStop();
+    } else if(pistonHardStopState == PistonHardStopState.extended){
+      retractHardStop();
+    } else {
+      throw new IllegalStateException("heck, runHardStop broke");
+    }
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putString("Mag Piston", pistonHardStopState.toString());
   }
 
   public void runMagazine(double speed) {

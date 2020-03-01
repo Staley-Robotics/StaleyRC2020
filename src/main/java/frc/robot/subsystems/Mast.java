@@ -9,9 +9,10 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.MastConstants.mastDeadzone;
 import static frc.robot.Constants.MastConstants.mastMotorPort;
-import static frc.robot.Constants.MastConstants.releaseSolenoidPort;
+import static frc.robot.Constants.MastConstants.releaseSolenoidPorts;
 
-import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -24,17 +25,9 @@ public class Mast extends SubsystemBase {
   private static Mast instance;
 
   private VictorSP mastMotor;
-  private Solenoid releaseSolenoid;
 
   private Mast() {
     mastMotor = new VictorSP(mastMotorPort);
-    try {
-      releaseSolenoid = new Solenoid(releaseSolenoidPort);
-    }
-    catch(Exception e){
-      System.out.println("Error instantiating release solenoid");
-    }
-    releaseSolenoid.set(false);
   }
 
   public static Mast getInstance() {
@@ -52,23 +45,17 @@ public class Mast extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
-  public void retractPiston(){
-    releaseSolenoid.set(false);
-  }
+
+
 
   public void runMastTriggers(double leftTrigger, double rightTrigger) {
     if (leftTrigger > mastDeadzone && leftTrigger > rightTrigger) {
-      extendPiston();
       runMast(-leftTrigger);
     } else if (rightTrigger > mastDeadzone && rightTrigger > leftTrigger) {
-      retractPiston();
       runMast(rightTrigger);
     } else {
       runMast(0);
     }
   }
 
-  private void extendPiston() {
-    releaseSolenoid.set(true);
-  }
 }

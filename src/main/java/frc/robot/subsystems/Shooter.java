@@ -46,6 +46,8 @@ public class Shooter extends SubsystemBase {
   private double targetSpeed;
   private ArrayList<Double> shootingTargets;
 
+//  private ShuffleboardTab smartDashboard;
+
   private void populateShootingTargets() {
     /*
     distance is distance from the target to the camera
@@ -88,8 +90,8 @@ public class Shooter extends SubsystemBase {
     targetSpeed = 0;
     updatePIDConstants();
     stop();
-    SmartDashboard.putNumber("user target",-1);
 
+//    smartDashboard = Shuffleboard.getTab("SmartDashboard");
   }
 
   public static Shooter getInstance() {
@@ -101,10 +103,18 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
+    System.out.println("Hitting shooter periodic");
+
+//    NetworkTableEntry target = smartDashboard.add("real target", -1.0).getEntry();
+//    double userTarget = target.getDouble(-1.0);
+    double userTarget = 0;
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Fly wheel surface speed", getFlyWheelSpeedMetersPerSecond());
     SmartDashboard.putNumber("target", getTargetFlywheelSpeedMetersPerSecond());
-    SmartDashboard.getNumber("user target", -1);
+    if(userTarget != -1){
+      setFlyWheelSpeed(userTarget);
+    }
+    System.out.println("Reading user target: " + userTarget);
   }
 
   /**
@@ -157,7 +167,8 @@ public class Shooter extends SubsystemBase {
    */
   public double calculateSurfaceVelocity(double distance) {
     if (distance == 0) {
-      return 0;
+      //m/s bumper on line
+      return 21.7;
     }
     int units = (int) distance;
     if (units > shootingTargets.size() - 1) {

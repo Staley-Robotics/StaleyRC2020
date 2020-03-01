@@ -14,6 +14,7 @@ import static frc.robot.Constants.OperatorInputConstants.altControllerPort;
 import static frc.robot.Constants.OperatorInputConstants.driveControllerPort;
 import static frc.robot.Constants.WinchConstants.winchDefaultMotorPower;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -22,7 +23,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.drivetrain.TurnToAngle;
+import frc.robot.commands.auto.AutoBrettV7;
+import frc.robot.commands.auto.CentSixBall;
+import frc.robot.commands.auto.LeftSixBall;
+import frc.robot.commands.auto.ShootThenMoveOff;
+import frc.robot.commands.auto.ShootThenMoveOffNoPW;
+import frc.robot.commands.auto.StealThenMoveOff;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.shooter.ShootSpeedTest;
 import frc.robot.commands.shooter.TestingShootBallsCommandGroup;
@@ -33,7 +39,6 @@ import frc.robot.subsystems.Mast;
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.WallOfFlesh;
 import frc.robot.subsystems.Winch;
 import frc.robot.util.DPadButton;
 import frc.robot.util.DPadButton.Direction;
@@ -56,7 +61,6 @@ public class RobotContainer {
   private final Pneumatics pneumatics;
   private final Shooter shooter;
   private final Vision vision;
-  private final WallOfFlesh wallOfFlesh;
   private final Winch winch;
 
   private SendableChooser<Command> autoChooser;
@@ -74,10 +78,16 @@ public class RobotContainer {
     pneumatics = Pneumatics.getInstance();
     shooter = Shooter.getInstance();
     vision = Vision.getInstance();
-    wallOfFlesh = WallOfFlesh.getInstance();
     winch = Winch.getInstance();
 
     autoChooser = new SendableChooser<>();
+    autoChooser.setDefaultOption("NO PW", new ShootThenMoveOffNoPW());
+    autoChooser.addOption("AutoBrettV7", new AutoBrettV7());
+    autoChooser.addOption("Center 6 ball", new CentSixBall());
+    autoChooser.addOption("Left 6 ball", new LeftSixBall());
+    autoChooser.addOption("Shoot Then Move", new ShootThenMoveOff());
+    autoChooser.addOption("Steal from enemy trench", new StealThenMoveOff());
+    autoChooser.addOption("NO PW", new ShootThenMoveOffNoPW());
 
     SmartDashboard.putData("Auto", autoChooser);
 
@@ -99,18 +109,18 @@ public class RobotContainer {
     // shooter.setDefaultCommand(new RunCommand(
     // () -> shooter.runShooter(altController.getTriggerAxis(GenericHID.Hand.kRight)), shooter));
 
-    // intake.setDefaultCommand(
-    // new RunCommand(
-    // () -> intake.runIntakeJoint(-altController.getY(GenericHID.Hand.kRight)),
-    // intake));
+//    intake.setDefaultCommand(
+//      new RunCommand(
+//          () -> intake.runIntakeJoint(-altController.getY(GenericHID.Hand.kRight)),
+//            intake));
 
     // mast.setDefaultCommand(new RunCommand(
     // () -> mast.runMastTriggers(altController.getTriggerAxis(
     // GenericHID.Hand.kLeft), altController.getTriggerAxis(GenericHID.Hand.kRight)), mast));
-    mast.setDefaultCommand(new RunCommand(
-        () -> mast.runMastTriggers(altController.getTriggerAxis(
-            GenericHID.Hand.kLeft),
-            altController.getTriggerAxis(GenericHID.Hand.kRight)), mast));
+//    mast.setDefaultCommand(new RunCommand(
+//        () -> mast.runMastTriggers(altController.getTriggerAxis(
+//            GenericHID.Hand.kLeft),
+//            altController.getTriggerAxis(GenericHID.Hand.kRight)), mast));
 
     configureButtonBindings();
   }
@@ -139,13 +149,12 @@ public class RobotContainer {
 
     JoystickButton runIntakeBackwards = new JoystickButton(altController, Button.kBack.value);
     runIntakeBackwards.whileHeld(new RunIntake(-defaultIntakePower))
-        .whenReleased(() -> intake.runIntake(0));
-
-    //    JoystickButton runMagazineBackwardTest =
-    //    new JoystickButton(altController, Button.kStart.value);
-    //    runMagazineBackwardTest.whileHeld(
-    //    () -> magazine.runMagazine(-defaultMagazinePower), magazine)
-    //        .whenReleased(() -> magazine.runMagazine(0));
+        .whileHeld(() -> magazine.runMagazine(-0.25 * defaultMagazinePower), magazine)
+        .whenReleased(() -> intake.runIntake(0)).whenReleased(() -> magazine.runMagazine(0));
+    JoystickButton toggleWinch =
+        new JoystickButton(altController, Button.kStart.value);
+    toggleWinch.whenPressed(
+        winch::togglePiston, winch);
     //    JoystickButton runMagazineForwardTest =
     //    new JoystickButton(altController, Button.kX.value);
     //    runMagazineForwardTest.whileHeld(
@@ -163,25 +172,19 @@ public class RobotContainer {
     shoot.whileHeld(new TestingShootBallsCommandGroup(true))
         .whenReleased(magazine::extendHardStop, magazine);
 
-    DPadButton wofUp = new DPadButton(altController, Direction.Up);
-    wofUp.whenPressed(wallOfFlesh::raiseWof, wallOfFlesh);
-
-    DPadButton wofDown = new DPadButton(altController, Direction.Down);
-    wofDown.whenPressed(wallOfFlesh::lowerWof, wallOfFlesh);
+    DPadButton retractMagPiston = new DPadButton(altController, Direction.Down);
+    retractMagPiston.whenPressed(magazine::runHardStop);
 
     //DPadButton wofSpinNumber = new DPadButton(altController, Direction.Left);
     //wofSpinNumber.whenPressed(new SpinToCount(goalSpinCount));
     DPadButton zeroPID = new DPadButton(altController, Direction.Left);
     zeroPID.whenPressed(shooter::stop, shooter);
 
-    //DPadButton wofSpinColor = new DPadButton(altController, Direction.Right);
-    //wofSpinColor.whenPressed(new SpinToColor(wallOfFlesh.getColorTarget()));
-
     DPadButton setShooterSpeed = new DPadButton(altController, Direction.Right);
     setShooterSpeed.whenHeld(new ShootSpeedTest(20)); // max is 28
 
     JoystickButton winchExtend = new JoystickButton(altController, Button.kBumperRight.value);
-    winchExtend.whileHeld(() -> winch.runWinch(mastDefaultMotorPower), winch)
+    winchExtend.whileHeld(() -> winch.runWinch(winchDefaultMotorPower), winch)
         .whenReleased(() -> winch.runWinch(0), winch);
     //JoystickButton runMagazine = new JoystickButton(altController, Axis.kRightTrigger.value);
     //runMagazine.whileHeld(() -> magazine.runMagazine(altController.getTriggerAxis(Hand.kRight)));
@@ -190,14 +193,14 @@ public class RobotContainer {
     winchRetract.whileHeld(() -> winch.runWinch(-winchDefaultMotorPower), winch)
         .whenReleased(() -> winch.runWinch(0), winch);
 
-    JoystickButton shiftButton = new JoystickButton(driveController, Button.kX.value);
+    JoystickButton shiftButton = new JoystickButton(driveController, Button.kB.value);
     shiftButton.whenPressed(drive::toggleShift, drive);
 
     //    JoystickButton lineUpShot = new JoystickButton(driveController, Button.kB.value);
     //    lineUpShot.whenPressed(new VisionYawAlign());
 
-    JoystickButton lineUpShot = new JoystickButton(driveController, Button.kB.value);
-    lineUpShot.whenPressed(new TurnToAngle(90));
+    //    JoystickButton lineUpShot = new JoystickButton(driveController, Button.kB.value);
+    //    lineUpShot.whenPressed(new TurnToAngle(90));
   }
 
   /**

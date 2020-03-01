@@ -7,12 +7,21 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.MastConstants.releaseSolenoidPorts;
 import static frc.robot.Constants.WinchConstants.winchMotor1;
 import static frc.robot.Constants.WinchConstants.winchMotor2;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.VictorSP;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+enum WinchPistonState {
+  engaged,
+  disengaged
+}
 
 /**
  * Winch subsystem. 2 mini cims, 2 Victor SP. Winch connects from the body of the robot to the
@@ -23,6 +32,8 @@ public class Winch extends SubsystemBase {
   private static Winch instance;
   private VictorSP leftWinch;
   private VictorSP rightWinch;
+  private WinchPistonState winchPistonState;
+  private DoubleSolenoid winchPiston;
 
   /**
    * Winch for climbing.
@@ -37,6 +48,25 @@ public class Winch extends SubsystemBase {
     }
     leftWinch.setInverted(false);
     rightWinch.setInverted(true);
+    winchPistonState = WinchPistonState.disengaged;
+
+    try {
+      winchPiston = new DoubleSolenoid(releaseSolenoidPorts[0], releaseSolenoidPorts[1]);
+    } catch (Exception e) {
+      System.out.println("Error instantiating release solenoid");
+    }
+
+    retractPiston();
+  }
+
+  public void retractPiston() {
+    winchPiston.set(Value.kReverse);
+    winchPistonState = WinchPistonState.disengaged;
+  }
+
+  private void extendPiston() {
+    winchPiston.set(Value.kForward);
+    winchPistonState = WinchPistonState.engaged;
   }
 
   public static Winch getInstance() {
@@ -49,10 +79,21 @@ public class Winch extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putString("Winch piston", winchPistonState.toString());
   }
 
   public void runWinch(double motorPower) {
-    //leftWinch.set(motorPower);
-    rightWinch.set(motorPower);
+    if (winchPistonState == WinchPistonState.disengaged) {
+      leftWinch.set(motorPower);
+      rightWinch.set(motorPower);
+    }
+  }
+
+  public void togglePiston() {
+    if (winchPistonState == WinchPistonState.engaged) {
+      retractPiston();
+    } else if (winchPistonState == WinchPistonState.disengaged) {
+      extendPiston();
+    }
   }
 }

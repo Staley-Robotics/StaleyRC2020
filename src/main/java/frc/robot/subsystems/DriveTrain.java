@@ -13,12 +13,10 @@ import static frc.robot.Constants.DriveConstants.kD;
 import static frc.robot.Constants.DriveConstants.kP;
 import static frc.robot.Constants.DriveConstants.kinematics;
 import static frc.robot.Constants.DriveConstants.lMotorFollower1Port;
-import static frc.robot.Constants.DriveConstants.lMotorFollower2Port;
 import static frc.robot.Constants.DriveConstants.lMotorMasterPort;
 import static frc.robot.Constants.DriveConstants.maxAccelerationMetersPerSecondSquared;
 import static frc.robot.Constants.DriveConstants.maxVelocityMetersPerSecond;
 import static frc.robot.Constants.DriveConstants.rMotorFollower1Port;
-import static frc.robot.Constants.DriveConstants.rMotorFollower2Port;
 import static frc.robot.Constants.DriveConstants.rMotorMasterPort;
 import static frc.robot.Constants.DriveConstants.ramseteB;
 import static frc.robot.Constants.DriveConstants.ramseteZ;
@@ -70,11 +68,9 @@ public class DriveTrain extends SubsystemBase {
 
   private WPI_TalonSRX rightMaster;
   private WPI_VictorSPX rightFollower1;
-  private WPI_VictorSPX rightFollower2;
 
   private WPI_TalonSRX leftMaster;
   private WPI_VictorSPX leftFollower1;
-  private WPI_VictorSPX leftFollower2;
 
   private DifferentialDrive drive;
 
@@ -95,10 +91,8 @@ public class DriveTrain extends SubsystemBase {
     try {
       rightMaster = new WPI_TalonSRX(rMotorMasterPort);
       rightFollower1 = new WPI_VictorSPX(rMotorFollower1Port);
-      rightFollower2 = new WPI_VictorSPX(rMotorFollower2Port);
       leftMaster = new WPI_TalonSRX(lMotorMasterPort);
       leftFollower1 = new WPI_VictorSPX(lMotorFollower1Port);
-      leftFollower2 = new WPI_VictorSPX(lMotorFollower2Port);
     } catch (RuntimeException ex) {
       DriverStation
           .reportError("Error Instantiating drive motor controllers: " + ex.getMessage(), true);
@@ -121,17 +115,13 @@ public class DriveTrain extends SubsystemBase {
 
     rightMaster.setInverted(false);
     rightFollower1.setInverted(false);
-    rightFollower2.setInverted(false);
 
     leftMaster.setInverted(true);
     leftFollower1.setInverted(true);
-    leftFollower2.setInverted(true);
 
     rightFollower1.follow(rightMaster);
-    rightFollower2.follow(rightMaster);
 
     leftFollower1.follow(leftMaster);
-    leftFollower2.follow(leftMaster);
 
     drive = new DifferentialDrive(leftMaster, rightMaster);
     drive.setSafetyEnabled(false);
@@ -146,7 +136,7 @@ public class DriveTrain extends SubsystemBase {
 
     shifter = new DoubleSolenoid(shifterPorts[0], shifterPorts[1]);
 
-    shifterState = ShifterState.high;
+    shifterState = ShifterState.low;
 
     zeroEncoder();
   }
@@ -162,7 +152,7 @@ public class DriveTrain extends SubsystemBase {
     SmartDashboard.putNumber("LeftEncoder(m): ", stepsToMeters(getLeftEncoderPosition()));
     SmartDashboard.putNumber("RightEncoder(m): ", stepsToMeters(getRightEncoderPosition()));
 
-    SmartDashboard.putString("Piston State", getShifterState().toString());
+    SmartDashboard.putString("Drive Shift", getShifterState().toString());
   }
 
   /**
@@ -284,6 +274,7 @@ public class DriveTrain extends SubsystemBase {
 
   public int getLeftEncoderVelocity() {
     return leftMaster.getSelectedSensorVelocity();
+
   }
 
   public int getRightEncoderVelocity() {
@@ -387,7 +378,7 @@ public class DriveTrain extends SubsystemBase {
     return new TrajectoryConfig(maxVelocityMetersPerSecond, maxAccelerationMetersPerSecondSquared)
         .setKinematics(kinematics)
         .setStartVelocity(0)
-        .setEndVelocity(0)
+        .setEndVelocity(2)
         .setReversed(isReversed);
   }
 
@@ -461,6 +452,11 @@ public class DriveTrain extends SubsystemBase {
     shifterState = ShifterState.high;
   }
 
+  public void runDriveTrain(double power){
+    rightMaster.set(power);
+    leftMaster.set(power);
+  }
+
   public ShifterState getShifterState() {
     return shifterState;
   }
@@ -474,7 +470,7 @@ public class DriveTrain extends SubsystemBase {
     } else if (shifterState == ShifterState.low) {
       shiftHigh();
     } else {
-      throw new IllegalStateException("it's okay");
+      throw new IllegalStateException("it's okay, toggle shift machine broke");
     }
   }
 
