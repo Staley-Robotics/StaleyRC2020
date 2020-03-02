@@ -42,28 +42,11 @@ public class Shooter extends SubsystemBase {
   /*These thresholds are used by commands to decide how close the flywheel's velocity
   needs to be to its setpoint before a ball is fed.*/
 
-  //target height and shooter height in meters
   private double targetSpeed;
   private ArrayList<Double> shootingTargets;
 
-//  private ShuffleboardTab smartDashboard;
-
   private void populateShootingTargets() {
-    /*
-    distance is distance from the target to the camera
-    index 0
-    speed to spin for 0 cm away (0) can't do
-    index 50 speed to spin for 50 cm away
-
-    index 100 speed to spin for 100 cm away
-    get setpoint for varies distances read by distance.
-    then hardcode them in arraylist
-
-    dustin got us with bumper on auto line. probably 11 feet?
-     */
-    shootingTargets.add(20.0); // with front bumper on auto line
-    shootingTargets.add(21.0); // 30 inches behind auto line
-    shootingTargets.add(25.0); // hecka far back
+    //TODO: populate shooting targets
   }
 
   private Shooter() {
@@ -90,8 +73,6 @@ public class Shooter extends SubsystemBase {
     targetSpeed = 0;
     updatePIDConstants();
     stop();
-
-//    smartDashboard = Shuffleboard.getTab("SmartDashboard");
   }
 
   public static Shooter getInstance() {
@@ -103,18 +84,9 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
-    System.out.println("Hitting shooter periodic");
-
-//    NetworkTableEntry target = smartDashboard.add("real target", -1.0).getEntry();
-//    double userTarget = target.getDouble(-1.0);
-    double userTarget = 0;
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Fly wheel surface speed", getFlyWheelSpeedMetersPerSecond());
     SmartDashboard.putNumber("target", getTargetFlywheelSpeedMetersPerSecond());
-    if(userTarget != -1){
-      setFlyWheelSpeed(userTarget);
-    }
-    System.out.println("Reading user target: " + userTarget);
   }
 
   /**

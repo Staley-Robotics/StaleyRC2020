@@ -9,10 +9,7 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.MastConstants.mastDeadzone;
 import static frc.robot.Constants.MastConstants.mastMotorPort;
-import static frc.robot.Constants.MastConstants.releaseSolenoidPorts;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -45,7 +42,6 @@ public class Mast extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
-
 
 
   public void runMastTriggers(double leftTrigger, double rightTrigger) {

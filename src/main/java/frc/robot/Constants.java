@@ -24,7 +24,7 @@ public final class Constants {
   public static final class DriveConstants {
 
     public static final int rMotorMasterPort = 1;
-     public static final int rMotorFollower1Port = 6;
+    public static final int rMotorFollower1Port = 6;
     public static final int rMotorFollower2Port = 9;
 
     public static final int lMotorMasterPort = 4;

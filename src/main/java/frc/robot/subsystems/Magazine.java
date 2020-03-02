@@ -63,13 +63,13 @@ public class Magazine extends SubsystemBase {
     pistonHardStopState = PistonHardStopState.retracted;
   }
 
-  public void runHardStop(){
-    if(pistonHardStopState == PistonHardStopState.retracted){
+  public void toggleHardStop() {
+    if (pistonHardStopState == PistonHardStopState.retracted) {
       extendHardStop();
-    } else if(pistonHardStopState == PistonHardStopState.extended){
+    } else if (pistonHardStopState == PistonHardStopState.extended) {
       retractHardStop();
     } else {
-      throw new IllegalStateException("heck, runHardStop broke");
+      throw new IllegalStateException("heck, toggleHardStop broke");
     }
   }
 

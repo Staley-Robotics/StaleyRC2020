@@ -57,16 +57,19 @@
     lines="0"
     message="Here's where Magazine suppressions go"/>
   <suppress files="Magazine.java"
-    lines="48"
+    lines="49"
+    message="Missing a Javadoc comment."/>
+  <suppress files="Magazine.java"
+    lines="66"
     message="Missing a Javadoc comment."/>
   <suppress files="Mast.java"
     lines="0"
     message="Here's where Mast suppressions go"/>
   <suppress files="Mast.java"
-    lines="29"
+    lines="30"
     message="Missing a Javadoc comment."/>
   <suppress files="Mast.java"
-    lines="45"
+    lines="47"
     message="Missing a Javadoc comment."/>
   <suppress files="Pneumatics.java"
     lines="0"
@@ -114,13 +117,13 @@
     lines="38"
     message="Member name 'PIDController' must match pattern"/>
   <suppress files="Shooter.java"
-    lines="95"
+    lines="78"
     message="Missing a Javadoc comment."/>
   <suppress files="Shooter.java"
-    lines="113"
+    lines="95"
     message="Abbreviation in name 'updatePIDConstants' must contain no more than '2' consecutive capital letters."/>
   <suppress files="Shooter.java"
-    lines="185"
+    lines="168"
     message="Abbreviation in name 'surfaceVelocityToRPM' must contain no more than '2' consecutive capital letters."/>
   <suppress files="ShootSpeedTest.java"
     lines="11"
@@ -186,6 +189,6 @@
     lines="0"
     message="Here's where all Winch suppressions go"/>
   <suppress files="Winch.java"
-    lines="42"
+    lines="73"
     message="Missing a Javadoc comment."/>
 </suppressions>

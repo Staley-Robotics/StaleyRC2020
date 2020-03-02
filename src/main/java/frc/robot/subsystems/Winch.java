@@ -18,10 +18,6 @@ import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-enum WinchPistonState {
-  engaged,
-  disengaged
-}
 
 /**
  * Winch subsystem. 2 mini cims, 2 Victor SP. Winch connects from the body of the robot to the
@@ -59,6 +55,11 @@ public class Winch extends SubsystemBase {
     retractPiston();
   }
 
+  private enum WinchPistonState {
+    engaged,
+    disengaged
+  }
+
   public void retractPiston() {
     winchPiston.set(Value.kReverse);
     winchPistonState = WinchPistonState.disengaged;
@@ -82,6 +83,10 @@ public class Winch extends SubsystemBase {
     SmartDashboard.putString("Winch piston", winchPistonState.toString());
   }
 
+  /**
+   * Runs winch.
+   * @param motorPower power to send to winch motors
+   */
   public void runWinch(double motorPower) {
     if (winchPistonState == WinchPistonState.disengaged) {
       leftWinch.set(motorPower);
@@ -89,6 +94,9 @@ public class Winch extends SubsystemBase {
     }
   }
 
+  /**
+   * Toggles winch brake.
+   */
   public void togglePiston() {
     if (winchPistonState == WinchPistonState.engaged) {
       retractPiston();

@@ -125,7 +125,6 @@ public class DriveTrain extends SubsystemBase {
     rightMaster.setInverted(false);
     rightFollower1.setInverted(false);
 
-
     leftMaster.setInverted(true);
     leftFollower1.setInverted(true);
     leftFollower2.setInverted(true);
@@ -465,7 +464,7 @@ public class DriveTrain extends SubsystemBase {
     shifterState = ShifterState.high;
   }
 
-  public void runDriveTrain(double power){
+  public void runDriveTrain(double power) {
     rightMaster.set(power);
     leftMaster.set(power);
   }
