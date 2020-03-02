@@ -25,11 +25,11 @@ public final class Constants {
 
     public static final int rMotorMasterPort = 1;
      public static final int rMotorFollower1Port = 6;
-    //public static final int rMotorFollower2Port = 9;
+    public static final int rMotorFollower2Port = 9;
 
     public static final int lMotorMasterPort = 4;
     public static final int lMotorFollower1Port = 10;
-    //public static final int lMotorFollower2Port = 7;
+    public static final int lMotorFollower2Port = 7;
 
     public static final double rotateDeadzone = 0.1;
     public static final double speedModifier = 1;

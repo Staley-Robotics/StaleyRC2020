@@ -9,12 +9,10 @@ package frc.robot;
 
 import static frc.robot.Constants.IntakeConstants.defaultIntakePower;
 import static frc.robot.Constants.MagazineConstants.defaultMagazinePower;
-import static frc.robot.Constants.MastConstants.mastDefaultMotorPower;
 import static frc.robot.Constants.OperatorInputConstants.altControllerPort;
 import static frc.robot.Constants.OperatorInputConstants.driveControllerPort;
 import static frc.robot.Constants.WinchConstants.winchDefaultMotorPower;
 
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -23,12 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.auto.AutoBrettV7;
-import frc.robot.commands.auto.CentSixBall;
-import frc.robot.commands.auto.LeftSixBall;
-import frc.robot.commands.auto.ShootThenMoveOff;
 import frc.robot.commands.auto.ShootThenMoveOffNoPW;
-import frc.robot.commands.auto.StealThenMoveOff;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.shooter.ShootSpeedTest;
 import frc.robot.commands.shooter.TestingShootBallsCommandGroup;
@@ -82,11 +75,6 @@ public class RobotContainer {
 
     autoChooser = new SendableChooser<>();
     autoChooser.setDefaultOption("NO PW", new ShootThenMoveOffNoPW());
-    autoChooser.addOption("AutoBrettV7", new AutoBrettV7());
-    autoChooser.addOption("Center 6 ball", new CentSixBall());
-    autoChooser.addOption("Left 6 ball", new LeftSixBall());
-    autoChooser.addOption("Shoot Then Move", new ShootThenMoveOff());
-    autoChooser.addOption("Steal from enemy trench", new StealThenMoveOff());
     autoChooser.addOption("NO PW", new ShootThenMoveOffNoPW());
 
     SmartDashboard.putData("Auto", autoChooser);
@@ -117,10 +105,10 @@ public class RobotContainer {
     // mast.setDefaultCommand(new RunCommand(
     // () -> mast.runMastTriggers(altController.getTriggerAxis(
     // GenericHID.Hand.kLeft), altController.getTriggerAxis(GenericHID.Hand.kRight)), mast));
-//    mast.setDefaultCommand(new RunCommand(
-//        () -> mast.runMastTriggers(altController.getTriggerAxis(
-//            GenericHID.Hand.kLeft),
-//            altController.getTriggerAxis(GenericHID.Hand.kRight)), mast));
+    mast.setDefaultCommand(new RunCommand(
+        () -> mast.runMastTriggers(altController.getTriggerAxis(
+            GenericHID.Hand.kLeft),
+            altController.getTriggerAxis(GenericHID.Hand.kRight)), mast));
 
     configureButtonBindings();
   }
@@ -160,10 +148,6 @@ public class RobotContainer {
     //    runMagazineForwardTest.whileHeld(
     //    () -> magazine.runMagazine(defaultMagazinePower), magazine)
     //        .whenReleased(() -> magazine.runMagazine(0));
-
-    JoystickButton toggleIntakePosition = new JoystickButton(altController, Button.kX.value);
-    toggleIntakePosition.whenPressed(intake::toggleIntake, intake);
-    //    toggleIntakePosition.whenPressed(new ToggleJoint());
 
     JoystickButton toggleCompressor = new JoystickButton(altController, Button.kY.value);
     toggleCompressor.whenPressed(pneumatics::compressorToggle, pneumatics);

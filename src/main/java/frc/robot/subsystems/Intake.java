@@ -41,14 +41,6 @@ public class Intake extends SubsystemBase {
 
     boolean limitSwitchHit = limitSwitch.get();
 
-    if (motorPower >= jointDeadzone && !limitSwitchHit) {
-      jointMotor.set(ControlMode.PercentOutput, motorPower);
-    } else if (motorPower <= -jointDeadzone) {
-      jointMotor.set(ControlMode.PercentOutput, motorPower);
-    } else {
-      jointMotor.set(ControlMode.PercentOutput, 0);
-    }
-
   }
 
 //  public void forceZeroEncoder() {
@@ -64,7 +56,7 @@ public class Intake extends SubsystemBase {
 
   private Intake() {
     try {
-      jointMotor = new WPI_TalonSRX(jointMotorPort);
+      //jointMotor = new WPI_TalonSRX(jointMotorPort);
     } catch (RuntimeException ex) {
       DriverStation
           .reportError("Error Instantiating Intake Motor Controllers: " + ex.getMessage(), true);
@@ -88,12 +80,6 @@ public class Intake extends SubsystemBase {
     talonConfig.slot0.integralZone = 400;
     talonConfig.slot0.closedLoopPeakOutput = 0.5;
 
-    jointMotor.configAllSettings(talonConfig);
-    jointMotor.setNeutralMode(NeutralMode.Brake);
-    jointMotor.setInverted(false);
-    jointMotor.setSensorPhase(true);
-    jointMotor.setSelectedSensorPosition(-4600, 0, 10);
-
     jointState = JointState.up;
   }
 
@@ -104,66 +90,24 @@ public class Intake extends SubsystemBase {
     return instance;
   }
 
-  public void lowerIntake() {
-    jointState = JointState.down;
-    jointMotor.set(ControlMode.Position, lowerPosition);
-  }
 
-  public void raiseIntake() {
-    jointState = JointState.up;
-    jointMotor.set(ControlMode.Position, higherPosition);
-  }
-
-  /**
-   * Toggles pivot arm's PID set point between high/low.
-   */
-  public void toggleIntake() {
-    if (jointState == JointState.up) {
-      lowerIntake();
-    } else if (jointState == JointState.down) {
-      raiseIntake();
-    }
-  }
 
   public void runIntake(double power) {
     intakeMotor.set(power);
-  }
-
-  public JointState getJointState() {
-    return jointState;
-  }
-
-  /**
-   * Sets the state of the Pivot to current state.
-   *
-   * @param currentState the state of the Pivot.
-   */
-  public void setJointState(JointState currentState) {
-    jointState = currentState;
   }
 
   public boolean getLimitSwitch() {
     return limitSwitch.get();
   }
 
-  public void zeroEncoder() {
-    jointMotor.setSelectedSensorPosition(0, 0, 10);
-  }
 
 
   @Override
   public void periodic() {
     SmartDashboard.putString("Joint State: ", jointState.toString());
     SmartDashboard.putBoolean("Intake limit switch: ", limitSwitch.get());
-    SmartDashboard.putNumber("Joint encoder: ", jointMotor.getSelectedSensorPosition());
-    SmartDashboard.putNumber("Joint Power: ", jointMotor.getMotorOutputPercent());
-    checkLimitSwitch();
   }
 
   public void checkLimitSwitch() {
-    if (limitSwitch.get()) {
-      //assumes at encoder has negative being go down
-      jointMotor.setSelectedSensorPosition(0, 0, 10);
-    }
   }
 }

@@ -13,10 +13,12 @@ import static frc.robot.Constants.DriveConstants.kD;
 import static frc.robot.Constants.DriveConstants.kP;
 import static frc.robot.Constants.DriveConstants.kinematics;
 import static frc.robot.Constants.DriveConstants.lMotorFollower1Port;
+import static frc.robot.Constants.DriveConstants.lMotorFollower2Port;
 import static frc.robot.Constants.DriveConstants.lMotorMasterPort;
 import static frc.robot.Constants.DriveConstants.maxAccelerationMetersPerSecondSquared;
 import static frc.robot.Constants.DriveConstants.maxVelocityMetersPerSecond;
 import static frc.robot.Constants.DriveConstants.rMotorFollower1Port;
+import static frc.robot.Constants.DriveConstants.rMotorFollower2Port;
 import static frc.robot.Constants.DriveConstants.rMotorMasterPort;
 import static frc.robot.Constants.DriveConstants.ramseteB;
 import static frc.robot.Constants.DriveConstants.ramseteZ;
@@ -68,9 +70,12 @@ public class DriveTrain extends SubsystemBase {
 
   private WPI_TalonSRX rightMaster;
   private WPI_VictorSPX rightFollower1;
+  private WPI_VictorSPX rightFollower2;
+
 
   private WPI_TalonSRX leftMaster;
   private WPI_VictorSPX leftFollower1;
+  private WPI_VictorSPX leftFollower2;
 
   private DifferentialDrive drive;
 
@@ -91,8 +96,12 @@ public class DriveTrain extends SubsystemBase {
     try {
       rightMaster = new WPI_TalonSRX(rMotorMasterPort);
       rightFollower1 = new WPI_VictorSPX(rMotorFollower1Port);
+      rightFollower2 = new WPI_VictorSPX(rMotorFollower2Port);
+
       leftMaster = new WPI_TalonSRX(lMotorMasterPort);
       leftFollower1 = new WPI_VictorSPX(lMotorFollower1Port);
+      leftFollower2 = new WPI_VictorSPX(lMotorFollower2Port);
+
     } catch (RuntimeException ex) {
       DriverStation
           .reportError("Error Instantiating drive motor controllers: " + ex.getMessage(), true);
@@ -116,12 +125,16 @@ public class DriveTrain extends SubsystemBase {
     rightMaster.setInverted(false);
     rightFollower1.setInverted(false);
 
+
     leftMaster.setInverted(true);
     leftFollower1.setInverted(true);
+    leftFollower2.setInverted(true);
 
     rightFollower1.follow(rightMaster);
+    rightFollower2.follow(rightMaster);
 
     leftFollower1.follow(leftMaster);
+    leftFollower2.follow(leftMaster);
 
     drive = new DifferentialDrive(leftMaster, rightMaster);
     drive.setSafetyEnabled(false);
