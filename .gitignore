@@ -14,8 +14,8 @@ gradle-app.setting
 /.idea/
 /.vscode/
 /bin/
-/PathFinder/
-/PathWeaver/
 .classpath
 .project
 org.eclipse.buildship.core.prefs
+/PathFinder/
+/PathWeaver/

@@ -1,5 +1,9 @@
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.ShooterConstants.cameraHeight;
+import static frc.robot.Constants.ShooterConstants.fixedCameraAngle;
+import static frc.robot.Constants.ShooterConstants.targetHeight;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -15,20 +19,11 @@ public class Vision extends SubsystemBase {
 
   private final NetworkTable table;
 
-  private final double bottomOfTargetHeight = 78.5;
-  private final double fixedCameraHeight = 8.875;
-  //Angle of the camera above horizontal. Must be accurately measured for distance calculation.
-  private final double fixedCameraAngle = 17;
-
   private Vision() {
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
     table = inst.getTable("chameleon-vision/Microsoft LifeCam HD-3000");
   }
 
-  /**
-   * Makes Vision a singleton.
-   * @return Vision
-   */
   public static Vision getInstance() {
     if (instance == null) {
       instance = new Vision();
@@ -41,7 +36,7 @@ public class Vision extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("Tape Detected", tapeDetected());
     if (tapeDetected()) {
-      SmartDashboard.putNumber("Distance", calculateDistance(getPitch()));
+      SmartDashboard.putNumber("Distance", calculateDistance());
     }
 
   }
@@ -71,11 +66,11 @@ public class Vision extends SubsystemBase {
   /**
    * Calculates distance using trig and a pitch measurement. See https://docs.limelightvision.io/en/latest/cs_estimating_distance.html#using-a-fixed-angle-camera
    *
-   * @return
+   * @return Calculated Distance.
    */
-  public double calculateDistance(double pitch) {
-    return (bottomOfTargetHeight - fixedCameraHeight) / (Math
-        .tan(Math.toRadians(pitch + fixedCameraAngle)));
+  public double calculateDistance() {
+    return (targetHeight - cameraHeight) / (Math
+        .tan(Math.toRadians(getPitch() + fixedCameraAngle)));
   }
 
   /**

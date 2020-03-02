@@ -22,7 +22,12 @@ import static frc.robot.Constants.DriveConstants.rMotorFollower2Port;
 import static frc.robot.Constants.DriveConstants.rMotorMasterPort;
 import static frc.robot.Constants.DriveConstants.ramseteB;
 import static frc.robot.Constants.DriveConstants.ramseteZ;
+import static frc.robot.Constants.DriveConstants.rotateDeadzone;
+import static frc.robot.Constants.DriveConstants.shiftPointMetersPerSecond;
+import static frc.robot.Constants.DriveConstants.speedModifier;
+import static frc.robot.Constants.DriveConstants.turnSpeedModifier;
 import static frc.robot.Constants.DriveConstants.wheelCircumferenceMeters;
+import static frc.robot.Constants.PneumaticConstants.shifterPorts;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
@@ -31,6 +36,9 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -64,6 +72,7 @@ public class DriveTrain extends SubsystemBase {
   private WPI_VictorSPX rightFollower1;
   private WPI_VictorSPX rightFollower2;
 
+
   private WPI_TalonSRX leftMaster;
   private WPI_VictorSPX leftFollower1;
   private WPI_VictorSPX leftFollower2;
@@ -75,14 +84,28 @@ public class DriveTrain extends SubsystemBase {
   private final DifferentialDriveOdometry odometry;
   private Pose2d savedPose;
 
-  public DriveTrain() {
-    rightMaster = new WPI_TalonSRX(rMotorMasterPort);
-    rightFollower1 = new WPI_VictorSPX(rMotorFollower1Port);
-    rightFollower2 = new WPI_VictorSPX(rMotorFollower2Port);
+  private DoubleSolenoid shifter;
+  private ShifterState shifterState;
 
-    leftMaster = new WPI_TalonSRX(lMotorMasterPort);
-    leftFollower1 = new WPI_VictorSPX(lMotorFollower1Port);
-    leftFollower2 = new WPI_VictorSPX(lMotorFollower2Port);
+  public enum ShifterState {
+    low,
+    high
+  }
+
+  private DriveTrain() {
+    try {
+      rightMaster = new WPI_TalonSRX(rMotorMasterPort);
+      rightFollower1 = new WPI_VictorSPX(rMotorFollower1Port);
+      rightFollower2 = new WPI_VictorSPX(rMotorFollower2Port);
+
+      leftMaster = new WPI_TalonSRX(lMotorMasterPort);
+      leftFollower1 = new WPI_VictorSPX(lMotorFollower1Port);
+      leftFollower2 = new WPI_VictorSPX(lMotorFollower2Port);
+
+    } catch (RuntimeException ex) {
+      DriverStation
+          .reportError("Error Instantiating drive motor controllers: " + ex.getMessage(), true);
+    }
 
     TalonSRXConfiguration talonConfig = new TalonSRXConfiguration();
     talonConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.CTRE_MagEncoder_Relative;
@@ -101,7 +124,6 @@ public class DriveTrain extends SubsystemBase {
 
     rightMaster.setInverted(false);
     rightFollower1.setInverted(false);
-    rightFollower2.setInverted(false);
 
     leftMaster.setInverted(true);
     leftFollower1.setInverted(true);
@@ -116,10 +138,17 @@ public class DriveTrain extends SubsystemBase {
     drive = new DifferentialDrive(leftMaster, rightMaster);
     drive.setSafetyEnabled(false);
     drive.setRightSideInverted(false);
-
-    gyro = new AHRS();
+    try {
+      gyro = new AHRS();
+    } catch (RuntimeException ex) {
+      DriverStation.reportError("Error Instantiating Gyro: " + ex.getMessage(), true);
+    }
 
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
+
+    shifter = new DoubleSolenoid(shifterPorts[0], shifterPorts[1]);
+
+    shifterState = ShifterState.low;
 
     zeroEncoder();
   }
@@ -135,7 +164,7 @@ public class DriveTrain extends SubsystemBase {
     SmartDashboard.putNumber("LeftEncoder(m): ", stepsToMeters(getLeftEncoderPosition()));
     SmartDashboard.putNumber("RightEncoder(m): ", stepsToMeters(getRightEncoderPosition()));
 
-    SmartDashboard.putNumber("Heading: ", getHeading());
+    SmartDashboard.putString("Drive Shift", getShifterState().toString());
   }
 
   /**
@@ -155,15 +184,14 @@ public class DriveTrain extends SubsystemBase {
    * x-axis = rotate power.
    */
   public void worldOfTanksDrive(double forward, double backward, double rotate) {
-    double speedModifier = 1;
-    double turnSpeedModifier = 0.85;
 
     backward = backward * speedModifier;
     forward = forward * speedModifier;
 
-    // Deadzones for rotate.
-    if (rotate > 0.1 || rotate < 0.1) {
-      rotate = rotate * turnSpeedModifier;
+    // Logic for deadzones
+    // rotate > rotateDeadZone || rotate < rotateDeadZone
+    if (Math.abs(rotate) > rotateDeadzone) {
+      rotate = -rotate * turnSpeedModifier;
     } else {
       rotate = 0;
     }
@@ -176,6 +204,17 @@ public class DriveTrain extends SubsystemBase {
     } else {
       drive.arcadeDrive(0, rotate);
     }
+    /* autoshift testing
+    if (isLowGearOptimal()) {
+      if (shifterState == ShifterState.high) {
+        shiftLow();
+      }
+    } else {
+      if (shifterState == ShifterState.low) {
+        shiftHigh();
+      }
+    }
+     */
   }
 
   /**
@@ -247,10 +286,19 @@ public class DriveTrain extends SubsystemBase {
 
   public int getLeftEncoderVelocity() {
     return leftMaster.getSelectedSensorVelocity();
+
   }
 
   public int getRightEncoderVelocity() {
     return rightMaster.getSelectedSensorVelocity();
+  }
+
+  public double getLeftEncoderMetersPerSecondVelocity() {
+    return stepsPerDecisecToMetersPerSec(getLeftEncoderVelocity());
+  }
+
+  public double getRightEncoderMetersPerSecondVelocity() {
+    return stepsPerDecisecToMetersPerSec(getRightEncoderVelocity());
   }
 
   /**
@@ -293,6 +341,9 @@ public class DriveTrain extends SubsystemBase {
     return metersToSteps(metersPerSec) * .1d;
   }
 
+  /**
+   * Zeros drive encoders.
+   */
   public void zeroEncoder() {
     rightMaster.setSelectedSensorPosition(0);
     leftMaster.setSelectedSensorPosition(0);
@@ -335,11 +386,11 @@ public class DriveTrain extends SubsystemBase {
    * @param isReversed Determines if the bot goes backwards or forwards during a trajectory.
    * @return Trajectory Configuration.
    */
-  public TrajectoryConfig getTrajectoryConfig(boolean isReversed) {
+  public TrajectoryConfig createTrajectoryConfig(boolean isReversed) {
     return new TrajectoryConfig(maxVelocityMetersPerSecond, maxAccelerationMetersPerSecondSquared)
         .setKinematics(kinematics)
         .setStartVelocity(0)
-        .setEndVelocity(0)
+        .setEndVelocity(2)
         .setReversed(isReversed);
   }
 
@@ -401,5 +452,55 @@ public class DriveTrain extends SubsystemBase {
             this::tankDriveVelocity,
             this))
         .andThen(this::stopDrive, this);
+  }
+
+  public void shiftLow() {
+    shifter.set(Value.kForward);
+    shifterState = ShifterState.low;
+  }
+
+  public void shiftHigh() {
+    shifter.set(Value.kReverse);
+    shifterState = ShifterState.high;
+  }
+
+  public void runDriveTrain(double power) {
+    rightMaster.set(power);
+    leftMaster.set(power);
+  }
+
+  public ShifterState getShifterState() {
+    return shifterState;
+  }
+
+  /**
+   * Toggles drive shift.
+   */
+  public void toggleShift() {
+    if (shifterState == ShifterState.high) {
+      shiftLow();
+    } else if (shifterState == ShifterState.low) {
+      shiftHigh();
+    } else {
+      throw new IllegalStateException("it's okay, toggle shift machine broke");
+    }
+  }
+
+  // There are 2 more options to test here. Creating a shifting threshold,
+  // so we don't shift when turning
+  // Or, we can automatically shift to high gear when turning
+  private boolean isLowGearOptimal() {
+    if (Math
+        .abs(getLeftEncoderMetersPerSecondVelocity() / getRightEncoderMetersPerSecondVelocity() - 1)
+        > (0.2)) {
+      return false;
+    }
+
+    if (Math.abs(
+        (getLeftEncoderMetersPerSecondVelocity() + getRightEncoderMetersPerSecondVelocity()) / 2)
+        < shiftPointMetersPerSecond) {
+      return true;
+    }
+    return false;
   }
 }
