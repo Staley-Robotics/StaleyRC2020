@@ -17,9 +17,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
  * the package after creating this project, you must also update the build.gradle file in the
- * project. TODO: make subsystems each have their easily checkable parts of robot container and
- * motor controllers. use methods to move try-catches so that we can easily see which motor
- * controllers we're initializing in case we need to change later.
+ * project.
  */
 public class Robot extends TimedRobot {
 

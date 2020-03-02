@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.MagazineConstants.defaultMagazinePower;
 import static frc.robot.Constants.OperatorInputConstants.altControllerPort;
 import static frc.robot.Constants.OperatorInputConstants.driveControllerPort;
 import static frc.robot.Constants.WinchConstants.winchDefaultMotorPower;
@@ -121,7 +122,9 @@ public class RobotContainer {
     JoystickButton shoot = new JoystickButton(altController, Button.kB.value);
     shoot.whileHeld(new TestingShootBallsCommandGroup(true))
         .whenReleased(magazine::extendHardStop, magazine);
-
+    JoystickButton runMagazine = new JoystickButton(altController, Button.kA.value);
+    runMagazine.whileHeld(() -> magazine.runMagazine(defaultMagazinePower), magazine)
+        .whenReleased(() -> magazine.runMagazine(0));
     DPadButton retractMagPiston = new DPadButton(altController, Direction.Down);
     retractMagPiston.whenPressed(magazine::toggleHardStop);
 
