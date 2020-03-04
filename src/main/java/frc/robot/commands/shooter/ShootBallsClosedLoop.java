@@ -10,9 +10,10 @@ public class ShootBallsClosedLoop extends CommandBase {
 
   private Shooter shooter;
   private Magazine magazine;
+
   private double distance;
   private double percentSpeedRequired;
-  double goalFlywheelSpeed;
+  private double goalFlywheelSpeed;
 
   /**
    * Shoots balls with closed feedback loop at speed necessary for distance. Make sure to pass in a
@@ -32,10 +33,10 @@ public class ShootBallsClosedLoop extends CommandBase {
   @Override
   public void initialize() {
     //    shooter.setFlyWheelSpeed(shooter.calculateSurfaceVelocity(distance));
-    //goalFlywheelSpeed = shooter.calculateSurfaceVelocity(distance);
+    goalFlywheelSpeed = shooter.calculateSurfaceVelocity(distance);
 
     //TODO: replace
-    goalFlywheelSpeed = 23;
+    shooter.setFlyWheelSpeed(shooter.calculateSurfaceVelocity(distance));
   }
 
   @Override

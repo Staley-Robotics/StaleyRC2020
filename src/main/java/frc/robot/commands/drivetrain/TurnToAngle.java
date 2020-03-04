@@ -39,6 +39,7 @@ public class TurnToAngle extends PIDCommand {
     // setpoint before it is considered as having reached the reference
     getController()
         .setTolerance(turnToleranceDeg, turnRateToleranceDegPerS);
+    DriveTrain.getInstance().setTargetAngle(targetAngleDegrees);
   }
 
   @Override

@@ -77,14 +77,15 @@ public final class Constants {
 
   public static final class WinchConstants {
 
-    public static final int winchMotor1 = 6;
-    public static final int winchMotor2 = 7;
+    //inside motor
+    public static final int leftWinchMotorPort = 6;
+    //far motor
+    public static final int rightWinchMotorPort = 7;
     public static final double winchDefaultMotorPower = 1;
   }
 
   public static final class IntakeConstants {
 
-    public static final int jointMotorPort = 0;
     public static final int intakeMotorPort = 2;
 
     public static final double defaultIntakePower = 0.5;
@@ -93,8 +94,6 @@ public final class Constants {
     public static final int lowerPosition = -2300;
     public static final int higherPosition = 0;
 
-    public static final int limitSwitchPort = 9;
-
     public static final double kP = 0.5;//0.03;
     public static final double kD = 0.00;
   }
@@ -102,10 +101,10 @@ public final class Constants {
   public static final class MagazineConstants {
 
     public static final int topMasterPort = 1;
-    public static final int bottomMasterPort = 0;
     public static final int pistonHardStopForwardChannel = 1;
     public static final int pistonHardStopReverseChannel = 6;
     public static final double defaultMagazinePower = 1;
+    public static final int magLimitSwitchPort = 9;
   }
 
   public static final class MastConstants {
@@ -114,6 +113,16 @@ public final class Constants {
     public static final double mastDefaultMotorPower = 0.5;
     public static final double mastDeadzone = 0.05;
     public static final int[] releaseSolenoidPorts = {0, 7};
+    public static final int potPort = 0;
+    public static final double mastP = 0.05;
+    public static final double mastI = 0;
+    public static final double mastD = 0;
+
+    public static final double mastPotTolerance = 0.02;
+    public static final double mastPotVelTolerance = 0.01;
+    public static final double extendoMastPot = 0.4;
+    public static final double retractoMastPot = 0.5;
+
   }
 
   public static final class OperatorInputConstants {
@@ -127,11 +136,6 @@ public final class Constants {
     public static final int compressorPort = 0;
 
     public static final int[] shifterPorts = {3, 4};
-  }
-
-  public static final class SensorConstants {
-
-    public static final int limitSwitchPort = 0;
   }
 
   public static final class ShooterConstants {

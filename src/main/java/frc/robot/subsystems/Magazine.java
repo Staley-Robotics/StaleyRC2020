@@ -7,11 +7,12 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.MagazineConstants.bottomMasterPort;
+import static frc.robot.Constants.MagazineConstants.magLimitSwitchPort;
 import static frc.robot.Constants.MagazineConstants.pistonHardStopForwardChannel;
 import static frc.robot.Constants.MagazineConstants.pistonHardStopReverseChannel;
 import static frc.robot.Constants.MagazineConstants.topMasterPort;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.VictorSP;
@@ -26,31 +27,56 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class Magazine extends SubsystemBase {
 
-  private DoubleSolenoid pistonHardStop;
   private static Magazine instance;
-  private VictorSP topMaster;
-  private VictorSP bottomMaster;
-  private PistonHardStopState pistonHardStopState;
 
+  private DoubleSolenoid pistonHardStop;
+  private VictorSP topMotor;
+  private PistonHardStopState pistonHardStopState;
+  private DigitalInput limitSwitch;
+  private boolean oldLimitSwitch;
+  private int ballCount;
+  private boolean magazineEnabled;
+
+  private Magazine() {
+    topMotor = new VictorSP(topMasterPort);
+    topMotor.setInverted(false);
+    pistonHardStop = new DoubleSolenoid(pistonHardStopForwardChannel, pistonHardStopReverseChannel);
+    limitSwitch = new DigitalInput(magLimitSwitchPort);
+    ballCount = 0;
+    magazineEnabled = true;
+    oldLimitSwitch = false;
+    extendHardStop();
+  }
   private enum PistonHardStopState {
     extended,
     retracted
   }
-
-  private Magazine() {
-    topMaster = new VictorSP(topMasterPort);
-    bottomMaster = new VictorSP(bottomMasterPort);
-    topMaster.setInverted(false);
-    bottomMaster.setInverted(true);
-    pistonHardStop = new DoubleSolenoid(pistonHardStopForwardChannel, pistonHardStopReverseChannel);
-    extendHardStop();
-  }
-
   public static Magazine getInstance() {
     if (instance == null) {
       instance = new Magazine();
     }
     return instance;
+  }
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+    SmartDashboard.putString("Mag Piston", pistonHardStopState.toString());
+    boolean limitSwitchPressed = limitSwitch.get();
+    if(limitSwitchPressed && ballCount == 3){
+      magazineEnabled = false;
+    }
+    else if(limitSwitchPressed && !oldLimitSwitch){
+      magazineEnabled = true;
+      ballCount ++;
+      oldLimitSwitch = limitSwitchPressed;
+    }
+    else if(!limitSwitchPressed && oldLimitSwitch){
+      magazineEnabled = false;
+      oldLimitSwitch = limitSwitchPressed;
+    }
+    else if(!limitSwitchPressed){
+      oldLimitSwitch = limitSwitchPressed;
+    }
   }
 
   public void extendHardStop() {
@@ -72,16 +98,22 @@ public class Magazine extends SubsystemBase {
       throw new IllegalStateException("heck, toggleHardStop broke");
     }
   }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-    SmartDashboard.putString("Mag Piston", pistonHardStopState.toString());
+  public void resetBallCount(){
+    ballCount = 0;
+  }
+  public int getBallCount(){
+    return ballCount;
   }
 
   public void runMagazine(double speed) {
-    topMaster.set(speed);
-    bottomMaster.set(speed);
+    if(magazineEnabled)
+      topMotor.set(speed);
+  }
+  public void runMagazineForced(double speed){
+    resetBallCount();
+    magazineEnabled = true;
+    topMotor.set(speed);
+
   }
 
 }

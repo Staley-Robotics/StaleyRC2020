@@ -8,8 +8,8 @@
 package frc.robot.subsystems;
 
 import static frc.robot.Constants.MastConstants.releaseSolenoidPorts;
-import static frc.robot.Constants.WinchConstants.winchMotor1;
-import static frc.robot.Constants.WinchConstants.winchMotor2;
+import static frc.robot.Constants.WinchConstants.leftWinchMotorPort;
+import static frc.robot.Constants.WinchConstants.rightWinchMotorPort;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -26,8 +26,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Winch extends SubsystemBase {
 
   private static Winch instance;
+
   private VictorSP leftWinch;
   private VictorSP rightWinch;
+
   private WinchPistonState winchPistonState;
   private DoubleSolenoid winchPiston;
 
@@ -36,14 +38,14 @@ public class Winch extends SubsystemBase {
    */
   private Winch() {
     try {
-      leftWinch = new VictorSP(winchMotor1);
-      rightWinch = new VictorSP(winchMotor2);
+      leftWinch = new VictorSP(leftWinchMotorPort);
+      rightWinch = new VictorSP(rightWinchMotorPort);
     } catch (RuntimeException ex) {
       DriverStation
           .reportError("Error Instantiating Winch Motor Controllers: " + ex.getMessage(), true);
     }
-    leftWinch.setInverted(false);
-    rightWinch.setInverted(true);
+    leftWinch.setInverted(true);
+    rightWinch.setInverted(false);
     winchPistonState = WinchPistonState.disengaged;
 
     try {
@@ -58,16 +60,6 @@ public class Winch extends SubsystemBase {
   private enum WinchPistonState {
     engaged,
     disengaged
-  }
-
-  public void retractPiston() {
-    winchPiston.set(Value.kReverse);
-    winchPistonState = WinchPistonState.disengaged;
-  }
-
-  private void extendPiston() {
-    winchPiston.set(Value.kForward);
-    winchPistonState = WinchPistonState.engaged;
   }
 
   public static Winch getInstance() {
@@ -85,6 +77,7 @@ public class Winch extends SubsystemBase {
 
   /**
    * Runs winch.
+   *
    * @param motorPower power to send to winch motors
    */
   public void runWinch(double motorPower) {
@@ -103,5 +96,15 @@ public class Winch extends SubsystemBase {
     } else if (winchPistonState == WinchPistonState.disengaged) {
       extendPiston();
     }
+  }
+
+  public void retractPiston() {
+    winchPiston.set(Value.kReverse);
+    winchPistonState = WinchPistonState.disengaged;
+  }
+
+  private void extendPiston() {
+    winchPiston.set(Value.kForward);
+    winchPistonState = WinchPistonState.engaged;
   }
 }
