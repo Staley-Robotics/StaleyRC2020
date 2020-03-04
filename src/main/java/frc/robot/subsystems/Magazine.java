@@ -80,12 +80,12 @@ public class Magazine extends SubsystemBase {
   }
 
   public void extendHardStop() {
-    pistonHardStop.set(Value.kForward);
+    //pistonHardStop.set(Value.kForward);
     pistonHardStopState = PistonHardStopState.extended;
   }
 
   public void retractHardStop() {
-    pistonHardStop.set(Value.kReverse);
+    //pistonHardStop.set(Value.kReverse);
     pistonHardStopState = PistonHardStopState.retracted;
   }
 

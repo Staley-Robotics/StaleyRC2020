@@ -65,8 +65,8 @@ public final class Constants {
     public static final double ramseteB = 2;
     public static final double ramseteZ = 0.7;
 
-    public static final double turnP = 0.05;
-    public static final double turnI = 0;
+    public static final double turnP = 0.03;
+    public static final double turnI = 0.08;
     public static final double turnD = 0;
 
     public static final double turnToleranceDeg = 0.5;
@@ -152,8 +152,8 @@ public final class Constants {
 
     //adjust this at comp
     public static final double targetHeight = 202.565;
-    public static final double cameraHeight = 65.405;
-    public static final double fixedCameraAngle = 19;
+    public static final double cameraHeight = 63.5;
+    public static final double fixedCameraAngle = 23.2;
 
     public static double shooterP = 0.00035;//0.0004
     public static double shooterI = 0;

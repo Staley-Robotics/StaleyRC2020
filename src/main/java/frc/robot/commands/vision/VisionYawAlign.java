@@ -20,12 +20,17 @@ public class VisionYawAlign extends SequentialCommandGroup {
   public VisionYawAlign() {
     driveTrain = DriveTrain.getInstance();
     vision = Vision.getInstance();
+  }
+
+  @Override
+  public void initialize() {
 
     //Converts Yaw to 180 to -180.
-    angleToTurn = Math.IEEEremainder(vision.getYaw() + driveTrain.getHeading(), 360) * -1;
+    angleToTurn = Math.IEEEremainder(-vision.getYaw() + driveTrain.getHeading(), 360) * -1;
 
     addCommands(
         new TurnToAngle(angleToTurn)
     );
+    super.initialize();
   }
 }

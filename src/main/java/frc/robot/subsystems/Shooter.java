@@ -97,15 +97,15 @@ public class Shooter extends SubsystemBase {
    * @param distance distance from the target in cm.
    */
   public double calculateSurfaceVelocity(double distance) {
-    double tempThing = Math.floor(distance / 25);
-    int groupedDistance = (int) tempThing * 25;
+    double tempThing = Math.floor(distance / 50);
+    int groupedDistance = (int) tempThing * 50;
 
-    if (distance < 300) {
+    if (distance < 250) {
       //m/s bumper on line
       return 23;
     }
 
-    if (distance >= 425) {
+    if (distance >= 700) {
       return 30;
     }
 
@@ -170,11 +170,16 @@ public class Shooter extends SubsystemBase {
 
   private void populateShootingTargets() {
     // {grouped distance from target in cm, speed of the shooter in m/s}
+    shootingTargets.put(250,22.0);
     shootingTargets.put(300, 23.0);
-    shootingTargets.put(325, 23.0);
     shootingTargets.put(350, 25.0);
-    shootingTargets.put(375, 30.0);
     shootingTargets.put(400, 30.0);
+    shootingTargets.put(450,30.0);
+    shootingTargets.put(500,30.0);
+    shootingTargets.put(550,30.0);
+    shootingTargets.put(600,30.0);
+    shootingTargets.put(650,30.0);
+    shootingTargets.put(700,30.0);
   }
 
   public void runMotors(double power) {

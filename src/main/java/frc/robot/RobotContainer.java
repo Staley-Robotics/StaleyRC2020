@@ -19,12 +19,15 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auto.ShootThenMoveOffNoPW;
+import frc.robot.commands.drivetrain.TurnToAngle;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.magazine.RunMagazine;
 import frc.robot.commands.shooter.TestingShootBallsCommandGroup;
+import frc.robot.commands.vision.VisionYawAlign;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Magazine;
@@ -130,7 +133,6 @@ public class RobotContainer {
         .whenReleased(magazine::extendHardStop, magazine);
     DPadButton retractMagPiston = new DPadButton(altController, Direction.Down);
     retractMagPiston.whenPressed(magazine::toggleHardStop);
-    DPadButton extendMagPiston = new DPadButton(altController, Direction.Up);
 
     JoystickButton winchExtend = new JoystickButton(altController, Button.kBumperRight.value);
     winchExtend.whileHeld(() -> winch.runWinch(winchDefaultMotorPower), winch)
@@ -139,15 +141,18 @@ public class RobotContainer {
     JoystickButton winchRetract = new JoystickButton(altController, Button.kBumperLeft.value);
     winchRetract.whileHeld(() -> winch.runWinch(-winchDefaultMotorPower), winch)
         .whenReleased(() -> winch.runWinch(0), winch);
-    //TODO: vision line-up shot
     JoystickButton runIntake = new JoystickButton(altController, Button.kA.value);
     runIntake.whileHeld(new RunIntake(defaultIntakePower))
         .whileHeld(() -> magazine.runMagazine(defaultMagazinePower), magazine)
         .whenReleased(() -> magazine.runMagazine(0));
 
     JoystickButton runIntakeBackwards = new JoystickButton(altController, Button.kBack.value);
-    runIntakeBackwards.whileHeld(new RunIntake(-defaultIntakePower)).whileHeld(new RunMagazine(-defaultMagazinePower))
+    runIntakeBackwards.whileHeld(new RunIntake(-defaultIntakePower))
+        .whileHeld(new RunMagazine(-defaultMagazinePower))
         .whenReleased(() -> intake.runIntake(0)).whenReleased(new RunMagazine(0));
+
+    JoystickButton lineUpShot = new JoystickButton(driveController, Button.kX.value);
+    lineUpShot.whileHeld(new VisionYawAlign());
   }
 
   /**

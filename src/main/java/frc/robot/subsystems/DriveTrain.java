@@ -374,6 +374,9 @@ public class DriveTrain extends SubsystemBase {
   public double getHeading() {
     return Math.IEEEremainder(getYaw(), 360) * -1;
   }
+  public double getNegativeHeading(){
+    return getHeading() * -1;
+  }
 
   /**
    * Sets the robot's current position as the origin.
