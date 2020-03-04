@@ -5,6 +5,7 @@ import static frc.robot.Constants.MagazineConstants.defaultMagazinePower;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Magazine;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Vision;
 
 public class ShootBallsClosedLoop extends CommandBase {
 
@@ -34,8 +35,7 @@ public class ShootBallsClosedLoop extends CommandBase {
   public void initialize() {
     //    shooter.setFlyWheelSpeed(shooter.calculateSurfaceVelocity(distance));
     goalFlywheelSpeed = shooter.calculateSurfaceVelocity(distance);
-
-    //TODO: replace
+    distance = Vision.getInstance().calculateDistance();
     shooter.setFlyWheelSpeed(shooter.calculateSurfaceVelocity(distance));
   }
 

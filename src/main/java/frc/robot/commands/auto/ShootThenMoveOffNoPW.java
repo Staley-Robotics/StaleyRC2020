@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.shooter.ShootBallsClosedLoop;
+import frc.robot.commands.shooter.TestingShootBallsCommandGroup;
 import java.util.ArrayList;
 
 public class ShootThenMoveOffNoPW extends LowGearAuto {
@@ -34,7 +35,7 @@ public class ShootThenMoveOffNoPW extends LowGearAuto {
     addCommands(
         new InstantCommand(driveTrain::zeroEncoder),
         new InstantCommand(driveTrain::resetOdometry),
-        new ShootBallsClosedLoop(0, shooterClosedLoopThreshold).withTimeout(4),
+        new TestingShootBallsCommandGroup(true).withTimeout(10),
         driveTrain.getAutonomousCommandFromTrajectory(trajectory)
     );
   }

@@ -11,7 +11,7 @@ import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 
-public class TestingShootBallsCommandGroup extends ParallelCommandGroup {
+public class TestingShootBallsCommandGroup extends SequentialCommandGroup {
 
   /**
    * Performs all the necessary steps for shooting a ball.
@@ -24,7 +24,7 @@ public class TestingShootBallsCommandGroup extends ParallelCommandGroup {
 
     if (closedLoop) {
       addCommands(
-          new VisionYawAlign().withTimeout(3),
+          //new VisionYawAlign().withTimeout(3),
           new RunCommand(()-> Shooter.getInstance().runMotors(1)).withTimeout(0.1),
           new ShootBallsClosedLoop(Vision.getInstance().calculateDistance(), shooterClosedLoopThreshold));
     }
