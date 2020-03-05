@@ -170,29 +170,29 @@ public class Shooter extends SubsystemBase {
 
   private void populateShootingTargets() {
     // {grouped distance from target in cm, speed of the shooter in m/s}
-    shootingTargets.put(250,22.0); //untested
-    shootingTargets.put(275,23.0); //untested
+    shootingTargets.put(250, 22.0); //untested
+    shootingTargets.put(275, 23.0); //untested
     shootingTargets.put(300, 23.0); //untested
     shootingTargets.put(325, 25.0); // good probably
     shootingTargets.put(350, 24.6); //good on god
-    shootingTargets.put(375,25.00); //tested good
+    shootingTargets.put(375, 25.00); //tested good
     shootingTargets.put(400, 30.0); //tested good
-    shootingTargets.put(425,30.0); //good on god
-    shootingTargets.put(450,26.3); //tested good
-    shootingTargets.put(475,26.5);
-    shootingTargets.put(500,26.7);
-    shootingTargets.put(525,26.9);
-    shootingTargets.put(550,27.1);
-    shootingTargets.put(575,27.3); //tested good
-    shootingTargets.put(600,27.5); //tested kinda bad but tested
-    shootingTargets.put(625,28.25);//tested good
-    shootingTargets.put(650,28.0);//tested kinda bad but tested
-    shootingTargets.put(675,29.0); //tested good
-    shootingTargets.put(700,30.0);
-    shootingTargets.put(725,30.0);
-    shootingTargets.put(750,30.0);
-    shootingTargets.put(775,30.0);
-    shootingTargets.put(800,30.0); //tested. good
+    shootingTargets.put(425, 30.0); //good on god
+    shootingTargets.put(450, 26.3); //tested good
+    shootingTargets.put(475, 26.5);
+    shootingTargets.put(500, 26.7);
+    shootingTargets.put(525, 26.9);
+    shootingTargets.put(550, 27.1);
+    shootingTargets.put(575, 27.3); //tested good
+    shootingTargets.put(600, 27.5); //tested kinda bad but tested
+    shootingTargets.put(625, 28.25);//tested good
+    shootingTargets.put(650, 28.0);//tested kinda bad but tested
+    shootingTargets.put(675, 29.0); //tested good
+    shootingTargets.put(700, 30.0);
+    shootingTargets.put(725, 30.0);
+    shootingTargets.put(750, 30.0);
+    shootingTargets.put(775, 30.0);
+    shootingTargets.put(800, 30.0); //tested. good
   }
 
   public void runMotors(double power) {

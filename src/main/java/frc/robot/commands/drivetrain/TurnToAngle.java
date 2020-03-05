@@ -17,6 +17,7 @@ import frc.robot.subsystems.DriveTrain;
 public class TurnToAngle extends PIDCommand {
 
   private double targetAngleDegrees;
+
   /**
    * Turns to robot to the specified angle.
    *
@@ -52,7 +53,7 @@ public class TurnToAngle extends PIDCommand {
 
   @Override
   public void execute() {
-    SmartDashboard.putNumber("Turn Error",getController().getPositionError());
+    SmartDashboard.putNumber("Turn Error", getController().getPositionError());
     super.execute();
   }
 

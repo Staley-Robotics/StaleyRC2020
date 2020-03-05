@@ -19,11 +19,9 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auto.ShootThenMoveOffNoPW;
-import frc.robot.commands.drivetrain.TurnToAngle;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.magazine.RunMagazine;
 import frc.robot.commands.shooter.TestingShootBallsCommandGroup;
@@ -120,19 +118,22 @@ public class RobotContainer {
     /* Drive Controller */
     JoystickButton shiftButton = new JoystickButton(driveController, Button.kB.value);
     shiftButton.whenPressed(drive::toggleShift, drive);
-    /* Alt Controller */
 
-    JoystickButton toggleWinch = new JoystickButton(altController, Button.kStart.value);
-    toggleWinch.whenPressed(winch::togglePiston, winch);
+    JoystickButton lineUpShot = new JoystickButton(driveController, Button.kX.value);
+    lineUpShot.whileHeld(new VisionYawAlign());
+
+    /* Alt Controller */
+    JoystickButton runIntake = new JoystickButton(altController, Button.kA.value);
+    runIntake.whileHeld(new RunIntake(defaultIntakePower))
+        .whileHeld(() -> magazine.runMagazine(defaultMagazinePower), magazine)
+        .whenReleased(() -> magazine.runMagazine(0));
+
+    JoystickButton shoot = new JoystickButton(altController, Button.kX.value);
+    shoot.whileHeld(new TestingShootBallsCommandGroup(true))
+        .whenReleased(magazine::extendHardStop, magazine);
 
     JoystickButton toggleCompressor = new JoystickButton(altController, Button.kY.value);
     toggleCompressor.whenPressed(pneumatics::compressorToggle, pneumatics);
-
-    JoystickButton shoot = new JoystickButton(altController, Button.kB.value);
-    shoot.whileHeld(new TestingShootBallsCommandGroup(true))
-        .whenReleased(magazine::extendHardStop, magazine);
-    DPadButton retractMagPiston = new DPadButton(altController, Direction.Down);
-    retractMagPiston.whenPressed(magazine::toggleHardStop);
 
     JoystickButton winchExtend = new JoystickButton(altController, Button.kBumperRight.value);
     winchExtend.whileHeld(() -> winch.runWinch(winchDefaultMotorPower), winch)
@@ -141,18 +142,17 @@ public class RobotContainer {
     JoystickButton winchRetract = new JoystickButton(altController, Button.kBumperLeft.value);
     winchRetract.whileHeld(() -> winch.runWinch(-winchDefaultMotorPower), winch)
         .whenReleased(() -> winch.runWinch(0), winch);
-    JoystickButton runIntake = new JoystickButton(altController, Button.kA.value);
-    runIntake.whileHeld(new RunIntake(defaultIntakePower))
-        .whileHeld(() -> magazine.runMagazine(defaultMagazinePower), magazine)
-        .whenReleased(() -> magazine.runMagazine(0));
+
+    JoystickButton toggleWinch = new JoystickButton(altController, Button.kStart.value);
+    toggleWinch.whenPressed(winch::togglePiston, winch);
 
     JoystickButton runIntakeBackwards = new JoystickButton(altController, Button.kBack.value);
     runIntakeBackwards.whileHeld(new RunIntake(-defaultIntakePower))
         .whileHeld(new RunMagazine(-defaultMagazinePower))
         .whenReleased(() -> intake.runIntake(0)).whenReleased(new RunMagazine(0));
 
-    JoystickButton lineUpShot = new JoystickButton(driveController, Button.kX.value);
-    lineUpShot.whileHeld(new VisionYawAlign());
+    DPadButton retractMagPiston = new DPadButton(altController, Direction.Down);
+    retractMagPiston.whenPressed(magazine::toggleHardStop);
   }
 
   /**

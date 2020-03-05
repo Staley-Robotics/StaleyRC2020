@@ -374,7 +374,8 @@ public class DriveTrain extends SubsystemBase {
   public double getHeading() {
     return Math.IEEEremainder(getYaw(), 360) * -1;
   }
-  public double getNegativeHeading(){
+
+  public double getNegativeHeading() {
     return getHeading() * -1;
   }
 

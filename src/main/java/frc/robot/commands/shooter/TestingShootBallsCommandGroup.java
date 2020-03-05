@@ -2,6 +2,7 @@ package frc.robot.commands.shooter;
 
 import static frc.robot.Constants.ShooterConstants.shooterClosedLoopThreshold;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -25,8 +26,9 @@ public class TestingShootBallsCommandGroup extends SequentialCommandGroup {
     if (closedLoop) {
       addCommands(
           //new VisionYawAlign().withTimeout(3),
-          new RunCommand(()-> Shooter.getInstance().runMotors(1)).withTimeout(0.1),
-          new ShootBallsClosedLoop(Vision.getInstance().calculateDistance(), shooterClosedLoopThreshold));
+          new RunShooter(1).withTimeout(0.1),
+          new ShootBallsClosedLoop(Vision.getInstance().calculateDistance(),
+              shooterClosedLoopThreshold));
     }
   }
 }

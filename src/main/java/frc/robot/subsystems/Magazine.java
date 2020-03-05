@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.MagazineConstants.defaultMagazinePower;
 import static frc.robot.Constants.MagazineConstants.magLimitSwitchPort;
 import static frc.robot.Constants.MagazineConstants.pistonHardStopForwardChannel;
 import static frc.robot.Constants.MagazineConstants.pistonHardStopReverseChannel;
@@ -18,6 +19,8 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.magazine.RunMagazine;
 
 /**
  * Magazine that holds 5 balls. It will run constantly while we are intaking. Once we get a ball, it
@@ -47,35 +50,41 @@ public class Magazine extends SubsystemBase {
     oldLimitSwitch = false;
     extendHardStop();
   }
+
   private enum PistonHardStopState {
     extended,
     retracted
   }
+
   public static Magazine getInstance() {
     if (instance == null) {
       instance = new Magazine();
     }
     return instance;
   }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putString("Mag Piston", pistonHardStopState.toString());
     boolean limitSwitchPressed = limitSwitch.get();
-    if(limitSwitchPressed && ballCount == 3){
-      magazineEnabled = false;
-    }
-    else if(limitSwitchPressed && !oldLimitSwitch){
-      magazineEnabled = true;
-      ballCount ++;
-      oldLimitSwitch = limitSwitchPressed;
-    }
-    else if(!limitSwitchPressed && oldLimitSwitch){
-      magazineEnabled = false;
-      oldLimitSwitch = limitSwitchPressed;
-    }
-    else if(!limitSwitchPressed){
-      oldLimitSwitch = limitSwitchPressed;
+
+//    if (limitSwitchPressed && ballCount == 3) {
+//      magazineEnabled = false;
+//    } else if (limitSwitchPressed && !oldLimitSwitch) {
+//      magazineEnabled = true;
+//      ballCount++;
+//      oldLimitSwitch = limitSwitchPressed;
+//    } else if (!limitSwitchPressed && oldLimitSwitch) {
+//      magazineEnabled = false;
+//      oldLimitSwitch = limitSwitchPressed;
+//    } else if (!limitSwitchPressed) {
+//      oldLimitSwitch = limitSwitchPressed;
+//    }
+
+    if (limitSwitchPressed) {
+      new RunMagazine(defaultMagazinePower).withTimeout(0.25).andThen(new RunMagazine(0))
+          .schedule();
     }
   }
 
@@ -98,18 +107,22 @@ public class Magazine extends SubsystemBase {
       throw new IllegalStateException("heck, toggleHardStop broke");
     }
   }
-  public void resetBallCount(){
+
+  public void resetBallCount() {
     ballCount = 0;
   }
-  public int getBallCount(){
+
+  public int getBallCount() {
     return ballCount;
   }
 
   public void runMagazine(double speed) {
-    if(magazineEnabled)
+    if (magazineEnabled) {
       topMotor.set(speed);
+    }
   }
-  public void runMagazineForced(double speed){
+
+  public void runMagazineForced(double speed) {
     resetBallCount();
     magazineEnabled = true;
     topMotor.set(speed);

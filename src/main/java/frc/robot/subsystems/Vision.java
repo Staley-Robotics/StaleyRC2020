@@ -69,11 +69,12 @@ public class Vision extends SubsystemBase {
    * @return Calculated Distance.
    */
   public double calculateDistance() {
-    if(tapeDetected())
-    return (targetHeight - cameraHeight) / (Math
-        .tan(Math.toRadians(getPitch() + fixedCameraAngle)));
-    else
+    if (tapeDetected()) {
+      return (targetHeight - cameraHeight) / (Math
+          .tan(Math.toRadians(getPitch() + fixedCameraAngle)));
+    } else {
       return 0;
+    }
   }
 
   /**
