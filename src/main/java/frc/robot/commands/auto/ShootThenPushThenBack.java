@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.shooter.ShootBallsClosedLoop;
+import frc.robot.commands.shooter.ShootBallsCommandGroupWithSpeed;
 import frc.robot.commands.shooter.TestingShootBallsCommandGroup;
 import java.util.ArrayList;
 
@@ -40,7 +41,7 @@ public class ShootThenPushThenBack extends LowGearAuto {
     addCommands(
         new InstantCommand(driveTrain::zeroEncoder),
         new InstantCommand(driveTrain::resetOdometry),
-        new TestingShootBallsCommandGroup(true).withTimeout(4),
+        new ShootBallsCommandGroupWithSpeed(28).withTimeout(6),
         driveTrain.getAutonomousCommandFromTrajectory(pushRobotForward),
         driveTrain.getAutonomousCommandFromTrajectory(moveBack)
     );

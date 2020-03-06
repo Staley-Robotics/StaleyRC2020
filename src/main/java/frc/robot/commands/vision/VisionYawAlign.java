@@ -1,5 +1,7 @@
 package frc.robot.commands.vision;
 
+import static frc.robot.Constants.VisionConstants.cameraDegreeError;
+
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.drivetrain.TurnToAngle;
 import frc.robot.subsystems.DriveTrain;
@@ -26,7 +28,7 @@ public class VisionYawAlign extends SequentialCommandGroup {
   public void initialize() {
 
     //Converts Yaw to 180 to -180.
-    angleToTurn = Math.IEEEremainder(-vision.getYaw() + driveTrain.getHeading(), 360) * -1;
+    angleToTurn = Math.IEEEremainder(-(vision.getYaw() + cameraDegreeError) + driveTrain.getHeading(), 360) * -1;
 
     addCommands(
         new TurnToAngle(angleToTurn)

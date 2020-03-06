@@ -28,6 +28,7 @@ import frc.robot.commands.auto.ShootThenMoveOffNoPW;
 import frc.robot.commands.auto.ShootThenPushThenBack;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.magazine.RunMagazine;
+import frc.robot.commands.shooter.RunShooter;
 import frc.robot.commands.shooter.ShootBallsCommandGroupWithSpeed;
 import frc.robot.commands.shooter.TestingShootBallsCommandGroup;
 import frc.robot.commands.vision.VisionYawAlign;
@@ -163,6 +164,8 @@ public class RobotContainer {
 
     JoystickButton runIntake = new JoystickButton(driveController, Button.kA.value);
     runIntake.whileHeld(new RunIntake(defaultIntakePower)).whenReleased(new RunIntake(0));
+    DPadButton runShooterBackward = new DPadButton(altController,Direction.Right);
+    runShooterBackward.whileHeld(new RunShooter(-0.5)).whenReleased(new InstantCommand(shooter::stop));
   }
 
   /**

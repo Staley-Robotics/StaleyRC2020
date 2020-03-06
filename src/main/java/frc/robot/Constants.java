@@ -106,7 +106,9 @@ public final class Constants {
     public static final double defaultMagazinePower = 1;
     public static final int magLimitSwitchPort = 9;
   }
-
+  public static final class VisionConstants{
+    public static final double cameraDegreeError = 1.5;
+  }
   public static final class MastConstants {
 
     public static final int mastMotorPort = 5;
@@ -160,6 +162,6 @@ public final class Constants {
     public static double shooterD = 0.001;
     public static double shooterF = 0.000175;//0.00015
     public static double trenchShootSpeed = 29;
-    public static double autoLineShootSpeed =21.7;
+    public static double autoLineShootSpeed =30;
   }
 }
