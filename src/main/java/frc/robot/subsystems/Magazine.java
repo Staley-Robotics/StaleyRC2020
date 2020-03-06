@@ -81,11 +81,12 @@ public class Magazine extends SubsystemBase {
 //    } else if (!limitSwitchPressed) {
 //      oldLimitSwitch = limitSwitchPressed;
 //    }
-
-    if (limitSwitchPressed) {
-      new RunMagazine(defaultMagazinePower).withTimeout(0.25).andThen(new RunMagazine(0))
+//!limitswitchpressed && oldLimitSwitch, run magazine for 0.4
+    if (!limitSwitchPressed && oldLimitSwitch) {
+      new RunMagazine(defaultMagazinePower).withTimeout(0.6).andThen(new RunMagazine(0))
           .schedule();
     }
+    oldLimitSwitch = limitSwitchPressed;
   }
 
   public void extendHardStop() {

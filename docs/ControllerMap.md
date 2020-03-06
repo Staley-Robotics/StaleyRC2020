@@ -32,9 +32,9 @@
 
 ##Drive Controller
 
-**X**: The X button shifts the robot from high gear into low gear and visa versa.
+**B**: The B button shifts the robot from high gear into low gear and visa versa.
 
-**B**: The B button lines the robot up to shoot.
+**X**: The X button lines the robot up to shoot.
 
 **Left Joystick**: The left joystick controls turning. If it is moved left past the deadzone, the robot turns left. The same is true for right.
 

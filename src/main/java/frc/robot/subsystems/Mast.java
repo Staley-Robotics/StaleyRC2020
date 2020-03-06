@@ -50,9 +50,10 @@ public class Mast extends SubsystemBase {
   }
 
   public void runMastTriggers(double leftTrigger, double rightTrigger) {
-    if (leftTrigger > mastDeadzone && leftTrigger > rightTrigger && getPot() < 0.85) {
+    //fix pot later  && getPot() < 0.85,
+    if (leftTrigger > mastDeadzone && leftTrigger > rightTrigger&& getPot() < 0.85) {
       runMast(-leftTrigger);
-    } else if (rightTrigger > mastDeadzone && rightTrigger > leftTrigger && getPot() > 0.1) {
+    } else if (rightTrigger > mastDeadzone && rightTrigger > leftTrigger&& getPot() > 0.02) {
       runMast(rightTrigger);
     } else {
       runMast(0);

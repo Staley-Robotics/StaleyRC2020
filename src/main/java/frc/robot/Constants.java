@@ -88,7 +88,7 @@ public final class Constants {
 
     public static final int intakeMotorPort = 2;
 
-    public static final double defaultIntakePower = 0.5;
+    public static final double defaultIntakePower = 0.75;
     public static final double defaultMotorJointPower = 0.2;
     public static final double jointDeadzone = 0.15;
     public static final int lowerPosition = -2300;
@@ -147,7 +147,7 @@ public final class Constants {
     public static final double flyWheelRadius = 0.0508;
     public static final double shooterOpenLoopThreshold = 0.5;
 
-    public static final double shooterClosedLoopThreshold = 0.985;
+    public static final double shooterClosedLoopThreshold = 0.995;
     public static final double shooterTightClosedLoopThreshold = 0.98;
 
     //adjust this at comp
@@ -159,5 +159,7 @@ public final class Constants {
     public static double shooterI = 0;
     public static double shooterD = 0.001;
     public static double shooterF = 0.000175;//0.00015
+    public static double trenchShootSpeed = 29;
+    public static double autoLineShootSpeed =21.7;
   }
 }

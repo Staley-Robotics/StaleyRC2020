@@ -89,6 +89,7 @@ public class Shooter extends SubsystemBase {
    */
   public void stop() {
     PIDController.setReference(0, ControlType.kDutyCycle);
+    runMotors(0);
   }
 
   /**
@@ -100,6 +101,10 @@ public class Shooter extends SubsystemBase {
     double tempThing = Math.floor(distance / 25);
     int groupedDistance = (int) tempThing * 25;
     SmartDashboard.putNumber("Group: ", groupedDistance);
+    //are you silly? I'm still gonna send it
+    if (distance == 0) {
+      return 30;
+    }
     if (distance < 250) {
       //m/s bumper on line
       return 23;
@@ -172,7 +177,7 @@ public class Shooter extends SubsystemBase {
     // {grouped distance from target in cm, speed of the shooter in m/s}
     shootingTargets.put(250, 22.0); //untested
     shootingTargets.put(275, 23.0); //untested
-    shootingTargets.put(300, 23.0); //untested
+    shootingTargets.put(300, 24.0); //untested
     shootingTargets.put(325, 25.0); // good probably
     shootingTargets.put(350, 24.6); //good on god
     shootingTargets.put(375, 25.00); //tested good

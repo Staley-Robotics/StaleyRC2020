@@ -11,6 +11,8 @@ import static frc.robot.Constants.IntakeConstants.defaultIntakePower;
 import static frc.robot.Constants.MagazineConstants.defaultMagazinePower;
 import static frc.robot.Constants.OperatorInputConstants.altControllerPort;
 import static frc.robot.Constants.OperatorInputConstants.driveControllerPort;
+import static frc.robot.Constants.ShooterConstants.autoLineShootSpeed;
+import static frc.robot.Constants.ShooterConstants.trenchShootSpeed;
 import static frc.robot.Constants.WinchConstants.winchDefaultMotorPower;
 
 import edu.wpi.first.wpilibj.GenericHID;
@@ -19,11 +21,14 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auto.ShootThenMoveOffNoPW;
+import frc.robot.commands.auto.ShootThenPushThenBack;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.magazine.RunMagazine;
+import frc.robot.commands.shooter.ShootBallsCommandGroupWithSpeed;
 import frc.robot.commands.shooter.TestingShootBallsCommandGroup;
 import frc.robot.commands.vision.VisionYawAlign;
 import frc.robot.subsystems.DriveTrain;
@@ -77,6 +82,7 @@ public class RobotContainer {
     autoChooser = new SendableChooser<>();
     autoChooser.setDefaultOption("NO PW", new ShootThenMoveOffNoPW());
     autoChooser.addOption("NO PW", new ShootThenMoveOffNoPW());
+    autoChooser.addOption("Push", new ShootThenPushThenBack());
 
     SmartDashboard.putData("Auto", autoChooser);
     //All subsystems will have checks that should be checked before going out.
@@ -123,12 +129,8 @@ public class RobotContainer {
     lineUpShot.whileHeld(new VisionYawAlign());
 
     /* Alt Controller */
-    JoystickButton runIntake = new JoystickButton(altController, Button.kA.value);
-    runIntake.whileHeld(new RunIntake(defaultIntakePower))
-        .whileHeld(() -> magazine.runMagazine(defaultMagazinePower), magazine)
-        .whenReleased(() -> magazine.runMagazine(0));
 
-    JoystickButton shoot = new JoystickButton(altController, Button.kX.value);
+    JoystickButton shoot = new JoystickButton(altController, Button.kB.value);
     shoot.whileHeld(new TestingShootBallsCommandGroup(true))
         .whenReleased(magazine::extendHardStop, magazine);
 
@@ -151,8 +153,16 @@ public class RobotContainer {
         .whileHeld(new RunMagazine(-defaultMagazinePower))
         .whenReleased(() -> intake.runIntake(0)).whenReleased(new RunMagazine(0));
 
-    DPadButton retractMagPiston = new DPadButton(altController, Direction.Down);
-    retractMagPiston.whenPressed(magazine::toggleHardStop);
+    DPadButton trenchShoot = new DPadButton(altController, Direction.Up);
+    trenchShoot.whileHeld(new ShootBallsCommandGroupWithSpeed(trenchShootSpeed)).whenReleased(new InstantCommand(shooter::stop));
+    DPadButton autoLineShoot = new DPadButton(altController, Direction.Down);
+    autoLineShoot.whileHeld(new ShootBallsCommandGroupWithSpeed(autoLineShootSpeed)).whenReleased(new InstantCommand(shooter::stop));
+    DPadButton sendIt = new DPadButton(altController,Direction.Left);
+    //30
+    sendIt.whileHeld(new ShootBallsCommandGroupWithSpeed(31)).whenReleased(new InstantCommand(shooter::stop));
+
+    JoystickButton runIntake = new JoystickButton(driveController, Button.kA.value);
+    runIntake.whileHeld(new RunIntake(defaultIntakePower)).whenReleased(new RunIntake(0));
   }
 
   /**
