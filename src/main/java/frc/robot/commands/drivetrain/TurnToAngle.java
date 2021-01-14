@@ -16,6 +16,8 @@ import frc.robot.subsystems.DriveTrain;
  */
 public class TurnToAngle extends PIDCommand {
 
+  private double targetAngleDegrees;
+
   /**
    * Turns to robot to the specified angle.
    *
@@ -25,7 +27,7 @@ public class TurnToAngle extends PIDCommand {
     super(
         new PIDController(turnP, turnI, turnD),
         // Close loop on heading
-        DriveTrain.getInstance()::getHeading,
+        DriveTrain.getInstance()::getNegativeHeading,
         // Set reference to target
         targetAngleDegrees,
         // Pipe output to turn robot
@@ -39,11 +41,19 @@ public class TurnToAngle extends PIDCommand {
     // setpoint before it is considered as having reached the reference
     getController()
         .setTolerance(turnToleranceDeg, turnRateToleranceDegPerS);
+    this.targetAngleDegrees = targetAngleDegrees;
+  }
+
+  @Override
+  public void initialize() {
+
+    DriveTrain.getInstance().setTargetAngle(targetAngleDegrees);
+    super.initialize();
   }
 
   @Override
   public void execute() {
-    System.out.println("Turning to angle");
+    SmartDashboard.putNumber("Turn Error", getController().getPositionError());
     super.execute();
   }
 
@@ -57,7 +67,7 @@ public class TurnToAngle extends PIDCommand {
 
   @Override
   public void end(boolean interrupted) {
-    System.out.println("Interrupted: " + interrupted);
+    System.out.println("Gyro Turn Interrupted: " + interrupted);
     super.end(interrupted);
   }
 }

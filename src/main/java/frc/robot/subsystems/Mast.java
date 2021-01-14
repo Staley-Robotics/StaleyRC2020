@@ -9,8 +9,11 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.MastConstants.mastDeadzone;
 import static frc.robot.Constants.MastConstants.mastMotorPort;
+import static frc.robot.Constants.MastConstants.potPort;
 
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.VictorSP;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -22,9 +25,11 @@ public class Mast extends SubsystemBase {
   private static Mast instance;
 
   private VictorSP mastMotor;
+  private AnalogPotentiometer pot;
 
   private Mast() {
     mastMotor = new VictorSP(mastMotorPort);
+    pot = new AnalogPotentiometer(potPort);
   }
 
   public static Mast getInstance() {
@@ -41,17 +46,21 @@ public class Mast extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Pot", pot.pidGet());
   }
 
-
   public void runMastTriggers(double leftTrigger, double rightTrigger) {
-    if (leftTrigger > mastDeadzone && leftTrigger > rightTrigger) {
+    //fix pot later  && getPot() < 0.85,
+    if (leftTrigger > mastDeadzone && leftTrigger > rightTrigger&& getPot() < 0.85) {
       runMast(-leftTrigger);
-    } else if (rightTrigger > mastDeadzone && rightTrigger > leftTrigger) {
+    } else if (rightTrigger > mastDeadzone && rightTrigger > leftTrigger&& getPot() > 0.02) {
       runMast(rightTrigger);
     } else {
       runMast(0);
     }
   }
 
+  public double getPot() {
+    return pot.pidGet();
+  }
 }

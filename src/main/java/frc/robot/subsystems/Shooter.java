@@ -24,7 +24,7 @@ import com.revrobotics.ControlType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Two neos spin a single flywheel shooter at incredibly high speed.
@@ -32,26 +32,17 @@ import java.util.ArrayList;
 public class Shooter extends SubsystemBase {
 
   private static Shooter instance;
+
   private CANSparkMax leftShooterNeo;
   private CANSparkMax rightShooterNeo;
 
+  private CANEncoder shooterEncoder;
   private CANPIDController PIDController;
 
-  private CANEncoder shooterEncoder;
-
-  /*These thresholds are used by commands to decide how close the flywheel's velocity
-  needs to be to its setpoint before a ball is fed.*/
-
   private double targetSpeed;
-  private ArrayList<Double> shootingTargets;
-
-  private void populateShootingTargets() {
-    //TODO: populate shooting targets
-  }
+  private HashMap<Integer, Double> shootingTargets;
 
   private Shooter() {
-    shootingTargets = new ArrayList<>();
-    populateShootingTargets();
     try {
       leftShooterNeo = new CANSparkMax(leftShooterNeoPort, MotorType.kBrushless);
       rightShooterNeo = new CANSparkMax(rightShooterNeoPort, MotorType.kBrushless);
@@ -59,11 +50,12 @@ public class Shooter extends SubsystemBase {
       DriverStation
           .reportError("Error Instantiating Shooter Motor Controllers: " + ex.getMessage(), true);
     }
-    leftShooterNeo.follow(rightShooterNeo, true);
 
+    leftShooterNeo.follow(rightShooterNeo, true);
     leftShooterNeo.setIdleMode(IdleMode.kCoast);
-    rightShooterNeo.setInverted(true);
     leftShooterNeo.setInverted(false);
+
+    rightShooterNeo.setInverted(true);
     rightShooterNeo.setIdleMode(IdleMode.kCoast);
 
     shooterEncoder = rightShooterNeo.getEncoder();
@@ -73,6 +65,9 @@ public class Shooter extends SubsystemBase {
     targetSpeed = 0;
     updatePIDConstants();
     stop();
+
+    shootingTargets = new HashMap<>();
+    populateShootingTargets();
   }
 
   public static Shooter getInstance() {
@@ -90,27 +85,36 @@ public class Shooter extends SubsystemBase {
   }
 
   /**
-   * Updates the constants for the PID using constants.
+   * Sets the PID target to zero, letting it coast to a stop.
    */
-  public void updatePIDConstants() {
-    PIDController.setOutputRange(0, 1);
-    PIDController.setP(shooterP);
-    PIDController.setI(shooterI);
-    PIDController.setD(shooterD);
-    PIDController.setFF(shooterF);
-  }
-
-  public double getTargetFlywheelSpeedMetersPerSecond() {
-    return rpmToSurfaceVelocity(targetSpeed);
+  public void stop() {
+    PIDController.setReference(0, ControlType.kDutyCycle);
+    runMotors(0);
   }
 
   /**
-   * Calculates the surface velocity from neo RPM.
+   * Calculates target surface velocity to make out shot at a given distance.
    *
-   * @return calculated surface velocity.
+   * @param distance distance from the target in cm.
    */
-  public double getFlyWheelSpeedMetersPerSecond() {
-    return rpmToSurfaceVelocity(rightShooterNeo.getEncoder().getVelocity());
+  public double calculateSurfaceVelocity(double distance) {
+    double tempThing = Math.floor(distance / 25);
+    int groupedDistance = (int) tempThing * 25;
+    SmartDashboard.putNumber("Group: ", groupedDistance);
+    //are you silly? I'm still gonna send it
+    if (distance == 0) {
+      return 30;
+    }
+    if (distance < 250) {
+      //m/s bumper on line
+      return 23;
+    }
+
+    if (distance >= 700) {
+      return 30;
+    }
+
+    return shootingTargets.get(groupedDistance);
   }
 
   /**
@@ -126,27 +130,16 @@ public class Shooter extends SubsystemBase {
   }
 
   /**
-   * Sets the PID target to zero, letting it coast to a stop.
+   * Calculates the surface velocity from neo RPM.
+   *
+   * @return calculated surface velocity.
    */
-  public void stop() {
-    PIDController.setReference(0, ControlType.kDutyCycle);
+  public double getFlyWheelSpeedMetersPerSecond() {
+    return rpmToSurfaceVelocity(rightShooterNeo.getEncoder().getVelocity());
   }
 
-  /**
-   * Calculates target surface velocity to make out shot at a given distance.
-   *
-   * @param distance distance from the target in inches.
-   */
-  public double calculateSurfaceVelocity(double distance) {
-    if (distance == 0) {
-      //m/s bumper on line
-      return 21.7;
-    }
-    int units = (int) distance;
-    if (units > shootingTargets.size() - 1) {
-      units = shootingTargets.size() - 1;
-    }
-    return shootingTargets.get(units);
+  public double getTargetFlywheelSpeedMetersPerSecond() {
+    return rpmToSurfaceVelocity(targetSpeed);
   }
 
   /**
@@ -169,11 +162,45 @@ public class Shooter extends SubsystemBase {
     return surfaceVelocity * 60 / (flyWheelRadius * 2 * Math.PI);
   }
 
-  public void runShooter(double triggerAxis) {
-    rightShooterNeo.set(triggerAxis);
+  /**
+   * Updates the constants for the PID using constants.
+   */
+  public void updatePIDConstants() {
+    PIDController.setOutputRange(0, 1);
+    PIDController.setP(shooterP);
+    PIDController.setI(shooterI);
+    PIDController.setD(shooterD);
+    PIDController.setFF(shooterF);
   }
 
-  public double getTargetSpeed() {
-    return targetSpeed;
+  private void populateShootingTargets() {
+    // {grouped distance from target in cm, speed of the shooter in m/s}
+    shootingTargets.put(250, 22.0); //untested
+    shootingTargets.put(275, 23.0); //untested
+    shootingTargets.put(300, 24.0); //untested
+    shootingTargets.put(325, 25.0); // good probably
+    shootingTargets.put(350, 24.6); //good on god
+    shootingTargets.put(375, 25.00); //tested good
+    shootingTargets.put(400, 30.0); //tested good
+    shootingTargets.put(425, 30.0); //good on god
+    shootingTargets.put(450, 26.3); //tested good
+    shootingTargets.put(475, 26.5);
+    shootingTargets.put(500, 26.7);
+    shootingTargets.put(525, 26.9);
+    shootingTargets.put(550, 27.1);
+    shootingTargets.put(575, 27.3); //tested good
+    shootingTargets.put(600, 27.5); //tested kinda bad but tested
+    shootingTargets.put(625, 28.25);//tested good
+    shootingTargets.put(650, 28.0);//tested kinda bad but tested
+    shootingTargets.put(675, 29.0); //tested good
+    shootingTargets.put(700, 30.0);
+    shootingTargets.put(725, 30.0);
+    shootingTargets.put(750, 30.0);
+    shootingTargets.put(775, 30.0);
+    shootingTargets.put(800, 30.0); //tested. good
+  }
+
+  public void runMotors(double power) {
+    rightShooterNeo.set(power);
   }
 }

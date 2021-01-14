@@ -7,7 +7,7 @@ import frc.robot.subsystems.Magazine;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 
-public class ShootBallsClosedLoop extends CommandBase {
+public class ShootBallsClosedLoopVelocity extends CommandBase {
 
   private Shooter shooter;
   private Magazine magazine;
@@ -22,21 +22,18 @@ public class ShootBallsClosedLoop extends CommandBase {
    *
    * @param distance distance to base shot off of.
    */
-  public ShootBallsClosedLoop(double distance, double percentSpeedRequired) {
+  public ShootBallsClosedLoopVelocity(double velocity, double percentSpeedRequired) {
     shooter = Shooter.getInstance();
     magazine = Magazine.getInstance();
     addRequirements(shooter, magazine);
-    this.distance = distance;
+    goalFlywheelSpeed = velocity;
     this.percentSpeedRequired = percentSpeedRequired;
-    goalFlywheelSpeed = 0;
   }
 
   @Override
   public void initialize() {
     //    shooter.setFlyWheelSpeed(shooter.calculateSurfaceVelocity(distance));
-    goalFlywheelSpeed = shooter.calculateSurfaceVelocity(distance);
-    distance = Vision.getInstance().calculateDistance();
-    shooter.setFlyWheelSpeed(shooter.calculateSurfaceVelocity(distance));
+    shooter.setFlyWheelSpeed(goalFlywheelSpeed);
   }
 
   @Override

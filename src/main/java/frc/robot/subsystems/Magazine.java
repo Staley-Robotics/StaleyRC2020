@@ -7,16 +7,20 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.MagazineConstants.bottomMasterPort;
+import static frc.robot.Constants.MagazineConstants.defaultMagazinePower;
+import static frc.robot.Constants.MagazineConstants.magLimitSwitchPort;
 import static frc.robot.Constants.MagazineConstants.pistonHardStopForwardChannel;
 import static frc.robot.Constants.MagazineConstants.pistonHardStopReverseChannel;
 import static frc.robot.Constants.MagazineConstants.topMasterPort;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.magazine.RunMagazine;
 
 /**
  * Magazine that holds 5 balls. It will run constantly while we are intaking. Once we get a ball, it
@@ -26,24 +30,30 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class Magazine extends SubsystemBase {
 
-  private DoubleSolenoid pistonHardStop;
   private static Magazine instance;
-  private VictorSP topMaster;
-  private VictorSP bottomMaster;
+
+  private DoubleSolenoid pistonHardStop;
+  private VictorSP topMotor;
   private PistonHardStopState pistonHardStopState;
+  private DigitalInput limitSwitch;
+  private boolean oldLimitSwitch;
+  private int ballCount;
+  private boolean magazineEnabled;
+
+  private Magazine() {
+    topMotor = new VictorSP(topMasterPort);
+    topMotor.setInverted(false);
+    pistonHardStop = new DoubleSolenoid(pistonHardStopForwardChannel, pistonHardStopReverseChannel);
+    limitSwitch = new DigitalInput(magLimitSwitchPort);
+    ballCount = 0;
+    magazineEnabled = true;
+    oldLimitSwitch = false;
+    extendHardStop();
+  }
 
   private enum PistonHardStopState {
     extended,
     retracted
-  }
-
-  private Magazine() {
-    topMaster = new VictorSP(topMasterPort);
-    bottomMaster = new VictorSP(bottomMasterPort);
-    topMaster.setInverted(false);
-    bottomMaster.setInverted(true);
-    pistonHardStop = new DoubleSolenoid(pistonHardStopForwardChannel, pistonHardStopReverseChannel);
-    extendHardStop();
   }
 
   public static Magazine getInstance() {
@@ -53,13 +63,39 @@ public class Magazine extends SubsystemBase {
     return instance;
   }
 
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+    SmartDashboard.putString("Mag Piston", pistonHardStopState.toString());
+    boolean limitSwitchPressed = limitSwitch.get();
+
+//    if (limitSwitchPressed && ballCount == 3) {
+//      magazineEnabled = false;
+//    } else if (limitSwitchPressed && !oldLimitSwitch) {
+//      magazineEnabled = true;
+//      ballCount++;
+//      oldLimitSwitch = limitSwitchPressed;
+//    } else if (!limitSwitchPressed && oldLimitSwitch) {
+//      magazineEnabled = false;
+//      oldLimitSwitch = limitSwitchPressed;
+//    } else if (!limitSwitchPressed) {
+//      oldLimitSwitch = limitSwitchPressed;
+//    }
+//!limitswitchpressed && oldLimitSwitch, run magazine for 0.4
+    if (!limitSwitchPressed && oldLimitSwitch) {
+      new RunMagazine(defaultMagazinePower).withTimeout(0.6).andThen(new RunMagazine(0))
+          .schedule();
+    }
+    oldLimitSwitch = limitSwitchPressed;
+  }
+
   public void extendHardStop() {
-    pistonHardStop.set(Value.kForward);
+    //pistonHardStop.set(Value.kForward);
     pistonHardStopState = PistonHardStopState.extended;
   }
 
   public void retractHardStop() {
-    pistonHardStop.set(Value.kReverse);
+    //pistonHardStop.set(Value.kReverse);
     pistonHardStopState = PistonHardStopState.retracted;
   }
 
@@ -73,15 +109,25 @@ public class Magazine extends SubsystemBase {
     }
   }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-    SmartDashboard.putString("Mag Piston", pistonHardStopState.toString());
+  public void resetBallCount() {
+    ballCount = 0;
+  }
+
+  public int getBallCount() {
+    return ballCount;
   }
 
   public void runMagazine(double speed) {
-    topMaster.set(speed);
-    bottomMaster.set(speed);
+    if (magazineEnabled) {
+      topMotor.set(speed);
+    }
+  }
+
+  public void runMagazineForced(double speed) {
+    resetBallCount();
+    magazineEnabled = true;
+    topMotor.set(speed);
+
   }
 
 }

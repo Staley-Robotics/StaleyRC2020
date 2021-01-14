@@ -87,10 +87,7 @@ public class DriveTrain extends SubsystemBase {
   private DoubleSolenoid shifter;
   private ShifterState shifterState;
 
-  public enum ShifterState {
-    low,
-    high
-  }
+  private double targetAngle;
 
   private DriveTrain() {
     try {
@@ -150,7 +147,20 @@ public class DriveTrain extends SubsystemBase {
 
     shifterState = ShifterState.low;
 
+    targetAngle = getHeading();
     zeroEncoder();
+  }
+
+  private enum ShifterState {
+    low,
+    high
+  }
+
+  public static DriveTrain getInstance() {
+    if (instance == null) {
+      instance = new DriveTrain();
+    }
+    return instance;
   }
 
   @Override
@@ -165,16 +175,7 @@ public class DriveTrain extends SubsystemBase {
     SmartDashboard.putNumber("RightEncoder(m): ", stepsToMeters(getRightEncoderPosition()));
 
     SmartDashboard.putString("Drive Shift", getShifterState().toString());
-  }
-
-  /**
-   * Makes DriveTrain a singleton.
-   */
-  public static DriveTrain getInstance() {
-    if (instance == null) {
-      instance = new DriveTrain();
-    }
-    return instance;
+    SmartDashboard.putNumber("Turn Target", targetAngle);
   }
 
   /* Drive Code */
@@ -301,6 +302,10 @@ public class DriveTrain extends SubsystemBase {
     return stepsPerDecisecToMetersPerSec(getRightEncoderVelocity());
   }
 
+  public void setTargetAngle(double angle) {
+    this.targetAngle = angle;
+  }
+
   /**
    * Converts encoder values to meters.
    *
@@ -368,6 +373,10 @@ public class DriveTrain extends SubsystemBase {
    */
   public double getHeading() {
     return Math.IEEEremainder(getYaw(), 360) * -1;
+  }
+
+  public double getNegativeHeading() {
+    return getHeading() * -1;
   }
 
   /**

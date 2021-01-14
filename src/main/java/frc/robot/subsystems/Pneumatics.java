@@ -4,6 +4,7 @@ package frc.robot.subsystems;
 import static frc.robot.Constants.PneumaticConstants.compressorPort;
 
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Pneumatics extends SubsystemBase {
@@ -20,6 +21,11 @@ public class Pneumatics extends SubsystemBase {
       instance = new Pneumatics();
     }
     return instance;
+  }
+
+  @Override
+  public void periodic() {
+    SmartDashboard.putBoolean("Compressor", compressor.getClosedLoopControl());
   }
 
   public void runCompressor() {
